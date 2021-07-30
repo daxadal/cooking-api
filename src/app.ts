@@ -25,8 +25,18 @@ const PORT = process.env.PORT;
 const port = PORT ? parseInt(PORT) : 3000;
 app.set("port", port);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.info("Listening on port", port);
 });
 
-export default app;
+process.on("SIGINT", () => {
+  console.warn("SIGINT sent");
+  process.exit(0)
+})
+
+process.on("SIGTERM", () => {
+  console.warn("SIGTERM sent");
+  process.exit(0)
+})
+
+export default server;
