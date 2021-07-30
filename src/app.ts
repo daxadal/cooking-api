@@ -2,16 +2,21 @@ import express, { Request, Response, NextFunction } from "express";
 
 import indexRouter from "./routes/index";
 import usersRouter from "./routes/users";
+import { initLogger } from "./services/winston";
 
 const app = express();
 
 app.use(express.json());
+
+app.use(initLogger);
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 // catch 404
 app.use(function (req, res, next) {
+  res.locals.originalUrl = req.originalUrl;
+  console.info(res.locals);
   res.status(404).send({ message: "Endpoint not found" });
 });
 
@@ -31,12 +36,12 @@ const server = app.listen(port, () => {
 
 process.on("SIGINT", () => {
   console.warn("SIGINT sent");
-  process.exit(0)
-})
+  process.exit(0);
+});
 
 process.on("SIGTERM", () => {
   console.warn("SIGTERM sent");
-  process.exit(0)
-})
+  process.exit(0);
+});
 
 export default server;
