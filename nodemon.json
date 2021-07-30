@@ -1,0 +1,9 @@
+{
+  "verbose": true,
+  "execMap": {
+    "js": "npm start",
+    "ts": "npm start"
+  },
+  "watch": ["src"],
+  "ext": "ts,js"
+}
