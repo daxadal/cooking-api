@@ -3,25 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run tsc && node ./dist/index.js",
+    "start": "npm run tsc && node ./dist/app.js",
     "tsc": "tsc --build --verbose",
     "test": "mocha"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.3",
-    "debug": "~2.6.9",
-    "express": "~4.16.0",
-    "http": "^0.0.1-security",
-    "http-errors": "~1.6.2",
-    "morgan": "~1.9.0",
-    "pug": "^3.0.2"
+    "express": "~4.16.0"
   },
   "devDependencies": {
-    "@types/cookie-parser": "^1.4.2",
-    "@types/debug": "^4.1.7",
     "@types/express": "^4.17.13",
-    "@types/http-errors": "^1.8.1",
-    "@types/morgan": "^1.9.3",
     "@types/node": "^16.4.7",
     "@typescript-eslint/eslint-plugin": "^4.28.5",
     "@typescript-eslint/parser": "^4.28.5",
