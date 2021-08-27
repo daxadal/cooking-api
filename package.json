@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "express": "~4.16.0",
+    "mysql2": "^2.3.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {

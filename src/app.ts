@@ -3,6 +3,9 @@ import express, { Request, Response, NextFunction } from "express";
 import indexRouter from "./routes/index";
 import usersRouter from "./routes/users";
 import { initLogger } from "./services/winston";
+import { createConnection } from "./services/db";
+
+createConnection();
 
 const app = express();
 
