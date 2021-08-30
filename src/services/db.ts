@@ -1,14 +1,14 @@
 // get the client
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 import { getLogger } from "./winston";
 
 let connection: mysql.Connection;
 
 const logger = getLogger("api");
 
-export function createConnection(): void {
+export async function createConnection(): Promise<void> {
   logger.info("Connecting to MySQL ...");
-  connection = mysql.createConnection({
+  connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
     database: "test",
@@ -16,14 +16,14 @@ export function createConnection(): void {
   logger.info("Connected to MySQL");
 }
 
-export function testQuery({
+export async function testQuery({
   name,
   age,
 }: {
   name: string;
   age: number;
-}): mysql.Query {
-  return connection.execute(
+}): Promise<void> {
+  const [rows, fields] = await connection.execute(
     "SELECT * FROM `table` WHERE `name` = ? AND `age` > ?",
     [name, age]
   );
