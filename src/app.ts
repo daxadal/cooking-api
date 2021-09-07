@@ -3,8 +3,10 @@ import express, { Request, Response, NextFunction } from "express";
 
 import indexRouter from "./routes/index";
 import usersRouter from "./routes/users";
-import { initLogger } from "./services/winston";
-import { createConnection } from "./services/db";
+import { getLogger, initLogger } from "./services/winston";
+import { closeConnection, createConnection } from "./services/db";
+
+const logger = getLogger("api");
 
 createConnection();
 
@@ -12,21 +14,22 @@ const app = express();
 
 app.use(express.json());
 
-app.use(initLogger);
+app.use(initLogger("api"));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 // catch 404
-app.use(function (req, res, next) {
-  res.locals.originalUrl = req.originalUrl;
-  console.info(res.locals);
+app.use((req, res, next) => {
+  const logger = res.locals.logger || console;
+  logger.error(`404 not found: ${req.originalUrl}`);
   res.status(404).send({ message: "Endpoint not found" });
 });
 
 // error handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error("500 Internal server error:", err);
+  const logger = res.locals.logger || console;
+  logger.error("500 Internal server error:", err);
   res.status(500).send({ message: "Internal server error" });
 });
 
@@ -35,16 +38,16 @@ const port = PORT ? parseInt(PORT) : 3000;
 app.set("port", port);
 
 const server = app.listen(port, () => {
-  console.info("Listening on port", port);
+  logger.info(`Listening on port ${port}`);
 });
 
 process.on("SIGINT", () => {
-  console.warn("SIGINT sent");
+  closeConnection();
   process.exit(0);
 });
 
 process.on("SIGTERM", () => {
-  console.warn("SIGTERM sent");
+  closeConnection();
   process.exit(0);
 });
 

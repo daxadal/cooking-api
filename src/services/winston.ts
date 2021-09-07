@@ -80,7 +80,7 @@ export function getLogger(service: string): Logger {
   });
 }
 
-export const initLogger: RequestHandler = (req, res, next) => {
+export const initLogger = (service: string): RequestHandler => (req, res, next) => {
   const logger = getLogger("api");
   logger.info(`Calling ${req.originalUrl} ...`);
   res.locals.logger = logger;
