@@ -1,3 +1,4 @@
+import "module-alias/register";
 import express, { Request, Response, NextFunction } from "express";
 
 import indexRouter from "./routes/index";
