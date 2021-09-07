@@ -46,7 +46,9 @@ export async function createConnection(): Promise<void> {
     await query<OkPacket>(`create database ${DB_NAME};`);
     await query<OkPacket>(`use ${DB_NAME};`);
     await query<OkPacket[]>(readSqlScript("create-tables"));
-    logger.info("Database created...");
+    logger.info("Database created. Populating ...");
+    await loadTable("utensil");
+    logger.info("Tables populated");
   }
 }
 
@@ -64,3 +66,10 @@ async function query<T extends Rows>(query: string): Promise<QueryResult<T>> {
 
 const readSqlScript = (filename: string) =>
   readFileSync(path.resolve(__dirname, `../../sql/${filename}.sql`)).toString();
+
+const loadTable = (tableName: string) => {
+  const location = path.resolve(__dirname, `../../sql/${tableName}.csv`);
+  return query<OkPacket>(
+    `LOAD DATA INFILE '${location}' INTO TABLE ${tableName}`
+  );
+};
