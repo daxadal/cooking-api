@@ -1,15 +1,15 @@
 import "module-alias/register";
 import express, { Request, Response, NextFunction } from "express";
 
-import indexRouter from "./routes/index";
-import ingredientsRouter from "./routes/ingredients";
-import recipesRouter from "./routes/recipes";
-import stepsRouter from "./routes/steps";
-import usersRouter from "./routes/users";
-import utensilsRouter from "./routes/utensils";
+import indexRouter from "@routes/index";
+import ingredientsRouter from "@routes/ingredients";
+import recipesRouter from "@routes/recipes";
+import stepsRouter from "@routes/steps";
+import usersRouter from "@routes/users";
+import utensilsRouter from "@routes/utensils";
 
-import { getLogger, initLogger } from "./services/winston";
-import { closeConnection, createConnection } from "./services/db";
+import { getLogger, initLogger } from "@services/winston";
+import { closeConnection, createConnection } from "@services/db/setup";
 
 const logger = getLogger();
 

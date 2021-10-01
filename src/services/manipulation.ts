@@ -1,4 +1,4 @@
-import { getLogger } from "./winston";
+import { getLogger } from "@services/winston";
 
 const logger = getLogger();
 

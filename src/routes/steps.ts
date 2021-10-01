@@ -1,14 +1,14 @@
 import express from "express";
 
-import { getAllDetailedSteps, getAllSteps } from "@services/db";
+import { Step } from "@services/db";
 
 const router = express.Router();
 
 /* GET steps. */
 router.get("/", async function (req, res) {
   const steps = req.query.detailed
-    ? await getAllDetailedSteps()
-    : await getAllSteps();
+    ? await Step.getAllDetailed()
+    : await Step.getAll();
   res.status(200).send(steps);
 });
 

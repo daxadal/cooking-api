@@ -1,19 +1,11 @@
 import express, { RequestHandler } from "express";
 
-import {
-  createUtensil,
-  deleteUtensil,
-  getAllUtensils,
-  getDetailedStepsFromUtensil,
-  getUtensil,
-  updateUtensil,
-  Utensil,
-} from "@services/db";
+import { Step, Utensil } from "@services/db";
 
 const router = express.Router();
 
 const loadUtensil: RequestHandler = async function (req, res, next) {
-  const utensil = await getUtensil(parseInt(req.params.id));
+  const utensil = await Utensil.get(parseInt(req.params.id));
   if (utensil) {
     res.locals.utensil = utensil;
     next();
@@ -24,7 +16,7 @@ const loadUtensil: RequestHandler = async function (req, res, next) {
 
 /* GET utensils. */
 router.get("/", async function (req, res) {
-  const utensils = await getAllUtensils();
+  const utensils = await Utensil.getAll();
   res.status(200).send(utensils);
 });
 
@@ -36,29 +28,29 @@ router.get("/:id(\\d+)", loadUtensil, async function (req, res) {
 /* CREATE utensils. */
 router.post("/", async function (req, res) {
   const { name, waitTimeInMillis } = req.body;
-  const id = await createUtensil({ name, waitTimeInMillis });
-  const utensil = await getUtensil(id)
+  const id = await Utensil.create({ name, waitTimeInMillis });
+  const utensil = await Utensil.get(id);
   res.status(200).send(utensil);
 });
 
 /* UPDATE utensil by id. */
 router.put("/:id(\\d+)", loadUtensil, async function (req, res) {
-  const utensil: Utensil = res.locals.utensil;
+  const utensil: Utensil.Utensil = res.locals.utensil;
   const { name, waitTimeInMillis } = req.body;
-  const id = await updateUtensil({ id: utensil.id, name, waitTimeInMillis });
-  const utensilUpdated = await getUtensil(id);
+  const id = await Utensil.update({ id: utensil.id, name, waitTimeInMillis });
+  const utensilUpdated = await Utensil.get(id);
   res.status(200).send(utensilUpdated);
 });
 
 /* DELETE utensil by id. */
 router.delete("/:id(\\d+)", loadUtensil, async function (req, res) {
-  await deleteUtensil(req.params.id);
+  await Utensil.destroy(res.locals.utensil.id);
   res.status(204).send();
 });
 
 /* GET step by utensil. */
 router.get("/:id(\\d+)/uses", loadUtensil, async function (req, res) {
-  const steps = await getDetailedStepsFromUtensil(res.locals.utensil.id);
+  const steps = await Step.queryDetailedFromUtensil(res.locals.utensil.id);
   res.status(200).send(steps);
 });
 
