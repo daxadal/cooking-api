@@ -17,41 +17,45 @@ const loadIngredient: RequestHandler = async (req, res, next) => {
 };
 
 /* GET ingredients. */
-router.route("/").get(async function (req, res) {
-  const ingredients = await Ingredient.getAll();
-  res.status(200).send(ingredients);
-})
+router
+  .route("/")
+  .get(async function (req, res) {
+    const ingredients = await Ingredient.getAll();
+    res.status(200).send(ingredients);
+  })
 
-/* CREATE ingredients. */
-.post(async function (req, res) {
-  const { name, type } = req.body;
-  const newId = await Ingredient.create({ name, type });
-  const ingredient = await Ingredient.get(newId);
-  res.status(200).send(ingredient);
-});
+  /* CREATE ingredients. */
+  .post(async function (req, res) {
+    const { name, type } = req.body;
+    const newId = await Ingredient.create({ name, type });
+    const ingredient = await Ingredient.get(newId);
+    res.status(200).send(ingredient);
+  });
 
-router.use("/:id(\\d+)", validatePathId, loadIngredient)
+router.use("/:id(\\d+)", validatePathId, loadIngredient);
 
 /* GET ingredient by id. */
-router.route("/:id(\\d+)").get(function (req, res) {
-  res.status(200).send(res.locals.ingredient);
-})
+router
+  .route("/:id(\\d+)")
+  .get(function (req, res) {
+    res.status(200).send(res.locals.ingredient);
+  })
 
-/* UPDATE ingredient by id. */
-.put(async function (req, res) {
-  const ingredient: Ingredient.Ingredient = res.locals.ingredient;
-  const { name, type } = req.body;
-  const id = await Ingredient.update({ id: ingredient.id, name, type });
-  const ingredientUpdated = await Ingredient.get(id);
-  res.status(200).send(ingredientUpdated);
-})
+  /* UPDATE ingredient by id. */
+  .put(async function (req, res) {
+    const ingredient: Ingredient.Ingredient = res.locals.ingredient;
+    const { name, type } = req.body;
+    const id = await Ingredient.update({ id: ingredient.id, name, type });
+    const ingredientUpdated = await Ingredient.get(id);
+    res.status(200).send(ingredientUpdated);
+  })
 
-/* DELETE ingredient by id. */
-.delete(async function (req, res) {
-  const ingredient: Ingredient.Ingredient = res.locals.ingredient;
-  await Ingredient.destroy(ingredient.id);
-  res.status(204).send();
-});
+  /* DELETE ingredient by id. */
+  .delete(async function (req, res) {
+    const ingredient: Ingredient.Ingredient = res.locals.ingredient;
+    await Ingredient.destroy(ingredient.id);
+    res.status(204).send();
+  });
 
 /* GET step by input. */
 router.get("/:id(\\d+)/outcomes", async function (req, res) {

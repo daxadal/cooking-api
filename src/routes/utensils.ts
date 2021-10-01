@@ -16,40 +16,44 @@ const loadUtensil: RequestHandler = async function (req, res, next) {
 };
 
 /* GET utensils. */
-router.route("/").get(async function (req, res) {
-  const utensils = await Utensil.getAll();
-  res.status(200).send(utensils);
-})
+router
+  .route("/")
+  .get(async function (req, res) {
+    const utensils = await Utensil.getAll();
+    res.status(200).send(utensils);
+  })
 
-/* CREATE utensils. */
-.post(async function (req, res) {
-  const { name, waitTimeInMillis } = req.body;
-  const id = await Utensil.create({ name, waitTimeInMillis });
-  const utensil = await Utensil.get(id);
-  res.status(200).send(utensil);
-});
+  /* CREATE utensils. */
+  .post(async function (req, res) {
+    const { name, waitTimeInMillis } = req.body;
+    const id = await Utensil.create({ name, waitTimeInMillis });
+    const utensil = await Utensil.get(id);
+    res.status(200).send(utensil);
+  });
 
-router.use("/:id(\\d+)", validatePathId, loadUtensil)
+router.use("/:id(\\d+)", validatePathId, loadUtensil);
 
 /* GET utensil by id. */
-router.route("/:id(\\d+)").get(async function (req, res) {
-  res.status(200).send(res.locals.utensil);
-})
+router
+  .route("/:id(\\d+)")
+  .get(async function (req, res) {
+    res.status(200).send(res.locals.utensil);
+  })
 
-/* UPDATE utensil by id. */
-.put(async function (req, res) {
-  const utensil: Utensil.Utensil = res.locals.utensil;
-  const { name, waitTimeInMillis } = req.body;
-  const id = await Utensil.update({ id: utensil.id, name, waitTimeInMillis });
-  const utensilUpdated = await Utensil.get(id);
-  res.status(200).send(utensilUpdated);
-})
+  /* UPDATE utensil by id. */
+  .put(async function (req, res) {
+    const utensil: Utensil.Utensil = res.locals.utensil;
+    const { name, waitTimeInMillis } = req.body;
+    const id = await Utensil.update({ id: utensil.id, name, waitTimeInMillis });
+    const utensilUpdated = await Utensil.get(id);
+    res.status(200).send(utensilUpdated);
+  })
 
-/* DELETE utensil by id. */
-.delete( async function (req, res) {
-  await Utensil.destroy(res.locals.utensil.id);
-  res.status(204).send();
-});
+  /* DELETE utensil by id. */
+  .delete(async function (req, res) {
+    await Utensil.destroy(res.locals.utensil.id);
+    res.status(204).send();
+  });
 
 /* GET step by utensil. */
 router.get("/:id(\\d+)/uses", async function (req, res) {
