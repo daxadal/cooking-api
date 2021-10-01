@@ -57,6 +57,7 @@ export async function createConnection(): Promise<void> {
     user: "root",
     password: "root",
     multipleStatements: true,
+    namedPlaceholders: true,
   });
   logger.info("Connected to MySQL");
 
@@ -83,8 +84,11 @@ export function closeConnection(): void {
   connection.destroy();
 }
 
-async function query<T extends Rows>(query: string): Promise<QueryResult<T>> {
-  const [rows, fields] = await connection.query<T>(query);
+async function query<T extends Rows>(
+  query: string,
+  params?: Record<string, unknown>
+): Promise<QueryResult<T>> {
+  const [rows, fields] = await connection.query<T>(query, params);
   const fieldNames = fields && fields.filter((f) => f).map((f) => f.name);
   logger.debug("MySQL: > " + query, { rows, fields: fieldNames });
   return { rows, fields: fieldNames || [] };
@@ -105,9 +109,27 @@ export async function getAllIngredients(): Promise<Ingredient[]> {
   return rows as Ingredient[];
 }
 
+export async function getIngredient(
+  id: number
+): Promise<Ingredient | undefined> {
+  const { rows } = await query<RowDataPacket[]>(
+    "select * from ingredient where id = :id;",
+    { id }
+  );
+  return rows.length > 0 ? (rows[0] as Ingredient) : undefined;
+}
+
 export async function getAllUtensils(): Promise<Utensil[]> {
   const { rows } = await query<RowDataPacket[]>("select * from utensil;");
   return rows as Utensil[];
+}
+
+export async function getUtensil(id: number): Promise<Utensil | undefined> {
+  const { rows } = await query<RowDataPacket[]>(
+    "select * from utensil where id = :id;",
+    { id }
+  );
+  return rows.length > 0 ? (rows[0] as Utensil) : undefined;
 }
 
 export async function getAllSteps(): Promise<Step[]> {
