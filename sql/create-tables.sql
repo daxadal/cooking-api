@@ -18,7 +18,7 @@ utensil smallint unsigned not null references utensil(id),
 output smallint unsigned not null references ingredient(id)
 );
 
-create view detailed_step as select 
+create view detailed_step as select
 input.id as input_id, input.name as input_name, input.type as input_type,
 utensil.id as utensil_id, utensil.name as utensil_name, utensil.waitTimeInMillis as utensil_waitTimeInMillis,
 output.id as output_id, output.name as output_name, output.type as output_type
@@ -27,7 +27,7 @@ left join ingredient as input on step.input = input.id
 left join utensil on step.utensil = utensil.id
 left join ingredient as output on step.output = output.id;
 
-create view recipe as select 
+create view recipe as select
 step1.input as input, step1.utensil as utensil1, step1.output as mid1,
 step2.utensil as utensil2, step2.output as mid2,
 step3.utensil as utensil3, step3.output as mid3,
@@ -41,18 +41,18 @@ left join step as step4 on step4.input = step3.output
 left join step as step5 on step5.input = step4.output
 where ingredient.type = 'start';
 
-create view detailed_recipe as select 
-input.id as inputId, input.name as inputName, input.type as inputType,
-utensil1.id as utensil1Id, utensil1.name as utensil1Name, utensil1.waitTimeInMillis as waitTimeInMillis1,
-mid1.id as mid1Id, mid1.name as mid1Name, mid1.type as mid1Type, 
-utensil2.id as utensil2Id, utensil2.name as utensil2Name, utensil2.waitTimeInMillis as waitTimeInMillis2,
-mid2.id as mid2Id, mid2.name as mid2Name, mid2.type as mid2Type, 
-utensil3.id as utensil3Id, utensil3.name as utensil3Name, utensil3.waitTimeInMillis as waitTimeInMillis3,
-mid3.id as mid3Id, mid3.name as mid3Name, mid3.type as mid3Type, 
-utensil4.id as utensil4Id, utensil4.name as utensil4Name, utensil4.waitTimeInMillis as waitTimeInMillis4,
-mid4.id as mid4Id, mid4.name as mid4Name, mid4.type as mid4Type, 
-utensil5.id as utensil5Id, utensil5.name as utensil5Name, utensil5.waitTimeInMillis as waitTimeInMillis5,
-mid5.id as mid5Id, mid5.name as mid5Name, mid5.type as mid5Type 
+create view detailed_recipe as select
+input.id as input_id, input.name as input_name, input.type as input_type,
+utensil1.id as utensil1_id, utensil1.name as utensil1_name, utensil1.waitTimeInMillis as utensil1_waitTimeInMillis,
+mid1.id as mid1_id, mid1.name as mid1_name, mid1.type as mid1_type,
+utensil2.id as utensil2_id, utensil2.name as utensil2_name, utensil2.waitTimeInMillis as utensil2_waitTimeInMillis,
+mid2.id as mid2_id, mid2.name as mid2_name, mid2.type as mid2_type,
+utensil3.id as utensil3_id, utensil3.name as utensil3_name, utensil3.waitTimeInMillis as utensil3_waitTimeInMillis,
+mid3.id as mid3_id, mid3.name as mid3_name, mid3.type as mid3_type,
+utensil4.id as utensil4_id, utensil4.name as utensil4_name, utensil4.waitTimeInMillis as utensil4_waitTimeInMillis,
+mid4.id as mid4_id, mid4.name as mid4_name, mid4.type as mid4_type,
+utensil5.id as utensil5_id, utensil5.name as utensil5_name, utensil5.waitTimeInMillis as utensil5_waitTimeInMillis,
+mid5.id as mid5_id, mid5.name as mid5_name, mid5.type as mid5_type
  from recipe
 left join ingredient as input on input.id = recipe.input
 left join utensil as utensil1 on utensil1.id = recipe.utensil1
