@@ -151,3 +151,14 @@ export async function getAllDetailedSteps(): Promise<DetailedStep[]> {
   const deepRows = rows.map((row) => deepen(row, fields));
   return deepRows as DetailedStep[];
 }
+
+export async function getDetailedStepsFromInput(
+  input: number
+): Promise<DetailedStep[]> {
+  const { rows, fields } = await query<RowDataPacket[]>(
+    "select * from detailed_step where input_id= :input;",
+    { input }
+  );
+  const deepRows = rows.map((row) => deepen(row, fields));
+  return deepRows as DetailedStep[];
+}

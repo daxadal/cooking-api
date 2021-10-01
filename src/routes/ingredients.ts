@@ -1,6 +1,10 @@
 import express from "express";
 
-import { getAllIngredients, getIngredient } from "@services/db";
+import {
+  getAllIngredients,
+  getDetailedStepsFromInput,
+  getIngredient,
+} from "@services/db";
 
 const router = express.Router();
 
@@ -16,6 +20,12 @@ router.get("/:id(\\d+)", async function (req, res) {
 
   if (ingredient) res.status(200).send(ingredient);
   else res.status(404).send({ message: "Ingredient not found" });
+});
+
+/* GET ingredient by id. */
+router.get("/:id(\\d+)/outcomes", async function (req, res) {
+  const steps = await getDetailedStepsFromInput(parseInt(req.params.id));
+  res.status(200).send(steps);
 });
 
 export default router;
