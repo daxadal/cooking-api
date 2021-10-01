@@ -19,9 +19,9 @@ output smallint unsigned not null references ingredient(id)
 );
 
 create view detailed_step as select 
-input.id as inputId, input.name as inputName, input.type as inputType,
-utensil.id as utensilId, utensil.name as utensilName, utensil.waitTimeInMillis,
-output.id as outputId, output.name as outputName, output.type as outputType 
+input.id as "input.id", input.name as "input.name", input.type as "input.type",
+utensil.id as "utensil.id", utensil.name as "utensil.name", utensil.waitTimeInMillis as "utensil.waitTimeInMillis",
+output.id as "output.id", output.name as "output.name", output.type as "output.type"
 from step
 left join ingredient as input on step.input = input.id
 left join utensil on step.utensil = utensil.id

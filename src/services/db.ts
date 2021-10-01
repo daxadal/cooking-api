@@ -6,6 +6,7 @@ import mysql, {
   RowDataPacket,
 } from "mysql2/promise";
 import path from "path";
+import { deepen } from "./deepen";
 import { getLogger } from "./winston";
 
 export enum IngredientType {
@@ -26,11 +27,17 @@ export interface Utensil {
   waitTimeInMillis: number;
 }
 
-export interface Step {
-  input: number;
-  utensil: number;
-  output: number;
+export interface Step<
+  Input extends Ingredient | number = number,
+  Ut extends Utensil | number = number,
+  Output extends Ingredient | number = number
+> {
+  input: Input;
+  utensil: Ut;
+  output: Output;
 }
+
+export type DetailedStep = Step<Ingredient, Utensil, Ingredient>;
 
 type Rows =
   | RowDataPacket[]
@@ -135,4 +142,12 @@ export async function getUtensil(id: number): Promise<Utensil | undefined> {
 export async function getAllSteps(): Promise<Step[]> {
   const { rows } = await query<RowDataPacket[]>("select * from step;");
   return rows as Step[];
+}
+
+export async function getAllDetailedSteps(): Promise<DetailedStep[]> {
+  const { rows, fields } = await query<RowDataPacket[]>(
+    "select * from detailed_step;"
+  );
+  const deepRows = rows.map((row) => deepen(row, fields));
+  return deepRows as DetailedStep[];
 }
