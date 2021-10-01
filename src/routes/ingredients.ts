@@ -22,17 +22,17 @@ router.get("/", async function (req, res) {
   res.status(200).send(ingredients);
 });
 
-/* GET ingredient by id. */
-router.get("/:id(\\d+)", validatePathId, loadIngredient, function (req, res) {
-  res.status(200).send(res.locals.ingredient);
-});
-
 /* CREATE ingredients. */
 router.post("/", async function (req, res) {
   const { name, type } = req.body;
   const newId = await Ingredient.create({ name, type });
   const ingredient = await Ingredient.get(newId);
   res.status(200).send(ingredient);
+});
+
+/* GET ingredient by id. */
+router.get("/:id(\\d+)", validatePathId, loadIngredient, function (req, res) {
+  res.status(200).send(res.locals.ingredient);
 });
 
 /* UPDATE ingredient by id. */

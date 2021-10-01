@@ -21,17 +21,17 @@ router.get("/", async function (req, res) {
   res.status(200).send(utensils);
 });
 
-/* GET utensil by id. */
-router.get("/:id(\\d+)", validatePathId, loadUtensil, async function (req, res) {
-  res.status(200).send(res.locals.utensil);
-});
-
 /* CREATE utensils. */
 router.post("/", async function (req, res) {
   const { name, waitTimeInMillis } = req.body;
   const id = await Utensil.create({ name, waitTimeInMillis });
   const utensil = await Utensil.get(id);
   res.status(200).send(utensil);
+});
+
+/* GET utensil by id. */
+router.get("/:id(\\d+)", validatePathId, loadUtensil, async function (req, res) {
+  res.status(200).send(res.locals.utensil);
 });
 
 /* UPDATE utensil by id. */
