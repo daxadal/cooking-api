@@ -13,6 +13,17 @@ export function deepen(
   return deepObject;
 }
 
+export const filterNullValues = (
+  object: Record<string, any>,
+  fields: string[]
+): Record<string, any> =>
+  fields
+    .filter((field) => object[field] !== null)
+    .reduce<Record<string, any>>((newObject, field) => {
+      newObject[field] = object[field];
+      return newObject;
+    }, {});
+
 function assignDeep(object: Record<string, any>, dotField: string, value: any) {
   const route = dotField.split("_");
   const travelRoute = route.slice(0, -1);
