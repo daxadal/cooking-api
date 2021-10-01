@@ -2,6 +2,7 @@ import express, { RequestHandler } from "express";
 
 import {
   createUtensil,
+  deleteUtensil,
   getAllUtensils,
   getDetailedStepsFromUtensil,
   getUtensil,
@@ -45,6 +46,12 @@ router.put("/:id(\\d+)", loadUtensil, async function (req, res) {
   const { name, waitTimeInMillis } = req.body;
   await updateUtensil({ id: utensil.id, name, waitTimeInMillis });
   res.status(200).send({ message: "Utensil updated" });
+});
+
+/* DELETE utensil by id. */
+router.delete("/:id(\\d+)", loadUtensil, async function (req, res) {
+  await deleteUtensil(req.params.id);
+  res.status(200).send({ message: "Utensil deleted" });
 });
 
 /* GET step by utensil. */

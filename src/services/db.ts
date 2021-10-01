@@ -164,6 +164,10 @@ export async function updateIngredient({
   );
 }
 
+export async function deleteIngredient(id: string): Promise<void> {
+  await query<OkPacket>("delete from ingredient where id=:id", { id });
+}
+
 export async function getIngredient(
   id: number
 ): Promise<Ingredient | undefined> {
@@ -193,6 +197,10 @@ export async function updateUtensil({
     "replace into utensil (id, name, waitTimeInMillis) values (:id, :name, :waitTimeInMillis);",
     { id, name, waitTimeInMillis }
   );
+}
+
+export async function deleteUtensil(id: string): Promise<void> {
+  await query<OkPacket>("delete from utensil where id=:id", { id });
 }
 
 export async function getAllUtensils(): Promise<Utensil[]> {

@@ -2,6 +2,7 @@ import express, { RequestHandler } from "express";
 
 import {
   createIngredient,
+  deleteIngredient,
   getAllIngredients,
   getDetailedStepsFromInput,
   getDetailedStepsFromOutput,
@@ -48,6 +49,12 @@ router.put("/:id(\\d+)", loadIngredient, async function (req, res) {
   const { name, type } = req.body;
   await updateIngredient({ id: ingredient.id, name, type });
   res.status(200).send({ message: "Ingredient updated" });
+});
+
+/* DELETE ingredient by id. */
+router.delete("/:id(\\d+)", loadIngredient, async function (req, res) {
+  await deleteIngredient(req.params.id);
+  res.status(200).send({ message: "Ingredient deleted" });
 });
 
 /* GET step by input. */
