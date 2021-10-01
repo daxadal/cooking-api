@@ -14,7 +14,7 @@ export function deepen(
 }
 
 function assignDeep(object: Record<string, any>, dotField: string, value: any) {
-  const route = dotField.split(".");
+  const route = dotField.split("_");
   const travelRoute = route.slice(0, -1);
   const lastField = route[route.length - 1];
 
