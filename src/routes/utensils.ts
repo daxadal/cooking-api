@@ -1,9 +1,12 @@
 import express, { RequestHandler } from "express";
 
 import {
+  createUtensil,
   getAllUtensils,
   getDetailedStepsFromUtensil,
   getUtensil,
+  updateUtensil,
+  Utensil,
 } from "@services/db";
 
 const router = express.Router();
@@ -27,6 +30,21 @@ router.get("/", async function (req, res) {
 /* GET utensil by id. */
 router.get("/:id(\\d+)", loadUtensil, async function (req, res) {
   res.status(200).send(res.locals.utensil);
+});
+
+/* CREATE utensils. */
+router.post("/", async function (req, res) {
+  const { name, waitTimeInMillis } = req.body;
+  await createUtensil({ name, waitTimeInMillis });
+  res.status(200).send({ message: "Utensil created" });
+});
+
+/* UPDATE utensil by id. */
+router.put("/:id(\\d+)", loadUtensil, async function (req, res) {
+  const utensil: Utensil = res.locals.utensil;
+  const { name, waitTimeInMillis } = req.body;
+  await updateUtensil({ id: utensil.id, name, waitTimeInMillis });
+  res.status(200).send({ message: "Utensil updated" });
 });
 
 /* GET step by utensil. */

@@ -143,6 +143,27 @@ export async function getAllIngredients(): Promise<Ingredient[]> {
   return rows as Ingredient[];
 }
 
+export async function createIngredient({
+  name,
+  type,
+}: Omit<Ingredient, "id">): Promise<void> {
+  await query<OkPacket>(
+    "insert into ingredient (name, type) values (:name, :type);",
+    { name, type }
+  );
+}
+
+export async function updateIngredient({
+  id,
+  name,
+  type,
+}: Ingredient): Promise<void> {
+  await query<OkPacket>(
+    "replace into ingredient (id, name, type) values (:id, :name, :type);",
+    { id, name, type }
+  );
+}
+
 export async function getIngredient(
   id: number
 ): Promise<Ingredient | undefined> {
@@ -151,6 +172,27 @@ export async function getIngredient(
     { id }
   );
   return rows.length > 0 ? (rows[0] as Ingredient) : undefined;
+}
+
+export async function createUtensil({
+  name,
+  waitTimeInMillis,
+}: Omit<Utensil, "id">): Promise<void> {
+  await query<OkPacket>(
+    "insert into utensil (name, waitTimeInMillis) values (:name, :waitTimeInMillis);",
+    { name, waitTimeInMillis }
+  );
+}
+
+export async function updateUtensil({
+  id,
+  name,
+  waitTimeInMillis,
+}: Utensil): Promise<void> {
+  await query<OkPacket>(
+    "replace into utensil (id, name, waitTimeInMillis) values (:id, :name, :waitTimeInMillis);",
+    { id, name, waitTimeInMillis }
+  );
 }
 
 export async function getAllUtensils(): Promise<Utensil[]> {

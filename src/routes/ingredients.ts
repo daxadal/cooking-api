@@ -1,15 +1,18 @@
 import express, { RequestHandler } from "express";
 
 import {
+  createIngredient,
   getAllIngredients,
   getDetailedStepsFromInput,
   getDetailedStepsFromOutput,
   getIngredient,
   Ingredient,
   IngredientType,
+  updateIngredient,
 } from "@services/db";
 
 const router = express.Router();
+router.use(express.json({ limit: "100kb" }));
 
 const loadIngredient: RequestHandler = async (req, res, next) => {
   const ingredient = await getIngredient(parseInt(req.params.id));
@@ -30,6 +33,21 @@ router.get("/", async function (req, res) {
 /* GET ingredient by id. */
 router.get("/:id(\\d+)", loadIngredient, function (req, res) {
   res.status(200).send(res.locals.ingredient);
+});
+
+/* CREATE ingredients. */
+router.post("/", async function (req, res) {
+  const { name, type } = req.body;
+  await createIngredient({ name, type });
+  res.status(200).send({ message: "Ingredient created" });
+});
+
+/* UPDATE ingredient by id. */
+router.put("/:id(\\d+)", loadIngredient, async function (req, res) {
+  const ingredient: Ingredient = res.locals.ingredient;
+  const { name, type } = req.body;
+  await updateIngredient({ id: ingredient.id, name, type });
+  res.status(200).send({ message: "Ingredient updated" });
 });
 
 /* GET step by input. */
