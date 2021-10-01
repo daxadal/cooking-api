@@ -146,22 +146,24 @@ export async function getAllIngredients(): Promise<Ingredient[]> {
 export async function createIngredient({
   name,
   type,
-}: Omit<Ingredient, "id">): Promise<void> {
-  await query<OkPacket>(
+}: Omit<Ingredient, "id">): Promise<number> {
+  const { rows } = await query<OkPacket>(
     "insert into ingredient (name, type) values (:name, :type);",
     { name, type }
   );
+  return rows.insertId;
 }
 
 export async function updateIngredient({
   id,
   name,
   type,
-}: Ingredient): Promise<void> {
-  await query<OkPacket>(
+}: Ingredient): Promise<number> {
+  const { rows } = await query<OkPacket>(
     "replace into ingredient (id, name, type) values (:id, :name, :type);",
     { id, name, type }
   );
+  return rows.insertId;
 }
 
 export async function deleteIngredient(id: string): Promise<void> {
@@ -181,22 +183,24 @@ export async function getIngredient(
 export async function createUtensil({
   name,
   waitTimeInMillis,
-}: Omit<Utensil, "id">): Promise<void> {
-  await query<OkPacket>(
+}: Omit<Utensil, "id">): Promise<number> {
+  const { rows } = await query<OkPacket>(
     "insert into utensil (name, waitTimeInMillis) values (:name, :waitTimeInMillis);",
     { name, waitTimeInMillis }
   );
+  return rows.insertId;
 }
 
 export async function updateUtensil({
   id,
   name,
   waitTimeInMillis,
-}: Utensil): Promise<void> {
-  await query<OkPacket>(
+}: Utensil): Promise<number> {
+  const { rows } = await query<OkPacket>(
     "replace into utensil (id, name, waitTimeInMillis) values (:id, :name, :waitTimeInMillis);",
     { id, name, waitTimeInMillis }
   );
+  return rows.insertId;
 }
 
 export async function deleteUtensil(id: string): Promise<void> {

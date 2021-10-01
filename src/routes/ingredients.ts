@@ -39,22 +39,24 @@ router.get("/:id(\\d+)", loadIngredient, function (req, res) {
 /* CREATE ingredients. */
 router.post("/", async function (req, res) {
   const { name, type } = req.body;
-  await createIngredient({ name, type });
-  res.status(200).send({ message: "Ingredient created" });
+  const newId = await createIngredient({ name, type });
+  const ingredient = await getIngredient(newId);
+  res.status(200).send(ingredient);
 });
 
 /* UPDATE ingredient by id. */
 router.put("/:id(\\d+)", loadIngredient, async function (req, res) {
   const ingredient: Ingredient = res.locals.ingredient;
   const { name, type } = req.body;
-  await updateIngredient({ id: ingredient.id, name, type });
-  res.status(200).send({ message: "Ingredient updated" });
+  const id = await updateIngredient({ id: ingredient.id, name, type });
+  const ingredientUpdated = await getIngredient(id);
+  res.status(200).send(ingredientUpdated);
 });
 
 /* DELETE ingredient by id. */
 router.delete("/:id(\\d+)", loadIngredient, async function (req, res) {
   await deleteIngredient(req.params.id);
-  res.status(200).send({ message: "Ingredient deleted" });
+  res.status(204).send();
 });
 
 /* GET step by input. */

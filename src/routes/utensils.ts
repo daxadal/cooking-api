@@ -36,22 +36,24 @@ router.get("/:id(\\d+)", loadUtensil, async function (req, res) {
 /* CREATE utensils. */
 router.post("/", async function (req, res) {
   const { name, waitTimeInMillis } = req.body;
-  await createUtensil({ name, waitTimeInMillis });
-  res.status(200).send({ message: "Utensil created" });
+  const id = await createUtensil({ name, waitTimeInMillis });
+  const utensil = await getUtensil(id)
+  res.status(200).send(utensil);
 });
 
 /* UPDATE utensil by id. */
 router.put("/:id(\\d+)", loadUtensil, async function (req, res) {
   const utensil: Utensil = res.locals.utensil;
   const { name, waitTimeInMillis } = req.body;
-  await updateUtensil({ id: utensil.id, name, waitTimeInMillis });
-  res.status(200).send({ message: "Utensil updated" });
+  const id = await updateUtensil({ id: utensil.id, name, waitTimeInMillis });
+  const utensilUpdated = await getUtensil(id);
+  res.status(200).send(utensilUpdated);
 });
 
 /* DELETE utensil by id. */
 router.delete("/:id(\\d+)", loadUtensil, async function (req, res) {
   await deleteUtensil(req.params.id);
-  res.status(200).send({ message: "Utensil deleted" });
+  res.status(204).send();
 });
 
 /* GET step by utensil. */
