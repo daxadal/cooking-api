@@ -30,8 +30,10 @@ router.route("/").get(async function (req, res) {
   res.status(200).send(ingredient);
 });
 
+router.use("/:id(\\d+)", validatePathId, loadIngredient)
+
 /* GET ingredient by id. */
-router.route("/:id(\\d+)").all(validatePathId, loadIngredient).get(function (req, res) {
+router.route("/:id(\\d+)").get(function (req, res) {
   res.status(200).send(res.locals.ingredient);
 })
 
@@ -52,7 +54,7 @@ router.route("/:id(\\d+)").all(validatePathId, loadIngredient).get(function (req
 });
 
 /* GET step by input. */
-router.get("/:id(\\d+)/outcomes", validatePathId, loadIngredient, async function (req, res) {
+router.get("/:id(\\d+)/outcomes", async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   if (ingredient.type === Ingredient.IngredientType.END) {
     res.status(400).send({
@@ -65,7 +67,7 @@ router.get("/:id(\\d+)/outcomes", validatePathId, loadIngredient, async function
 });
 
 /* GET step by output. */
-router.get("/:id(\\d+)/sources", validatePathId, loadIngredient, async function (req, res) {
+router.get("/:id(\\d+)/sources", async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   if (ingredient.type === Ingredient.IngredientType.START) {
     res.status(400).send({

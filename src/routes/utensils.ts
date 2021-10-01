@@ -29,8 +29,10 @@ router.route("/").get(async function (req, res) {
   res.status(200).send(utensil);
 });
 
+router.use("/:id(\\d+)", validatePathId, loadUtensil)
+
 /* GET utensil by id. */
-router.route("/:id(\\d+)").all(validatePathId, loadUtensil).get(async function (req, res) {
+router.route("/:id(\\d+)").get(async function (req, res) {
   res.status(200).send(res.locals.utensil);
 })
 
@@ -50,7 +52,7 @@ router.route("/:id(\\d+)").all(validatePathId, loadUtensil).get(async function (
 });
 
 /* GET step by utensil. */
-router.get("/:id(\\d+)/uses", validatePathId, loadUtensil, async function (req, res) {
+router.get("/:id(\\d+)/uses", async function (req, res) {
   const steps = await Step.queryDetailedFromUtensil(res.locals.utensil.id);
   res.status(200).send(steps);
 });
