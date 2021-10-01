@@ -48,6 +48,8 @@ export async function createConnection(): Promise<void> {
     await query<OkPacket[]>(readSqlScript("create-tables"));
     logger.info("Database created. Populating ...");
     await loadTable("utensil");
+    await loadTable("ingredient");
+    await loadTable("step");
     logger.info("Tables populated");
   }
 }
