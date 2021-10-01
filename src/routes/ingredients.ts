@@ -1,4 +1,4 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 
 import {
   getAllIngredients,
@@ -8,6 +8,16 @@ import {
 
 const router = express.Router();
 
+const loadIngredient: RequestHandler = async (req, res, next) => {
+  const ingredient = await getIngredient(parseInt(req.params.id));
+  if (ingredient) {
+    res.locals.ingredient = ingredient;
+    next();
+  } else {
+    res.status(404).send({ message: "Ingredient not found" });
+  }
+};
+
 /* GET ingredients. */
 router.get("/", async function (req, res) {
   const ingredients = await getAllIngredients();
@@ -15,16 +25,13 @@ router.get("/", async function (req, res) {
 });
 
 /* GET ingredient by id. */
-router.get("/:id(\\d+)", async function (req, res) {
-  const ingredient = await getIngredient(parseInt(req.params.id));
-
-  if (ingredient) res.status(200).send(ingredient);
-  else res.status(404).send({ message: "Ingredient not found" });
+router.get("/:id(\\d+)", loadIngredient, function (req, res) {
+  res.status(200).send(res.locals.ingredient);
 });
 
 /* GET ingredient by id. */
-router.get("/:id(\\d+)/outcomes", async function (req, res) {
-  const steps = await getDetailedStepsFromInput(parseInt(req.params.id));
+router.get("/:id(\\d+)/outcomes", loadIngredient, async function (req, res) {
+  const steps = await getDetailedStepsFromInput(res.locals.ingredient.id);
   res.status(200).send(steps);
 });
 
