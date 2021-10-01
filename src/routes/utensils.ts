@@ -1,6 +1,7 @@
 import express, { RequestHandler } from "express";
 
 import { Step, Utensil } from "@services/db";
+import { validatePathId } from "@services/joi";
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ router.get("/", async function (req, res) {
 });
 
 /* GET utensil by id. */
-router.get("/:id(\\d+)", loadUtensil, async function (req, res) {
+router.get("/:id(\\d+)", validatePathId, loadUtensil, async function (req, res) {
   res.status(200).send(res.locals.utensil);
 });
 
@@ -34,7 +35,7 @@ router.post("/", async function (req, res) {
 });
 
 /* UPDATE utensil by id. */
-router.put("/:id(\\d+)", loadUtensil, async function (req, res) {
+router.put("/:id(\\d+)", validatePathId, loadUtensil, async function (req, res) {
   const utensil: Utensil.Utensil = res.locals.utensil;
   const { name, waitTimeInMillis } = req.body;
   const id = await Utensil.update({ id: utensil.id, name, waitTimeInMillis });
@@ -43,13 +44,13 @@ router.put("/:id(\\d+)", loadUtensil, async function (req, res) {
 });
 
 /* DELETE utensil by id. */
-router.delete("/:id(\\d+)", loadUtensil, async function (req, res) {
+router.delete("/:id(\\d+)", validatePathId, loadUtensil, async function (req, res) {
   await Utensil.destroy(res.locals.utensil.id);
   res.status(204).send();
 });
 
 /* GET step by utensil. */
-router.get("/:id(\\d+)/uses", loadUtensil, async function (req, res) {
+router.get("/:id(\\d+)/uses", validatePathId, loadUtensil, async function (req, res) {
   const steps = await Step.queryDetailedFromUtensil(res.locals.utensil.id);
   res.status(200).send(steps);
 });

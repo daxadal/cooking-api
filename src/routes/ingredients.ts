@@ -1,6 +1,7 @@
 import express, { RequestHandler } from "express";
 
 import { Ingredient, Step } from "@services/db";
+import { validatePathId } from "@services/joi";
 
 const router = express.Router();
 router.use(express.json({ limit: "100kb" }));
@@ -22,7 +23,7 @@ router.get("/", async function (req, res) {
 });
 
 /* GET ingredient by id. */
-router.get("/:id(\\d+)", loadIngredient, function (req, res) {
+router.get("/:id(\\d+)", validatePathId, loadIngredient, function (req, res) {
   res.status(200).send(res.locals.ingredient);
 });
 
@@ -35,7 +36,7 @@ router.post("/", async function (req, res) {
 });
 
 /* UPDATE ingredient by id. */
-router.put("/:id(\\d+)", loadIngredient, async function (req, res) {
+router.put("/:id(\\d+)", validatePathId, loadIngredient, async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   const { name, type } = req.body;
   const id = await Ingredient.update({ id: ingredient.id, name, type });
@@ -44,14 +45,14 @@ router.put("/:id(\\d+)", loadIngredient, async function (req, res) {
 });
 
 /* DELETE ingredient by id. */
-router.delete("/:id(\\d+)", loadIngredient, async function (req, res) {
+router.delete("/:id(\\d+)", validatePathId, loadIngredient, async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   await Ingredient.destroy(ingredient.id);
   res.status(204).send();
 });
 
 /* GET step by input. */
-router.get("/:id(\\d+)/outcomes", loadIngredient, async function (req, res) {
+router.get("/:id(\\d+)/outcomes", validatePathId, loadIngredient, async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   if (ingredient.type === Ingredient.IngredientType.END) {
     res.status(400).send({
@@ -64,7 +65,7 @@ router.get("/:id(\\d+)/outcomes", loadIngredient, async function (req, res) {
 });
 
 /* GET step by output. */
-router.get("/:id(\\d+)/sources", loadIngredient, async function (req, res) {
+router.get("/:id(\\d+)/sources", validatePathId, loadIngredient, async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   if (ingredient.type === Ingredient.IngredientType.START) {
     res.status(400).send({
