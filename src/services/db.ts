@@ -8,6 +8,30 @@ import mysql, {
 import path from "path";
 import { getLogger } from "./winston";
 
+export enum IngredientType {
+  START = "start",
+  MID = "mid",
+  END = "end",
+}
+
+export interface Ingredient {
+  id: number;
+  name: string;
+  type: IngredientType;
+}
+
+export interface Utensil {
+  id: number;
+  name: string;
+  waitTimeInMillis: number;
+}
+
+export interface Step {
+  input: number;
+  utensil: number;
+  output: number;
+}
+
 type Rows =
   | RowDataPacket[]
   | RowDataPacket[][]
@@ -75,3 +99,18 @@ const loadTable = (tableName: string) => {
     `LOAD DATA INFILE '${location}' INTO TABLE ${tableName}`
   );
 };
+
+export async function getAllIngredients(): Promise<Ingredient[]> {
+  const { rows } = await query<RowDataPacket[]>("select * from ingredient;");
+  return rows as Ingredient[];
+}
+
+export async function getAllUtensils(): Promise<Utensil[]> {
+  const { rows } = await query<RowDataPacket[]>("select * from utensil;");
+  return rows as Utensil[];
+}
+
+export async function getAllSteps(): Promise<Step[]> {
+  const { rows } = await query<RowDataPacket[]>("select * from step;");
+  return rows as Step[];
+}

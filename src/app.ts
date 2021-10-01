@@ -2,7 +2,11 @@ import "module-alias/register";
 import express, { Request, Response, NextFunction } from "express";
 
 import indexRouter from "./routes/index";
+import ingredientsRouter from "./routes/ingredients";
+import stepsRouter from "./routes/steps";
 import usersRouter from "./routes/users";
+import utensilsRouter from "./routes/utensils";
+
 import { getLogger, initLogger } from "./services/winston";
 import { closeConnection, createConnection } from "./services/db";
 
@@ -17,7 +21,10 @@ app.use(express.json());
 app.use(initLogger("api"));
 
 app.use("/", indexRouter);
+app.use("/ingredients", ingredientsRouter);
+app.use("/steps", stepsRouter);
 app.use("/users", usersRouter);
+app.use("/utensils", utensilsRouter);
 
 // catch 404
 app.use((req, res, next) => {
