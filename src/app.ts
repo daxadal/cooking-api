@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from "express";
 
 import indexRouter from "./routes/index";
 import ingredientsRouter from "./routes/ingredients";
+import recipesRouter from "./routes/recipes";
 import stepsRouter from "./routes/steps";
 import usersRouter from "./routes/users";
 import utensilsRouter from "./routes/utensils";
@@ -22,6 +23,7 @@ app.use(initLogger());
 
 app.use("/", indexRouter);
 app.use("/ingredients", ingredientsRouter);
+app.use("/recipes", recipesRouter);
 app.use("/steps", stepsRouter);
 app.use("/users", usersRouter);
 app.use("/utensils", utensilsRouter);

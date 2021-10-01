@@ -39,6 +39,25 @@ export interface Step<
 
 export type DetailedStep = Step<Ingredient, Utensil, Ingredient>;
 
+export interface Recipe<
+  I extends Ingredient | number = number,
+  Ut extends Utensil | number = number,
+> {
+  input: I;
+  utensil1: Ut;
+  mid1: I;
+  utensil2: Ut;
+  mid2: I;
+  utensil3: Ut;
+  mid3: I;
+  utetsil4: Ut;
+  mid4: I;
+  utensil5: Ut;
+  mid5: I;
+}
+
+export type DetailedRecipe = Recipe<Ingredient, Utensil>;
+
 type Rows =
   | RowDataPacket[]
   | RowDataPacket[][]
@@ -161,4 +180,39 @@ export async function getDetailedStepsFromInput(
   );
   const deepRows = rows.map((row) => deepen(row, fields));
   return deepRows as DetailedStep[];
+}
+
+export async function getDetailedStepsFromOutput(
+  output: number
+): Promise<DetailedStep[]> {
+  const { rows, fields } = await query<RowDataPacket[]>(
+    "select * from detailed_step where output_id= :output;",
+    { output }
+  );
+  const deepRows = rows.map((row) => deepen(row, fields));
+  return deepRows as DetailedStep[];
+}
+
+export async function getDetailedStepsFromUtensil(
+  utensil: number
+): Promise<DetailedStep[]> {
+  const { rows, fields } = await query<RowDataPacket[]>(
+    "select * from detailed_step where utensil_id= :utensil;",
+    { utensil }
+  );
+  const deepRows = rows.map((row) => deepen(row, fields));
+  return deepRows as DetailedStep[];
+}
+
+export async function getAllRecipes(): Promise<Recipe[]> {
+  const { rows } = await query<RowDataPacket[]>("select * from recipe;");
+  return rows as Recipe[];
+}
+
+export async function getAllDetailedRecipes(): Promise<DetailedRecipe[]> {
+  const { rows, fields } = await query<RowDataPacket[]>(
+    "select * from detailed_recipe;"
+  );
+  const deepRows = rows.map((row) => deepen(row, fields));
+  return deepRows as DetailedRecipe[];
 }

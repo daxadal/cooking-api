@@ -3,6 +3,7 @@ import express, { RequestHandler } from "express";
 import {
   getAllIngredients,
   getDetailedStepsFromInput,
+  getDetailedStepsFromOutput,
   getIngredient,
 } from "@services/db";
 
@@ -29,9 +30,15 @@ router.get("/:id(\\d+)", loadIngredient, function (req, res) {
   res.status(200).send(res.locals.ingredient);
 });
 
-/* GET ingredient by id. */
+/* GET step by input. */
 router.get("/:id(\\d+)/outcomes", loadIngredient, async function (req, res) {
   const steps = await getDetailedStepsFromInput(res.locals.ingredient.id);
+  res.status(200).send(steps);
+});
+
+/* GET step by output. */
+router.get("/:id(\\d+)/sources", loadIngredient, async function (req, res) {
+  const steps = await getDetailedStepsFromOutput(res.locals.ingredient.id);
   res.status(200).send(steps);
 });
 
