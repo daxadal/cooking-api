@@ -1,17 +1,20 @@
-### Node Express template project
+# Cooking API
 
-This project is based on a GitLab [Project Template](https://docs.gitlab.com/ee/gitlab-basics/create-project.html).
+A cooking API based on time-management cooking games.
 
-Improvements can be proposed in the [original project](https://gitlab.com/gitlab-org/project-templates/express).
+# Stack
 
-### CI/CD with Auto DevOps
+This project uses these libraries for this purposes:
+- `express`: API configuration
+- `joi`: Parameter validation,
+- `mysql2/promise`: Implementing the database
+- `winston`: Logging
+- `module-alias`: Importing routes as absolutes instead of relatives
 
-This template is compatible with [Auto DevOps](https://docs.gitlab.com/ee/topics/autodevops/).
+# Documentation
 
-If Auto DevOps is not already enabled for this project, you can [turn it on](https://docs.gitlab.com/ee/topics/autodevops/#enabling-auto-devops) in the project settings.
+_(Coming soon)_
 
-### Developing with Gitpod
+# Testing
 
-This template has a fully-automated dev setup for [Gitpod](https://docs.gitlab.com/ee/integration/gitpod.html).
-
-If you open this project in Gitpod, you'll get all Node dependencies pre-installed and Express will open a web preview.
+_(Coming soon)_
