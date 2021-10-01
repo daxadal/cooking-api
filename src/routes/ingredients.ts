@@ -17,13 +17,13 @@ const loadIngredient: RequestHandler = async (req, res, next) => {
 };
 
 /* GET ingredients. */
-router.get("/", async function (req, res) {
+router.route("/").get(async function (req, res) {
   const ingredients = await Ingredient.getAll();
   res.status(200).send(ingredients);
-});
+})
 
 /* CREATE ingredients. */
-router.post("/", async function (req, res) {
+.post(async function (req, res) {
   const { name, type } = req.body;
   const newId = await Ingredient.create({ name, type });
   const ingredient = await Ingredient.get(newId);
@@ -31,21 +31,21 @@ router.post("/", async function (req, res) {
 });
 
 /* GET ingredient by id. */
-router.get("/:id(\\d+)", validatePathId, loadIngredient, function (req, res) {
+router.route("/:id(\\d+)").all(validatePathId, loadIngredient).get(function (req, res) {
   res.status(200).send(res.locals.ingredient);
-});
+})
 
 /* UPDATE ingredient by id. */
-router.put("/:id(\\d+)", validatePathId, loadIngredient, async function (req, res) {
+.put(async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   const { name, type } = req.body;
   const id = await Ingredient.update({ id: ingredient.id, name, type });
   const ingredientUpdated = await Ingredient.get(id);
   res.status(200).send(ingredientUpdated);
-});
+})
 
 /* DELETE ingredient by id. */
-router.delete("/:id(\\d+)", validatePathId, loadIngredient, async function (req, res) {
+.delete(async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   await Ingredient.destroy(ingredient.id);
   res.status(204).send();

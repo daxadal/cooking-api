@@ -16,13 +16,13 @@ const loadUtensil: RequestHandler = async function (req, res, next) {
 };
 
 /* GET utensils. */
-router.get("/", async function (req, res) {
+router.route("/").get(async function (req, res) {
   const utensils = await Utensil.getAll();
   res.status(200).send(utensils);
-});
+})
 
 /* CREATE utensils. */
-router.post("/", async function (req, res) {
+.post(async function (req, res) {
   const { name, waitTimeInMillis } = req.body;
   const id = await Utensil.create({ name, waitTimeInMillis });
   const utensil = await Utensil.get(id);
@@ -30,21 +30,21 @@ router.post("/", async function (req, res) {
 });
 
 /* GET utensil by id. */
-router.get("/:id(\\d+)", validatePathId, loadUtensil, async function (req, res) {
+router.route("/:id(\\d+)").all(validatePathId, loadUtensil).get(async function (req, res) {
   res.status(200).send(res.locals.utensil);
-});
+})
 
 /* UPDATE utensil by id. */
-router.put("/:id(\\d+)", validatePathId, loadUtensil, async function (req, res) {
+.put(async function (req, res) {
   const utensil: Utensil.Utensil = res.locals.utensil;
   const { name, waitTimeInMillis } = req.body;
   const id = await Utensil.update({ id: utensil.id, name, waitTimeInMillis });
   const utensilUpdated = await Utensil.get(id);
   res.status(200).send(utensilUpdated);
-});
+})
 
 /* DELETE utensil by id. */
-router.delete("/:id(\\d+)", validatePathId, loadUtensil, async function (req, res) {
+.delete( async function (req, res) {
   await Utensil.destroy(res.locals.utensil.id);
   res.status(204).send();
 });
