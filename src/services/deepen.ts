@@ -1,6 +1,6 @@
 import { getLogger } from "./winston";
 
-const logger = getLogger("api");
+const logger = getLogger();
 
 export function deepen(
   flatObject: Record<string, any>,

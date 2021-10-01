@@ -53,7 +53,7 @@ interface QueryResult<T extends Rows> {
 
 let connection: mysql.Connection;
 
-const logger = getLogger("api");
+const logger = getLogger();
 
 const DB_NAME = "kitchen_js";
 

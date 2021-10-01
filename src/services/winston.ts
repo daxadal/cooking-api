@@ -1,9 +1,11 @@
+import path from "path";
 import { RequestHandler } from "express";
 import { Format, FormatWrap } from "logform";
 import { createLogger, transports, format, Logger } from "winston";
 import TransportStream from "winston-transport";
 
-const getConsoleTransport = (level:string): TransportStream => new transports.Console({level});
+const getConsoleTransport = (level: string): TransportStream =>
+  new transports.Console({ level, format: fileAndConsoleFormatter });
 
 const getFileTransport = (
   level: string,
@@ -13,8 +15,14 @@ const getFileTransport = (
 ): TransportStream =>
   new transports.File({
     level,
-    filename: `logs/${service}/${fileDate}-${filetag}.log`,
+    filename: path.join(
+      __dirname,
+      "../../logs",
+      service,
+      `${fileDate}-${filetag}.log`
+    ),
     maxsize: 52428800,
+    format: fileAndConsoleFormatter,
   });
 
 const extractAxios: FormatWrap = format((info) => {
@@ -34,7 +42,7 @@ const extractAxios: FormatWrap = format((info) => {
   return info;
 });
 
-const customLogToExtend: Format = format.printf(
+const fileAndConsoleFormatter: Format = format.printf(
   ({ level, message, timestamp, stack, meta, axios }) => {
     let msg;
 
@@ -57,7 +65,7 @@ const customLogToExtend: Format = format.printf(
   }
 );
 
-export function getLogger(service: string): Logger {
+export function getLogger(service = "api"): Logger {
   const dateForFileName = new Date().toISOString().split("T")[0];
 
   return createLogger({
@@ -68,8 +76,7 @@ export function getLogger(service: string): Logger {
       }),
       format.timestamp(),
       format.errors({ stack: true }),
-      extractAxios(),
-      customLogToExtend
+      extractAxios()
     ),
     transports: [
       getFileTransport("warn", service, dateForFileName, "errors"),
@@ -80,9 +87,11 @@ export function getLogger(service: string): Logger {
   });
 }
 
-export const initLogger = (service: string): RequestHandler => (req, res, next) => {
-  const logger = getLogger("api");
-  logger.info(`Calling ${req.originalUrl} ...`);
-  res.locals.logger = logger;
-  next();
-};
+export const initLogger =
+  (service = "api"): RequestHandler =>
+  (req, res, next) => {
+    const logger = getLogger(service);
+    logger.info(`Calling ${req.method} ${req.originalUrl} ...`);
+    res.locals.logger = logger;
+    next();
+  };

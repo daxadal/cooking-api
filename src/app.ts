@@ -10,7 +10,7 @@ import utensilsRouter from "./routes/utensils";
 import { getLogger, initLogger } from "./services/winston";
 import { closeConnection, createConnection } from "./services/db";
 
-const logger = getLogger("api");
+const logger = getLogger();
 
 createConnection();
 
@@ -18,7 +18,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use(initLogger("api"));
+app.use(initLogger());
 
 app.use("/", indexRouter);
 app.use("/ingredients", ingredientsRouter);
