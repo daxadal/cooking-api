@@ -1,72 +1,74 @@
-import path from "path";
-import { RequestHandler } from "express";
-import { Format, FormatWrap } from "logform";
-import { createLogger, transports, format, Logger } from "winston";
 import TransportStream from "winston-transport";
+import { createLogger, format, Logger } from "winston";
+import { RequestHandler } from "express";
 
-const getConsoleTransport = (level: string): TransportStream =>
-  new transports.Console({ level, format: fileAndConsoleFormatter });
+import { winston as config, LogLevel } from "./config";
+import { extractAxios } from "@services/winston/formatters";
+import {
+  getSlackTransport,
+  getFileTransport,
+  getConsoleTransport,
+} from "@services/winston/transports";
 
-const getFileTransport = (
-  level: string,
-  service: string,
-  fileDate: string,
-  filetag: string
-): TransportStream =>
-  new transports.File({
-    level,
-    filename: path.join(
-      __dirname,
-      "../../logs",
-      service,
-      `${fileDate}-${filetag}.log`
-    ),
-    maxsize: 52428800,
-    format: fileAndConsoleFormatter,
-  });
-
-const extractAxios: FormatWrap = format((info) => {
-  if (info.meta.isAxiosError && info.meta.response) {
-    info.axios = {
-      status: info.meta.response.status,
-      data: info.meta.response.data,
-    };
-    info.meta = {};
-  } else if (info.meta.isAxiosError) {
-    info.axios = info.meta.toJSON();
-    info.meta = {};
-  } else if (info.meta.status && info.meta.data) {
-    info.axios = { status: info.meta.status, data: info.meta.data };
-    info.meta = {};
+function getWinstonLevel(rawlevel: LogLevel): string {
+  switch (rawlevel) {
+    case LogLevel.VERBOSE:
+      return "silly";
+    case LogLevel.INFO:
+      return "info";
+    case LogLevel.WARN:
+      return "warn";
+    case LogLevel.ERROR:
+    default:
+      return "error";
   }
-  return info;
-});
+}
 
-const fileAndConsoleFormatter: Format = format.printf(
-  ({ level, message, timestamp, stack, meta, axios }) => {
-    let msg;
-
-    //Get basic message
-    if (typeof message === "object")
-      msg = JSON.stringify(message, null, 2) + "\n";
-    else msg = message;
-
-    //Add stack trace
-    if (stack) msg += "\n" + stack + "\n";
-
-    // Add axios metadata
-    if (axios) msg += "\n" + JSON.stringify(axios, null, 2) + "\n";
-    // Add other metadata
-    else if (Object.keys(meta).length > 0)
-      msg += "\n" + JSON.stringify(meta, null, 2) + "\n";
-
-    //Add label
-    return `[${timestamp} ${level}]: ${msg}`;
-  }
-);
-
-export function getLogger(service = "api"): Logger {
+function getTransportsPerConfig(service: string) {
   const dateForFileName = new Date().toISOString().split("T")[0];
+
+  const transports: TransportStream[] = [];
+
+  if (config.slack.level >= LogLevel.ERROR) {
+    if (config.slack.webhooks.priority)
+      transports.push(
+        getSlackTransport("error", service, config.slack.webhooks.priority)
+      );
+    if (config.slack.webhooks.all) {
+      const filterPriorityOut = Boolean(config.slack.webhooks.priority);
+      const level = getWinstonLevel(config.slack.level);
+      transports.push(
+        getSlackTransport(level, service, config.slack.webhooks.all, filterPriorityOut)
+      );
+    }
+  }
+
+  if (config.file.level >= LogLevel.ERROR) {
+    const level = config.file.level >= LogLevel.WARN ? "warn" : "error";
+    transports.push(
+      getFileTransport(level, service, dateForFileName, "errors")
+    );
+  }
+  if (config.file.level >= LogLevel.INFO)
+    transports.push(getFileTransport("info", service, dateForFileName, "all"));
+  if (config.file.level >= LogLevel.VERBOSE)
+    transports.push(
+      getFileTransport("silly", service, dateForFileName, "verbose")
+    );
+
+  if (config.console.level >= LogLevel.ERROR) {
+    const level = getWinstonLevel(config.console.level);
+    transports.push(getConsoleTransport(level));
+  }
+
+  if (transports.length === 0)
+    transports.push(getConsoleTransport("error", true));
+
+  return transports;
+}
+
+export function getLogger(service: string): Logger {
+  const transports = getTransportsPerConfig(service);
 
   return createLogger({
     format: format.combine(
@@ -78,20 +80,16 @@ export function getLogger(service = "api"): Logger {
       format.errors({ stack: true }),
       extractAxios()
     ),
-    transports: [
-      getFileTransport("warn", service, dateForFileName, "errors"),
-      getFileTransport("info", service, dateForFileName, "all"),
-      getFileTransport("silly", service, dateForFileName, "verbose"),
-      getConsoleTransport("info"),
-    ],
+    transports,
   });
 }
 
-export const initLogger =
-  (service = "api"): RequestHandler =>
-  (req, res, next) => {
-    const logger = getLogger(service);
-    logger.info(`Calling ${req.method} ${req.originalUrl} ...`);
-    res.locals.logger = logger;
+export const getLoggerMiddleware =
+  (service: string): RequestHandler =>
+  (req: any, res, next) => {
+    req.logger = getLogger(service);
+    req.logger.info(
+      `==== Starting execution of endpoint ${req.originalUrl} ====`
+    );
     next();
   };
