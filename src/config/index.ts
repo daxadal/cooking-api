@@ -5,7 +5,7 @@ import {
   Environment,
   parseEnvironment,
   parseLogLevel,
-} from "@services/config/types-helpers";
+} from "./types-helpers";
 
 export { LogLevel, Environment };
 
@@ -25,13 +25,13 @@ export const environment = parseEnvironment(ENV);
 export const _winston: Record<Environment, WinstonConfig> = {
   PROD: {
     slack: { level: LogLevel.NONE, webhooks: {} },
-    console: { level: LogLevel.NONE },
-    file: { level: LogLevel.NONE },
+    console: { level: LogLevel.INFO },
+    file: { level: LogLevel.INFO },
   },
   DEV: {
     slack: { level: LogLevel.NONE, webhooks: {} },
-    console: { level: LogLevel.NONE },
-    file: { level: LogLevel.NONE },
+    console: { level: LogLevel.INFO },
+    file: { level: LogLevel.VERBOSE },
   },
   JEST: {
     slack: { level: LogLevel.NONE, webhooks: {} },

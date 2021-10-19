@@ -36,6 +36,7 @@
     "typescript": "^4.3.5"
   },
   "_moduleAliases": {
+    "@config": "dist/config",
     "@routes": "dist/routes",
     "@services": "dist/services"
   }

@@ -2,7 +2,7 @@ import SlackHook from "winston-slack-webhook-transport";
 import { Format, FormatWrap, TransformableInfo } from "logform";
 import { format } from "winston";
 
-import { environment, Environment } from "@services/config";
+import { environment, Environment } from "@config/index";
 
 type Block = {
   type: string;

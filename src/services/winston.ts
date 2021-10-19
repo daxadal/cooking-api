@@ -2,7 +2,7 @@ import TransportStream from "winston-transport";
 import { createLogger, format, Logger } from "winston";
 import { RequestHandler } from "express";
 
-import { winston as config, LogLevel } from "@services/config";
+import { winston as config, LogLevel } from "@config/index";
 import { extractAxios } from "@services/winston/formatters";
 import {
   getSlackTransport,
@@ -67,7 +67,7 @@ function getTransportsPerConfig(service: string) {
   return transports;
 }
 
-export function getLogger(service: string): Logger {
+export function getLogger(service = "api"): Logger {
   const transports = getTransportsPerConfig(service);
 
   return createLogger({
@@ -84,8 +84,8 @@ export function getLogger(service: string): Logger {
   });
 }
 
-export const getLoggerMiddleware =
-  (service: string): RequestHandler =>
+export const initLogger =
+  (service= "api"): RequestHandler =>
   (req: any, res, next) => {
     req.logger = getLogger(service);
     req.logger.info(
