@@ -2,7 +2,7 @@ import TransportStream from "winston-transport";
 import { createLogger, format, Logger } from "winston";
 import { RequestHandler } from "express";
 
-import { winston as config, LogLevel } from "./config";
+import { winston as config, LogLevel } from "@services/config";
 import { extractAxios } from "@services/winston/formatters";
 import {
   getSlackTransport,
