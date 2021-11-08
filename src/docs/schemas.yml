@@ -1,0 +1,92 @@
+components:
+  schemas:
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          enum: [start, mid, end]
+    Recipe:
+      type: object
+      properties:
+        steps:
+          type: integer
+          minimum: 1
+          maximum: 5
+        input:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Ingredient'
+        utensil1:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Utensil'
+        mid1:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Ingredient'
+        utensil2:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Utensil'
+        mid2:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Ingredient'
+        utensil3:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Utensil'
+        mid3:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Ingredient'
+        utensil4:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Utensil'
+        mid4:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Ingredient'
+        utensil5:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Utensil'
+        mid5:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Ingredient'
+        output:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Ingredient'
+    Step:
+      type: object
+      properties:
+        input:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Ingredient'
+        utensil:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Utensil'
+        output:
+          oneOf:
+          - type: integer
+          - $ref: '#/components/schemas/Ingredient'
+    Utensil:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        waitTimeInMillis:
+          type: integer
+        

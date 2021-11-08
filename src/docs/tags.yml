@@ -1,0 +1,9 @@
+tags:
+  - name: ingredients
+    description: Methods to manage ingredients and its uses
+  - name: recipes
+    description: Methods to query recipes
+  - name: steps
+    description: Methods to query recipe steps
+  - name: utensils
+    description: Methods to manage utensils and its uses

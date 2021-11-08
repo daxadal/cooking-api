@@ -1,0 +1,363 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Cooking API",
+    "description": "Documentation for Cooking API",
+    "contact": {
+      "email": "e.garciadececa@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local API"
+    }
+  ],
+  "paths": {
+    "/ingredients": {
+      "get": {
+        "tags": [
+          "ingredients"
+        ],
+        "description": "Get all avaliable ingredients.",
+        "responses": {
+          "200": {
+            "description": "A list of all ingredients.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/ingredients/{id}": {
+      "get": {
+        "tags": [
+          "ingredients"
+        ],
+        "description": "Get an ingredient by id.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested ingredient.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ingredient"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "id": {
+        "name": "id",
+        "in": "path",
+        "description": "ID to get",
+        "required": true,
+        "schema": {
+          "type": "number"
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "More info about the error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "More info about the error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Generic error message"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Ingredient": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "start",
+              "mid",
+              "end"
+            ]
+          }
+        }
+      },
+      "Recipe": {
+        "type": "object",
+        "properties": {
+          "steps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "input": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Ingredient"
+              }
+            ]
+          },
+          "utensil1": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Utensil"
+              }
+            ]
+          },
+          "mid1": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Ingredient"
+              }
+            ]
+          },
+          "utensil2": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Utensil"
+              }
+            ]
+          },
+          "mid2": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Ingredient"
+              }
+            ]
+          },
+          "utensil3": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Utensil"
+              }
+            ]
+          },
+          "mid3": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Ingredient"
+              }
+            ]
+          },
+          "utensil4": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Utensil"
+              }
+            ]
+          },
+          "mid4": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Ingredient"
+              }
+            ]
+          },
+          "utensil5": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Utensil"
+              }
+            ]
+          },
+          "mid5": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Ingredient"
+              }
+            ]
+          },
+          "output": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Ingredient"
+              }
+            ]
+          }
+        }
+      },
+      "Step": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Ingredient"
+              }
+            ]
+          },
+          "utensil": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Utensil"
+              }
+            ]
+          },
+          "output": {
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/Ingredient"
+              }
+            ]
+          }
+        }
+      },
+      "Utensil": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "waitTimeInMillis": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "ingredients",
+      "description": "Methods to manage ingredients and its uses"
+    },
+    {
+      "name": "recipes",
+      "description": "Methods to query recipes"
+    },
+    {
+      "name": "steps",
+      "description": "Methods to query recipe steps"
+    },
+    {
+      "name": "utensils",
+      "description": "Methods to manage utensils and its uses"
+    }
+  ]
+}

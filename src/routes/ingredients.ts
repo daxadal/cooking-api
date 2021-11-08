@@ -16,7 +16,27 @@ const loadIngredient: RequestHandler = async (req, res, next) => {
   }
 };
 
-/* GET ingredients. */
+/**
+ * @openapi
+ * /ingredients:
+ *   get:
+ *     tags:
+ *       - ingredients
+ *     description: Get all avaliable ingredients.
+ *     responses:
+ *       200:
+ *         description: A list of all ingredients.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Ingredient'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router
   .route("/")
   .get(async function (req, res) {
@@ -34,7 +54,29 @@ router
 
 router.use("/:id(\\d+)", validatePathId, loadIngredient);
 
-/* GET ingredient by id. */
+/**
+ * @openapi
+ * /ingredients/{id}:
+ *   get:
+ *     tags:
+ *       - ingredients
+ *     description: Get an ingredient by id.
+ *     parameters:
+ *       - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: The requested ingredient.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Ingredient'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       404:
+ *         $ref: '#/components/responses/404'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router
   .route("/:id(\\d+)")
   .get(function (req, res) {

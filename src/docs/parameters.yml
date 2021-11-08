@@ -1,0 +1,9 @@
+components:
+  parameters:
+    id:
+      name: id
+      in: path
+      description: ID to get
+      required: true
+      schema:
+        type: number

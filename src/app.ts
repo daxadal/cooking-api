@@ -2,6 +2,7 @@ import "module-alias/register";
 import express, { Request, Response, NextFunction } from "express";
 
 import indexRouter from "@routes/index";
+import docsRouter from "@routes/docs";
 import ingredientsRouter from "@routes/ingredients";
 import recipesRouter from "@routes/recipes";
 import stepsRouter from "@routes/steps";
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(initLogger());
 
 app.use("/", indexRouter);
+app.use("/docs", docsRouter);
 app.use("/ingredients", ingredientsRouter);
 app.use("/recipes", recipesRouter);
 app.use("/steps", stepsRouter);
