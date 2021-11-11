@@ -22,7 +22,7 @@ const loadIngredient: RequestHandler = async (req, res, next) => {
  *   get:
  *     tags:
  *       - ingredients
- *     description: Get all avaliable ingredients.
+ *     description: Get all available ingredients.
  *     responses:
  *       200:
  *         description: A list of all ingredients.

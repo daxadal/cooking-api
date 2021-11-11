@@ -7,3 +7,12 @@ components:
       required: true
       schema:
         type: number
+    detailed:
+      name: detailed
+      in: query
+      description: If detailed, all the info of the ingredients and utensils
+        is returned. If not, only the ids are returned.
+      required: false
+      schema:
+        type: boolean
+        default: false

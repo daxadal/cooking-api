@@ -10,15 +10,9 @@ const router = express.Router();
  *   get:
  *     tags:
  *       - recipes
- *     description: Get all avaliable recipes.
+ *     description: Get all available recipes.
  *     parameters:
- *       - name: detailed
- *         in: query
- *         description: If detailed, all the info of the ingredients and utensils
- *           is returned. If not, only the ids are returned.
- *         required: false
- *         default: false
- *         type: boolean
+ *       - $ref: '#/components/parameters/detailed'
  *     responses:
  *       200:
  *         description: A list of all recipes.
