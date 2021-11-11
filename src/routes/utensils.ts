@@ -15,7 +15,27 @@ const loadUtensil: RequestHandler = async function (req, res, next) {
   }
 };
 
-/* GET utensils. */
+/**
+ * @openapi
+ * /utensils:
+ *   get:
+ *     tags:
+ *       - utensils
+ *     description: Get all avaliable utensils.
+ *     responses:
+ *       200:
+ *         description: A list of all utensils.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Utensil'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router
   .route("/")
   .get(async function (req, res) {
@@ -33,7 +53,29 @@ router
 
 router.use("/:id(\\d+)", validatePathId, loadUtensil);
 
-/* GET utensil by id. */
+/**
+ * @openapi
+ * /utensils/{id}:
+ *   get:
+ *     tags:
+ *       - utensils
+ *     description: Get an utensil by id.
+ *     parameters:
+ *       - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: The requested utensil.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Utensil'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       404:
+ *         $ref: '#/components/responses/404'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router
   .route("/:id(\\d+)")
   .get(async function (req, res) {
