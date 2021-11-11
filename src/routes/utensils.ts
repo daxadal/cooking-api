@@ -43,7 +43,32 @@ router
     res.status(200).send(utensils);
   })
 
-  /* CREATE utensils. */
+  /**
+   * @openapi
+   * /utensils:
+   *   post:
+   *     tags:
+   *       - utensils
+   *     description: Creates an utensil
+   *     requestBody:
+   *       description: Utensil to create
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/UtensilData'
+   *     responses:
+   *       200:
+   *         description: The created utensil.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Utensil'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .post(async function (req, res) {
     const { name, waitTimeInMillis } = req.body;
     const id = await Utensil.create({ name, waitTimeInMillis });
@@ -82,7 +107,36 @@ router
     res.status(200).send(res.locals.utensil);
   })
 
-  /* UPDATE utensil by id. */
+  /**
+   * @openapi
+   * /utensils/{id}:
+   *   put:
+   *     tags:
+   *       - utensils
+   *     description: Updates an utensil
+   *     parameters:
+   *       - $ref: '#/components/parameters/id'
+   *     requestBody:
+   *       description: Utensil data to update
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/UtensilData'
+   *     responses:
+   *       200:
+   *         description: The updated utensil.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Utensil'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .put(async function (req, res) {
     const utensil: Utensil.Utensil = res.locals.utensil;
     const { name, waitTimeInMillis } = req.body;
@@ -91,7 +145,25 @@ router
     res.status(200).send(utensilUpdated);
   })
 
-  /* DELETE utensil by id. */
+    /**
+   * @openapi
+   * /utensils/{id}:
+   *   delete:
+   *     tags:
+   *       - utensils
+   *     description: Deletes an utensil by id.
+   *     parameters:
+   *       - $ref: '#/components/parameters/id'
+   *     responses:
+   *       204:
+   *         $ref: '#/components/responses/204'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .delete(async function (req, res) {
     await Utensil.destroy(res.locals.utensil.id);
     res.status(204).send();

@@ -110,3 +110,19 @@ components:
           type: integer
         output:
           type: integer
+
+    IngredientData:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [start, mid, end]
+    UtensilData:
+      type: object
+      properties:
+        name:
+          type: string
+        waitTimeInMillis:
+          type: integer

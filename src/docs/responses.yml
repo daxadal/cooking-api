@@ -1,5 +1,8 @@
 components:
   responses:
+    204:
+      description: No content. Operation was performed
+        successfully and no data needs to be returned
     400:
       description: Bad request
       content:

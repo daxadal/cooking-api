@@ -44,7 +44,32 @@ router
     res.status(200).send(ingredients);
   })
 
-  /* CREATE ingredients. */
+  /**
+   * @openapi
+   * /ingredients:
+   *   post:
+   *     tags:
+   *       - ingredients
+   *     description: Creates an ingredient
+   *     requestBody:
+   *       description: Ingredient to create
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/IngredientData'
+   *     responses:
+   *       200:
+   *         description: The created ingredient.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Ingredient'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .post(async function (req, res) {
     const { name, type } = req.body;
     const newId = await Ingredient.create({ name, type });
@@ -83,7 +108,36 @@ router
     res.status(200).send(res.locals.ingredient);
   })
 
-  /* UPDATE ingredient by id. */
+  /**
+   * @openapi
+   * /ingredients/{id}:
+   *   put:
+   *     tags:
+   *       - ingredients
+   *     description: Updates an ingredient
+   *     parameters:
+   *       - $ref: '#/components/parameters/id'
+   *     requestBody:
+   *       description: Ingredient data to update
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/IngredientData'
+   *     responses:
+   *       200:
+   *         description: The updated ingredient.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Ingredient'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .put(async function (req, res) {
     const ingredient: Ingredient.Ingredient = res.locals.ingredient;
     const { name, type } = req.body;
@@ -92,7 +146,25 @@ router
     res.status(200).send(ingredientUpdated);
   })
 
-  /* DELETE ingredient by id. */
+  /**
+   * @openapi
+   * /ingredients/{id}:
+   *   delete:
+   *     tags:
+   *       - ingredients
+   *     description: Deletes an ingredient by id.
+   *     parameters:
+   *       - $ref: '#/components/parameters/id'
+   *     responses:
+   *       204:
+   *         $ref: '#/components/responses/204'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .delete(async function (req, res) {
     const ingredient: Ingredient.Ingredient = res.locals.ingredient;
     await Ingredient.destroy(ingredient.id);
