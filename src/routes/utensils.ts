@@ -15,7 +15,27 @@ const loadUtensil: RequestHandler = async function (req, res, next) {
   }
 };
 
-/* GET utensils. */
+/**
+ * @openapi
+ * /utensils:
+ *   get:
+ *     tags:
+ *       - utensils
+ *     description: Get all avaliable utensils.
+ *     responses:
+ *       200:
+ *         description: A list of all utensils.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Utensil'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router
   .route("/")
   .get(async function (req, res) {
@@ -23,7 +43,32 @@ router
     res.status(200).send(utensils);
   })
 
-  /* CREATE utensils. */
+  /**
+   * @openapi
+   * /utensils:
+   *   post:
+   *     tags:
+   *       - utensils
+   *     description: Creates an utensil
+   *     requestBody:
+   *       description: Utensil to create
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/UtensilData'
+   *     responses:
+   *       200:
+   *         description: The created utensil.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Utensil'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .post(async function (req, res) {
     const { name, waitTimeInMillis } = req.body;
     const id = await Utensil.create({ name, waitTimeInMillis });
@@ -33,14 +78,65 @@ router
 
 router.use("/:id(\\d+)", validatePathId, loadUtensil);
 
-/* GET utensil by id. */
+/**
+ * @openapi
+ * /utensils/{id}:
+ *   get:
+ *     tags:
+ *       - utensils
+ *     description: Get an utensil by id.
+ *     parameters:
+ *       - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: The requested utensil.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Utensil'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       404:
+ *         $ref: '#/components/responses/404'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router
   .route("/:id(\\d+)")
   .get(async function (req, res) {
     res.status(200).send(res.locals.utensil);
   })
 
-  /* UPDATE utensil by id. */
+  /**
+   * @openapi
+   * /utensils/{id}:
+   *   put:
+   *     tags:
+   *       - utensils
+   *     description: Updates an utensil
+   *     parameters:
+   *       - $ref: '#/components/parameters/id'
+   *     requestBody:
+   *       description: Utensil data to update
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/UtensilData'
+   *     responses:
+   *       200:
+   *         description: The updated utensil.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Utensil'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .put(async function (req, res) {
     const utensil: Utensil.Utensil = res.locals.utensil;
     const { name, waitTimeInMillis } = req.body;
@@ -49,13 +145,54 @@ router
     res.status(200).send(utensilUpdated);
   })
 
-  /* DELETE utensil by id. */
+  /**
+   * @openapi
+   * /utensils/{id}:
+   *   delete:
+   *     tags:
+   *       - utensils
+   *     description: Deletes an utensil by id.
+   *     parameters:
+   *       - $ref: '#/components/parameters/id'
+   *     responses:
+   *       204:
+   *         $ref: '#/components/responses/204'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .delete(async function (req, res) {
     await Utensil.destroy(res.locals.utensil.id);
     res.status(204).send();
   });
 
-/* GET step by utensil. */
+/**
+ * @openapi
+ * /utensils/{id}/uses:
+ *   get:
+ *     tags:
+ *       - utensils
+ *       - steps
+ *     description: Get all steps that use this utensil.
+ *     parameters:
+ *       - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: A list of the steps that use this utensil.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/DetailedStep'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router.get("/:id(\\d+)/uses", async function (req, res) {
   const steps = await Step.queryDetailedFromUtensil(res.locals.utensil.id);
   res.status(200).send(steps);

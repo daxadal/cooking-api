@@ -22,7 +22,7 @@ const loadIngredient: RequestHandler = async (req, res, next) => {
  *   get:
  *     tags:
  *       - ingredients
- *     description: Get all avaliable ingredients.
+ *     description: Get all available ingredients.
  *     responses:
  *       200:
  *         description: A list of all ingredients.
@@ -44,7 +44,32 @@ router
     res.status(200).send(ingredients);
   })
 
-  /* CREATE ingredients. */
+  /**
+   * @openapi
+   * /ingredients:
+   *   post:
+   *     tags:
+   *       - ingredients
+   *     description: Creates an ingredient
+   *     requestBody:
+   *       description: Ingredient to create
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/IngredientData'
+   *     responses:
+   *       200:
+   *         description: The created ingredient.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Ingredient'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .post(async function (req, res) {
     const { name, type } = req.body;
     const newId = await Ingredient.create({ name, type });
@@ -83,7 +108,36 @@ router
     res.status(200).send(res.locals.ingredient);
   })
 
-  /* UPDATE ingredient by id. */
+  /**
+   * @openapi
+   * /ingredients/{id}:
+   *   put:
+   *     tags:
+   *       - ingredients
+   *     description: Updates an ingredient
+   *     parameters:
+   *       - $ref: '#/components/parameters/id'
+   *     requestBody:
+   *       description: Ingredient data to update
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/IngredientData'
+   *     responses:
+   *       200:
+   *         description: The updated ingredient.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Ingredient'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .put(async function (req, res) {
     const ingredient: Ingredient.Ingredient = res.locals.ingredient;
     const { name, type } = req.body;
@@ -92,14 +146,55 @@ router
     res.status(200).send(ingredientUpdated);
   })
 
-  /* DELETE ingredient by id. */
+  /**
+   * @openapi
+   * /ingredients/{id}:
+   *   delete:
+   *     tags:
+   *       - ingredients
+   *     description: Deletes an ingredient by id.
+   *     parameters:
+   *       - $ref: '#/components/parameters/id'
+   *     responses:
+   *       204:
+   *         $ref: '#/components/responses/204'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
   .delete(async function (req, res) {
     const ingredient: Ingredient.Ingredient = res.locals.ingredient;
     await Ingredient.destroy(ingredient.id);
     res.status(204).send();
   });
 
-/* GET step by input. */
+/**
+ * @openapi
+ * /ingredients/{id}/outcomes:
+ *   get:
+ *     tags:
+ *       - ingredients
+ *       - steps
+ *     description: Get all steps that use this ingredient as source.
+ *     parameters:
+ *       - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: A list of the steps that use this ingredient as source.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/DetailedStep'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router.get("/:id(\\d+)/outcomes", async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   if (ingredient.type === Ingredient.IngredientType.END) {
@@ -112,7 +207,30 @@ router.get("/:id(\\d+)/outcomes", async function (req, res) {
   }
 });
 
-/* GET step by output. */
+/**
+ * @openapi
+ * /ingredients/{id}/sources:
+ *   get:
+ *     tags:
+ *       - ingredients
+ *       - steps
+ *     description: Get all steps that result into this ingredient.
+ *     parameters:
+ *       - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: A list of the steps that result into this ingredient.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/DetailedStep'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router.get("/:id(\\d+)/sources", async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   if (ingredient.type === Ingredient.IngredientType.START) {

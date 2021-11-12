@@ -4,7 +4,29 @@ import { Step } from "@services/db";
 
 const router = express.Router();
 
-/* GET steps. */
+/**
+ * @openapi
+ * /steps:
+ *   get:
+ *     tags:
+ *       - steps
+ *     description: Get all available steps.
+ *     parameters:
+ *       - $ref: '#/components/parameters/detailed'
+ *     responses:
+ *       200:
+ *         description: A list of all steps.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Step'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router.get("/", async function (req, res) {
   const steps = req.query.detailed
     ? await Step.getAllDetailed()

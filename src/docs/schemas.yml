@@ -11,75 +11,13 @@ components:
           type: string
           enum: [start, mid, end]
     Recipe:
-      type: object
-      properties:
-        steps:
-          type: integer
-          minimum: 1
-          maximum: 5
-        input:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Ingredient'
-        utensil1:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Utensil'
-        mid1:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Ingredient'
-        utensil2:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Utensil'
-        mid2:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Ingredient'
-        utensil3:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Utensil'
-        mid3:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Ingredient'
-        utensil4:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Utensil'
-        mid4:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Ingredient'
-        utensil5:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Utensil'
-        mid5:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Ingredient'
-        output:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Ingredient'
+      oneOf:
+        - $ref: "#/components/schemas/SimpleRecipe"
+        - $ref: "#/components/schemas/DetailedRecipe"
     Step:
-      type: object
-      properties:
-        input:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Ingredient'
-        utensil:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Utensil'
-        output:
-          oneOf:
-          - type: integer
-          - $ref: '#/components/schemas/Ingredient'
+      oneOf:
+        - $ref: "#/components/schemas/SimpleStep"
+        - $ref: "#/components/schemas/DetailedStep"
     Utensil:
       type: object
       properties:
@@ -89,4 +27,102 @@ components:
           type: string
         waitTimeInMillis:
           type: integer
-        
+
+    DetailedRecipe:
+      type: object
+      properties:
+        steps:
+          type: integer
+          minimum: 1
+          maximum: 5
+        input:
+          $ref: "#/components/schemas/Ingredient"
+        utensil1:
+          $ref: "#/components/schemas/Utensil"
+        mid1:
+          $ref: "#/components/schemas/Ingredient"
+        utensil2:
+          $ref: "#/components/schemas/Utensil"
+        mid2:
+          $ref: "#/components/schemas/Ingredient"
+        utensil3:
+          $ref: "#/components/schemas/Utensil"
+        mid3:
+          $ref: "#/components/schemas/Ingredient"
+        utensil4:
+          $ref: "#/components/schemas/Utensil"
+        mid4:
+          $ref: "#/components/schemas/Ingredient"
+        utensil5:
+          $ref: "#/components/schemas/Utensil"
+        mid5:
+          $ref: "#/components/schemas/Ingredient"
+        output:
+          $ref: "#/components/schemas/Ingredient"
+    SimpleRecipe:
+      type: object
+      properties:
+        steps:
+          type: integer
+          minimum: 1
+          maximum: 5
+        input:
+          type: integer
+        utensil1:
+          type: integer
+        mid1:
+          type: integer
+        utensil2:
+          type: integer
+        mid2:
+          type: integer
+        utensil3:
+          type: integer
+        mid3:
+          type: integer
+        utensil4:
+          type: integer
+        mid4:
+          type: integer
+        utensil5:
+          type: integer
+        mid5:
+          type: integer
+        output:
+          type: integer
+
+    DetailedStep:
+      type: object
+      properties:
+        input:
+          $ref: "#/components/schemas/Ingredient"
+        utensil:
+          $ref: "#/components/schemas/Utensil"
+        output:
+          $ref: "#/components/schemas/Ingredient"
+
+    SimpleStep:
+      type: object
+      properties:
+        input:
+          type: integer
+        utensil:
+          type: integer
+        output:
+          type: integer
+
+    IngredientData:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [start, mid, end]
+    UtensilData:
+      type: object
+      properties:
+        name:
+          type: string
+        waitTimeInMillis:
+          type: integer

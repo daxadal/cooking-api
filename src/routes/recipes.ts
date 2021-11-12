@@ -4,7 +4,29 @@ import { Recipe } from "@services/db";
 
 const router = express.Router();
 
-/* GET steps. */
+/**
+ * @openapi
+ * /recipes:
+ *   get:
+ *     tags:
+ *       - recipes
+ *     description: Get all available recipes.
+ *     parameters:
+ *       - $ref: '#/components/parameters/detailed'
+ *     responses:
+ *       200:
+ *         description: A list of all recipes.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Recipe'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router.get("/", async function (req, res) {
   const steps = req.query.detailed
     ? await Recipe.getAllDetailed()

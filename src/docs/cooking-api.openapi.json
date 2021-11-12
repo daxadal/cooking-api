@@ -20,7 +20,7 @@
         "tags": [
           "ingredients"
         ],
-        "description": "Get all avaliable ingredients.",
+        "description": "Get all available ingredients.",
         "responses": {
           "200": {
             "description": "A list of all ingredients.",
@@ -31,6 +31,41 @@
                   "items": {
                     "$ref": "#/components/schemas/Ingredient"
                   }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ingredients"
+        ],
+        "description": "Creates an ingredient",
+        "requestBody": {
+          "description": "Ingredient to create",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngredientData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created ingredient.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ingredient"
                 }
               }
             }
@@ -76,6 +111,413 @@
             "$ref": "#/components/responses/500"
           }
         }
+      },
+      "put": {
+        "tags": [
+          "ingredients"
+        ],
+        "description": "Updates an ingredient",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "requestBody": {
+          "description": "Ingredient data to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngredientData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated ingredient.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ingredient"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ingredients"
+        ],
+        "description": "Deletes an ingredient by id.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/ingredients/{id}/outcomes": {
+      "get": {
+        "tags": [
+          "ingredients",
+          "steps"
+        ],
+        "description": "Get all steps that use this ingredient as source.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of the steps that use this ingredient as source.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DetailedStep"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/ingredients/{id}/sources": {
+      "get": {
+        "tags": [
+          "ingredients",
+          "steps"
+        ],
+        "description": "Get all steps that result into this ingredient.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of the steps that result into this ingredient.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DetailedStep"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/recipes": {
+      "get": {
+        "tags": [
+          "recipes"
+        ],
+        "description": "Get all available recipes.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/detailed"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of all recipes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Recipe"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/steps": {
+      "get": {
+        "tags": [
+          "steps"
+        ],
+        "description": "Get all available steps.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/detailed"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of all steps.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Step"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/utensils": {
+      "get": {
+        "tags": [
+          "utensils"
+        ],
+        "description": "Get all avaliable utensils.",
+        "responses": {
+          "200": {
+            "description": "A list of all utensils.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Utensil"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "utensils"
+        ],
+        "description": "Creates an utensil",
+        "requestBody": {
+          "description": "Utensil to create",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtensilData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created utensil.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Utensil"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/utensils/{id}": {
+      "get": {
+        "tags": [
+          "utensils"
+        ],
+        "description": "Get an utensil by id.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested utensil.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Utensil"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "utensils"
+        ],
+        "description": "Updates an utensil",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "requestBody": {
+          "description": "Utensil data to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UtensilData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated utensil.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Utensil"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "utensils"
+        ],
+        "description": "Deletes an utensil by id.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/204"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/utensils/{id}/uses": {
+      "get": {
+        "tags": [
+          "utensils",
+          "steps"
+        ],
+        "description": "Get all steps that use this utensil.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of the steps that use this utensil.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DetailedStep"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
       }
     }
   },
@@ -89,9 +531,22 @@
         "schema": {
           "type": "number"
         }
+      },
+      "detailed": {
+        "name": "detailed",
+        "in": "query",
+        "description": "If detailed, all the info of the ingredients and utensils is returned. If not, only the ids are returned.",
+        "required": false,
+        "schema": {
+          "type": "boolean",
+          "default": false
+        }
       }
     },
     "responses": {
+      "204": {
+        "description": "No content. Operation was performed successfully and no data needs to be returned"
+      },
       "400": {
         "description": "Bad request",
         "content": {
@@ -162,6 +617,40 @@
         }
       },
       "Recipe": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SimpleRecipe"
+          },
+          {
+            "$ref": "#/components/schemas/DetailedRecipe"
+          }
+        ]
+      },
+      "Step": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SimpleStep"
+          },
+          {
+            "$ref": "#/components/schemas/DetailedStep"
+          }
+        ]
+      },
+      "Utensil": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "waitTimeInMillis": {
+            "type": "integer"
+          }
+        }
+      },
+      "DetailedRecipe": {
         "type": "object",
         "properties": {
           "steps": {
@@ -170,168 +659,136 @@
             "maximum": 5
           },
           "input": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Ingredient"
-              }
-            ]
+            "$ref": "#/components/schemas/Ingredient"
           },
           "utensil1": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Utensil"
-              }
-            ]
+            "$ref": "#/components/schemas/Utensil"
           },
           "mid1": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Ingredient"
-              }
-            ]
+            "$ref": "#/components/schemas/Ingredient"
           },
           "utensil2": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Utensil"
-              }
-            ]
+            "$ref": "#/components/schemas/Utensil"
           },
           "mid2": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Ingredient"
-              }
-            ]
+            "$ref": "#/components/schemas/Ingredient"
           },
           "utensil3": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Utensil"
-              }
-            ]
+            "$ref": "#/components/schemas/Utensil"
           },
           "mid3": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Ingredient"
-              }
-            ]
+            "$ref": "#/components/schemas/Ingredient"
           },
           "utensil4": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Utensil"
-              }
-            ]
+            "$ref": "#/components/schemas/Utensil"
           },
           "mid4": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Ingredient"
-              }
-            ]
+            "$ref": "#/components/schemas/Ingredient"
           },
           "utensil5": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Utensil"
-              }
-            ]
+            "$ref": "#/components/schemas/Utensil"
           },
           "mid5": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Ingredient"
-              }
-            ]
+            "$ref": "#/components/schemas/Ingredient"
           },
           "output": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Ingredient"
-              }
-            ]
+            "$ref": "#/components/schemas/Ingredient"
           }
         }
       },
-      "Step": {
+      "SimpleRecipe": {
+        "type": "object",
+        "properties": {
+          "steps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "input": {
+            "type": "integer"
+          },
+          "utensil1": {
+            "type": "integer"
+          },
+          "mid1": {
+            "type": "integer"
+          },
+          "utensil2": {
+            "type": "integer"
+          },
+          "mid2": {
+            "type": "integer"
+          },
+          "utensil3": {
+            "type": "integer"
+          },
+          "mid3": {
+            "type": "integer"
+          },
+          "utensil4": {
+            "type": "integer"
+          },
+          "mid4": {
+            "type": "integer"
+          },
+          "utensil5": {
+            "type": "integer"
+          },
+          "mid5": {
+            "type": "integer"
+          },
+          "output": {
+            "type": "integer"
+          }
+        }
+      },
+      "DetailedStep": {
         "type": "object",
         "properties": {
           "input": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Ingredient"
-              }
-            ]
+            "$ref": "#/components/schemas/Ingredient"
           },
           "utensil": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Utensil"
-              }
-            ]
+            "$ref": "#/components/schemas/Utensil"
           },
           "output": {
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/Ingredient"
-              }
+            "$ref": "#/components/schemas/Ingredient"
+          }
+        }
+      },
+      "SimpleStep": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "integer"
+          },
+          "utensil": {
+            "type": "integer"
+          },
+          "output": {
+            "type": "integer"
+          }
+        }
+      },
+      "IngredientData": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "start",
+              "mid",
+              "end"
             ]
           }
         }
       },
-      "Utensil": {
+      "UtensilData": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer"
-          },
           "name": {
             "type": "string"
           },
