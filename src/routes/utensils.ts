@@ -145,7 +145,7 @@ router
     res.status(200).send(utensilUpdated);
   })
 
-    /**
+  /**
    * @openapi
    * /utensils/{id}:
    *   delete:
@@ -169,7 +169,30 @@ router
     res.status(204).send();
   });
 
-/* GET step by utensil. */
+/**
+ * @openapi
+ * /utensils/{id}/uses:
+ *   get:
+ *     tags:
+ *       - utensils
+ *       - steps
+ *     description: Get all steps that use this utensil.
+ *     parameters:
+ *       - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: A list of the steps that use this utensil.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/DetailedStep'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router.get("/:id(\\d+)/uses", async function (req, res) {
   const steps = await Step.queryDetailedFromUtensil(res.locals.utensil.id);
   res.status(200).send(steps);

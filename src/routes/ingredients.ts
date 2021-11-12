@@ -171,7 +171,30 @@ router
     res.status(204).send();
   });
 
-/* GET step by input. */
+/**
+ * @openapi
+ * /ingredients/{id}/outcomes:
+ *   get:
+ *     tags:
+ *       - ingredients
+ *       - steps
+ *     description: Get all steps that use this ingredient as source.
+ *     parameters:
+ *       - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: A list of the steps that use this ingredient as source.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/DetailedStep'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router.get("/:id(\\d+)/outcomes", async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   if (ingredient.type === Ingredient.IngredientType.END) {
@@ -184,7 +207,30 @@ router.get("/:id(\\d+)/outcomes", async function (req, res) {
   }
 });
 
-/* GET step by output. */
+/**
+ * @openapi
+ * /ingredients/{id}/sources:
+ *   get:
+ *     tags:
+ *       - ingredients
+ *       - steps
+ *     description: Get all steps that result into this ingredient.
+ *     parameters:
+ *       - $ref: '#/components/parameters/id'
+ *     responses:
+ *       200:
+ *         description: A list of the steps that result into this ingredient.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/DetailedStep'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */
 router.get("/:id(\\d+)/sources", async function (req, res) {
   const ingredient: Ingredient.Ingredient = res.locals.ingredient;
   if (ingredient.type === Ingredient.IngredientType.START) {
