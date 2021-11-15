@@ -2,6 +2,7 @@
 import swaggerJsdoc, { OAS3Options } from "swagger-jsdoc";
 import fs from "fs";
 import path from "path";
+
 async function generateDocsForVersion(
   options: OAS3Options,
   fileName: string,
