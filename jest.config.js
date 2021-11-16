@@ -3,6 +3,7 @@ const { pathsToModuleNameMapper } = require("ts-jest/utils");
 const { compilerOptions } = require("./tsconfig.json");
 
 module.exports = {
+  preset: "jest-mysql",
   roots: ["test"],
   testMatch: ["**/?(*.)+(spec|test).+(ts|js)"],
   transform: {
