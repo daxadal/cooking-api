@@ -35,10 +35,10 @@ export async function createConnection(): Promise<void> {
   const { rows: databases } = await query<RowDataPacket[]>("show databases;");
   const database = databases.find((row) => row.Database === dbConfig.name);
   if (database) {
-    logger.info("Database found. Using existing database");
+    logger.info(`Database "${dbConfig.name}" found. Using existing database`);
     await query<OkPacket>(`use ${dbConfig.name};`);
   } else {
-    logger.info("Database not found. Creating database...");
+    logger.info(`Database "${dbConfig.name}" not found. Creating database...`);
     await query<OkPacket>(`create database ${dbConfig.name};`);
     await query<OkPacket>(`use ${dbConfig.name};`);
     await query<OkPacket[]>(readSqlScript("create-tables"));
