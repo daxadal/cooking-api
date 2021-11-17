@@ -10,8 +10,24 @@ import utensilsRouter from "@routes/utensils";
 
 import { getLogger, initLogger } from "@services/winston";
 import { closeConnection, createConnection } from "@services/db/setup";
+import { configDebug } from "@services/config";
 
 const logger = getLogger();
+
+logger.info("=== SERVER STARTUP ===");
+
+if (configDebug.dotenv.error) logger.warn(`Could NOT parse .env, Error:`, configDebug.dotenv.error);
+else if (!configDebug.dotenv.parsed) logger.info(`Parsing .env produced no result`);
+else
+  logger.info(
+    `.env parsed. ${Object.keys(configDebug.dotenv.parsed).length} variables found.`
+  );
+
+if (configDebug.parsingErrors.length > 0) {
+  logger.error(`@config initialization failed`, { errors: configDebug.parsingErrors });
+  logger.info("Exiting on error...\n");
+  process.exit(1);
+}
 
 createConnection();
 
