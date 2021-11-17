@@ -9,6 +9,7 @@ module.exports = {
   transform: {
     "^.+\\.(ts|js)$": "ts-jest",
   },
+  globalSetup: "<rootDir>/jest.setup.js",
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: "<rootDir>/",
   }),
