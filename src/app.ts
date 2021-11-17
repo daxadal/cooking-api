@@ -10,7 +10,7 @@ import utensilsRouter from "@routes/utensils";
 
 import { getLogger, initLogger } from "@services/winston";
 import { closeConnection, createConnection } from "@services/db/setup";
-import { configDebug } from "@services/config";
+import { configDebug } from "@config/index";
 
 const logger = getLogger();
 
