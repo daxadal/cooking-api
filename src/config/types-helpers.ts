@@ -30,11 +30,7 @@ export enum LogLevel {
 
 /* Helpers */
 
-export function parseEnvironment(
-  name: string,
-  errors: string[]
-): Environment {
-
+export function parseEnvironment(name: string, errors: string[]): Environment {
   const value = process.env[name];
 
   if (value && value in Environment) return value as Environment;
@@ -44,10 +40,7 @@ export function parseEnvironment(
   return Environment.DEV;
 }
 
-export function parseEnvLogLevel(
-  name: string,
-  errors: string[]
-): LogLevel {
+export function parseEnvLogLevel(name: string, errors: string[]): LogLevel {
   const value = process.env[name];
 
   if (!value) {
@@ -69,5 +62,17 @@ export function parseEnvString(name: string, errors: string[]): string {
   if (value && value !== "") return value;
 
   errors.push(`${name} must be defined and not empty`);
+  return "";
+}
+
+export function parseOptEnvString(
+  name: string,
+  errors: string[]
+): string | undefined {
+  const value = process.env[name];
+  if (value === undefined) return undefined;
+  if (value !== "") return value;
+
+  errors.push(`If defined, ${name} must be not empty`);
   return "";
 }

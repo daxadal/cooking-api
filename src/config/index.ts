@@ -5,6 +5,7 @@ import {
   parseEnvironment,
   parseEnvLogLevel,
   parseEnvString,
+  parseOptEnvString,
 } from "./types-helpers";
 
 export { LogLevel, Environment };
@@ -19,8 +20,8 @@ export const winston = {
   slack: {
     level: parseEnvLogLevel("WINSTON_SLACK_LEVEL", parsingErrors),
     webhooks: {
-      priority: parseEnvString("WINSTON_SLACK_PRIORITY_WEBHOOK", parsingErrors),
-      all: parseEnvString("WINSTON_SLACK_NON_PRIORITY_WEBHOOK", parsingErrors),
+      priority: parseOptEnvString("WINSTON_SLACK_PRIORITY_WEBHOOK", parsingErrors),
+      all: parseOptEnvString("WINSTON_SLACK_NON_PRIORITY_WEBHOOK", parsingErrors),
     },
   },
   console: {
@@ -28,7 +29,7 @@ export const winston = {
   },
   file: {
     level: parseEnvLogLevel("WINSTON_FILE_LEVEL", parsingErrors),
-    prefix: parseEnvString("WINSTON_FILE_PREFIX", parsingErrors),
+    prefix: parseOptEnvString("WINSTON_FILE_PREFIX", parsingErrors),
   },
 };
 
