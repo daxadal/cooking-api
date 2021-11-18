@@ -30,23 +30,49 @@ export enum LogLevel {
 
 /* Helpers */
 
-export function parseEnvironment(ENV: string | undefined): Environment {
-  return ENV && ENV in Environment ? (ENV as Environment) : Environment.DEV;
+export function parseEnvironment(name: string, errors: string[]): Environment {
+  const value = process.env[name];
+
+  if (value && value in Environment) return value as Environment;
+  errors.push(
+    `${name} must be one of: ${Object.values(Environment).join(", ")}`
+  );
+  return Environment.DEV;
 }
-export function parseLogLevel(level: string | undefined): LogLevel | undefined;
-export function parseLogLevel(
-  level: string | undefined,
-  defaultValue: LogLevel
-): LogLevel;
-export function parseLogLevel(
-  level: string | undefined,
-  defaultValue?: LogLevel
-): LogLevel | undefined {
-  if (!level) return defaultValue;
-  if (/^none$/i.test(level)) return LogLevel.NONE;
-  if (/^error$/i.test(level)) return LogLevel.ERROR;
-  if (/^warn$/i.test(level)) return LogLevel.WARN;
-  if (/^info$/i.test(level)) return LogLevel.INFO;
-  if (/^verbose$/i.test(level)) return LogLevel.VERBOSE;
-  return defaultValue;
+
+export function parseEnvLogLevel(name: string, errors: string[]): LogLevel {
+  const value = process.env[name];
+
+  if (!value) {
+    errors.push(`${name} must be one of: ${Object.keys(LogLevel)}`);
+    return LogLevel.NONE;
+  }
+  if (/^none$/i.test(value)) return LogLevel.NONE;
+  if (/^error$/i.test(value)) return LogLevel.ERROR;
+  if (/^warn$/i.test(value)) return LogLevel.WARN;
+  if (/^info$/i.test(value)) return LogLevel.INFO;
+  if (/^verbose$/i.test(value)) return LogLevel.VERBOSE;
+
+  errors.push(`${name} must be one of: ${Object.keys(LogLevel).join(", ")}`);
+  return LogLevel.NONE;
+}
+
+export function parseEnvString(name: string, errors: string[]): string {
+  const value = process.env[name];
+  if (value && value !== "") return value;
+
+  errors.push(`${name} must be defined and not empty`);
+  return "";
+}
+
+export function parseOptEnvString(
+  name: string,
+  errors: string[]
+): string | undefined {
+  const value = process.env[name];
+  if (value === undefined) return undefined;
+  if (value !== "") return value;
+
+  errors.push(`If defined, ${name} must be not empty`);
+  return "";
 }
