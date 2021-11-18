@@ -1,66 +1,40 @@
 import { config } from "dotenv";
 import {
-  WinstonConfig,
   LogLevel,
   Environment,
   parseEnvironment,
-  parseLogLevel,
+  parseEnvLogLevel,
+  parseEnvString,
+  parseOptEnvString,
 } from "./types-helpers";
 
 export { LogLevel, Environment };
 
 const { error, parsed } = config();
 
-const {
-  ENV,
+const parsingErrors: string[] = [];
 
-  WINSTON_SLACK_LEVEL,
-  WINSTON_CONSOLE_LEVEL,
-  WINSTON_FILE_LEVEL,
-} = process.env;
+export const environment = parseEnvironment("ENV", parsingErrors);
 
-export const dotenv = { error, parsed };
-export const environment = parseEnvironment(ENV);
-
-export const _winston: Record<Environment, WinstonConfig> = {
-  PROD: {
-    slack: { level: LogLevel.NONE, webhooks: {} },
-    console: { level: LogLevel.INFO },
-    file: { level: LogLevel.INFO },
-  },
-  DEV: {
-    slack: { level: LogLevel.NONE, webhooks: {} },
-    console: { level: LogLevel.INFO },
-    file: { level: LogLevel.VERBOSE },
-  },
-  JEST: {
-    slack: { level: LogLevel.NONE, webhooks: {} },
-    console: { level: LogLevel.NONE },
-    file: { level: LogLevel.NONE, prefix: "__jest__" },
-  },
-  CI_JEST: {
-    slack: { level: LogLevel.NONE, webhooks: {} },
-    console: { level: LogLevel.NONE },
-    file: { level: LogLevel.INFO, prefix: "__jest__" },
-  },
-};
-
-export const winston: WinstonConfig = {
+export const winston = {
   slack: {
-    level: parseLogLevel(
-      WINSTON_SLACK_LEVEL,
-      _winston[environment].slack.level
-    ),
-    webhooks: _winston[environment].slack.webhooks,
+    level: parseEnvLogLevel("WINSTON_SLACK_LEVEL", parsingErrors),
+    webhooks: {
+      priority: parseOptEnvString("WINSTON_SLACK_PRIORITY_WEBHOOK", parsingErrors),
+      all: parseOptEnvString("WINSTON_SLACK_NON_PRIORITY_WEBHOOK", parsingErrors),
+    },
   },
   console: {
-    level: parseLogLevel(
-      WINSTON_CONSOLE_LEVEL,
-      _winston[environment].console.level
-    ),
+    level: parseEnvLogLevel("WINSTON_CONSOLE_LEVEL", parsingErrors),
   },
   file: {
-    level: parseLogLevel(WINSTON_FILE_LEVEL, _winston[environment].file.level),
-    prefix: _winston[environment].file.prefix,
+    level: parseEnvLogLevel("WINSTON_FILE_LEVEL", parsingErrors),
+    prefix: parseOptEnvString("WINSTON_FILE_PREFIX", parsingErrors),
   },
 };
+
+export const database = {
+  name: parseEnvString("DB_NAME", parsingErrors),
+};
+
+export const configDebug = { dotenv: { error, parsed }, parsingErrors };

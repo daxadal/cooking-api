@@ -6,6 +6,7 @@ import mysql, {
 } from "mysql2/promise";
 import path from "path";
 import { getLogger } from "@services/winston";
+import { database as dbConfig } from "@config/index";
 
 type Rows =
   | RowDataPacket[]
@@ -19,7 +20,6 @@ interface QueryResult<T extends Rows> {
 }
 let connection: mysql.Connection;
 const logger = getLogger();
-const DB_NAME = "kitchen_js";
 
 export async function createConnection(): Promise<void> {
   logger.info("Connecting to MySQL ...");
@@ -33,14 +33,14 @@ export async function createConnection(): Promise<void> {
   logger.info("Connected to MySQL");
 
   const { rows: databases } = await query<RowDataPacket[]>("show databases;");
-  const database = databases.find((row) => row.Database === DB_NAME);
+  const database = databases.find((row) => row.Database === dbConfig.name);
   if (database) {
-    logger.info("Database found. Using existing database");
-    await query<OkPacket>(`use ${DB_NAME};`);
+    logger.info(`Database "${dbConfig.name}" found. Using existing database`);
+    await query<OkPacket>(`use ${dbConfig.name};`);
   } else {
-    logger.info("Database not found. Creating database...");
-    await query<OkPacket>(`create database ${DB_NAME};`);
-    await query<OkPacket>(`use ${DB_NAME};`);
+    logger.info(`Database "${dbConfig.name}" not found. Creating database...`);
+    await query<OkPacket>(`create database ${dbConfig.name};`);
+    await query<OkPacket>(`use ${dbConfig.name};`);
     await query<OkPacket[]>(readSqlScript("create-tables"));
     logger.info("Database created. Populating ...");
     await loadTable("utensil");
