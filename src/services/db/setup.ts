@@ -21,7 +21,13 @@ interface QueryResult<T extends Rows> {
 let connection: mysql.Connection;
 const logger = getLogger();
 
-export async function createConnection(): Promise<void> {
+interface ConnectionOptions {
+  autoPopulate?: boolean;
+}
+
+export async function createConnection({
+  autoPopulate = true,
+}: ConnectionOptions): Promise<void> {
   logger.info("Connecting to MySQL ...");
   connection = await mysql.createConnection({
     host: "localhost",
@@ -42,12 +48,22 @@ export async function createConnection(): Promise<void> {
     await query<OkPacket>(`create database ${dbConfig.name};`);
     await query<OkPacket>(`use ${dbConfig.name};`);
     await query<OkPacket[]>(readSqlScript("create-tables"));
-    logger.info("Database created. Populating ...");
-    await loadTable("utensil");
-    await loadTable("ingredient");
-    await loadTable("step");
-    logger.info("Tables populated");
+    if (autoPopulate) {
+      logger.info("Database created. Populating ...");
+      await populateTables();
+      logger.info("Tables populated");
+    } else {
+      logger.info("Database created. Population was skipped.");
+    }
   }
+}
+
+function populateTables() {
+  return Promise.all([
+    loadTable("ingredient"),
+    loadTable("utensil"),
+    loadTable("step"),
+  ]);
 }
 
 export function closeConnection(): void {
@@ -68,7 +84,7 @@ export async function query<T extends Rows>(
 const readSqlScript = (filename: string) =>
   readFileSync(path.resolve(__dirname, `../../sql/${filename}.sql`)).toString();
 
-const loadTable = (tableName: string) => {
+export const loadTable = (tableName: string) => {
   const location = path.resolve(__dirname, `../../sql/${tableName}.csv`);
   return query<OkPacket>(
     `LOAD DATA INFILE '${location}' INTO TABLE ${tableName}`
