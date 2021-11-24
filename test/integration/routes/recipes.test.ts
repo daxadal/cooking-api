@@ -10,14 +10,7 @@ import app from "../../../src/app";
 import { clearDatabase } from "../../mock/db";
 
 describe("The /recipes route", () => {
-  beforeAll(async () => { try {
-    await createConnection({ autoPopulate: false })
-    console.info(`${new Date().toISOString()}: DB created`)
-
-  } catch (error) {
-    console.error(`${new Date().toISOString()}: DB cretion error`, error)
-  }
-  });
+  beforeAll(() => createConnection({ autoPopulate: false }));
 
   beforeEach(populateTables);
 

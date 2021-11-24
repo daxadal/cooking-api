@@ -28,10 +28,10 @@ const router = express.Router();
  *         $ref: '#/components/responses/500'
  */
 router.get("/", async function (req, res) {
-  const steps = req.query.detailed
+  const recipes = req.query.detailed
     ? await Recipe.getAllDetailed()
     : await Recipe.getAll();
-  res.status(200).send(steps);
+  res.status(200).send(recipes);
 });
 
 export default router;
