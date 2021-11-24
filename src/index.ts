@@ -28,7 +28,10 @@ if (configDebug.parsingErrors.length > 0) {
   process.exit(1);
 }
 
-createConnection({});
+createConnection({}).catch((error) => {
+  logger.error("Error creating connection to DB:", error);
+  process.exit(1);
+});
 
 const PORT = process.env.PORT;
 const port = PORT ? parseInt(PORT) : 3000;

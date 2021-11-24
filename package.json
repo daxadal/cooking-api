@@ -6,7 +6,7 @@
     "docs": "ts-node ./src/docs/generator.ts",
     "start": "npm run docs && npm run tsc && node ./dist/index.js",
     "tsc": "rm -rf ./dist && tsc -p tsconfig.compile.json",
-    "test": "jest",
+    "test": "jest --runInBand",
     "watch": "nodemon"
   },
   "dependencies": {
@@ -36,7 +36,6 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-prettier": "^3.4.0",
     "jest": "^27.0.6",
-    "jest-mysql": "^1.1.6",
     "nodemon": "^2.0.12",
     "supertest": "^3.0.0",
     "ts-jest": "^27.0.4",
