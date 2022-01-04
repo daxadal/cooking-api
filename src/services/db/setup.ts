@@ -30,7 +30,7 @@ export async function createConnection({
 }: ConnectionOptions): Promise<void> {
   logger.info("Connecting to MySQL ...");
   connection = await mysql.createConnection({
-    host: "localhost",
+    host: dbConfig.host,
     user: "root",
     password: "root",
     multipleStatements: true,

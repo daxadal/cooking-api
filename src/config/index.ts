@@ -34,6 +34,7 @@ export const winston = {
 };
 
 export const database = {
+  host: parseEnvString("DB_HOST", parsingErrors),
   name: parseEnvString("DB_NAME", parsingErrors),
 };
 
