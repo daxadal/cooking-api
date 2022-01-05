@@ -1,11 +1,12 @@
 import mysql from "mysql2/promise";
+import { database as dbConfig } from "./src/config/index";
 
 /**
  * @param {string} dbName
  */
 async function destroyDatabase(dbName) {
   const connection = await mysql.createConnection({
-    host: "localhost",
+    host: dbConfig.host,
     user: "root",
     password: "root",
     multipleStatements: true,
