@@ -15,8 +15,7 @@
       "@config/*": ["src/config/*"],
       "@docs/*": ["src/docs/*"],
       "@routes/*": ["src/routes/*"],
-      "@services/*": ["src/services/*"],
-      "@_test_/*": ["test/*"]
+      "@services/*": ["src/services/*"]
     },
     "esModuleInterop": true,
 

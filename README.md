@@ -14,6 +14,12 @@ This project uses these libraries for this purposes:
 - `swagger-jsdoc`: Generating OpenAPI documentation
 - `swagger-ui-express`: Serving OpenAPI documentation
 
+This project also uses the following dev dependencies:
+
+- `jest`/`ts-jest`: Testing
+- `jest-unit`: Generating testing reports (compatible with Gitlab CI/CD)
+- `supertest`: Making request to the express app
+
 # Installation and execution
 
 To run the server, first you have to install the dependencies:
@@ -32,10 +38,28 @@ By default, the server mounts at `http://localhost:3000`, which will be referred
 
 # Documentation
 
-A documentation file is generated each time the server is started. Said file can be found at `src/docs/cooking-api.openapi.json`. This documentation is also served at `{{basePath}}/docs`, which can be accessed using the browser. Using that UI, the documented endpoints can be tested (if the server is running at the configured domain).
+A documentation file is generated each time the server is started.
+This documentation can also be manually generated executing:
 
-This file can also be imported to applications like [Postman](https://www.postman.com/downloads/). _(An explicit transformation to a Postman collection is pending)_
+```bash
+npm run docs
+```
+
+Said file can be found at `<rootDir>/src/docs/cooking-api.openapi.json`.
+This file can also be imported to applications like [Postman](https://www.postman.com/downloads/).
+
+This documentation is also served at `{{basePath}}/docs`, which can be accessed using the browser.
+Using that UI, the documented endpoints can be tested (if the server is running at the configured domain).
 
 # Testing
 
-_(Coming soon)_
+Tests can be executed using the following command:
+
+```bash
+npm test
+```
+
+Tests are powered by `jest`, and a report file (compatible with Gitlab CI/CD) is generated on each execution.
+
+Tests use the `mysql` service in the running machine.
+A disposable database is generated on setup, and it's deleted on teardown.
