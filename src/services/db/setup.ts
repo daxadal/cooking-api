@@ -25,17 +25,21 @@ interface ConnectionOptions {
   autoPopulate?: boolean;
 }
 
-export async function createConnection({
-  autoPopulate = true,
-}: ConnectionOptions): Promise<void> {
-  logger.info("Connecting to MySQL ...");
-  connection = await mysql.createConnection({
+export function connectToMySQL(): Promise<mysql.Connection> {
+  return mysql.createConnection({
     host: dbConfig.host,
     user: "root",
     password: "root",
     multipleStatements: true,
     namedPlaceholders: true,
   });
+}
+
+export async function createConnection({
+  autoPopulate = true,
+}: ConnectionOptions): Promise<void> {
+  logger.info("Connecting to MySQL ...");
+  connection = await connectToMySQL();
   logger.info("Connected to MySQL");
 
   const { rows: databases } = await query<RowDataPacket[]>("show databases;");
