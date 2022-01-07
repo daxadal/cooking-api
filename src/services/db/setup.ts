@@ -28,8 +28,8 @@ interface ConnectionOptions {
 export function connectToMySQL(): Promise<mysql.Connection> {
   return mysql.createConnection({
     host: dbConfig.host,
-    user: "root",
-    password: "root",
+    user: dbConfig.user,
+    password: dbConfig.password,
     multipleStatements: true,
     namedPlaceholders: true,
   });
