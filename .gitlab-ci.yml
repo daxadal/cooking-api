@@ -37,11 +37,13 @@ jest:
     <<: *cache
     policy: pull
   services:
-    - name: mysql/mysql-server
+    - name: mysql
       alias: mysql-docker
+  variables:
+    MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
   script:
     - cp $DOTENV_DEV .env
-    - npm test
+    - DB_PASSWORD=$MYSQL_ROOT_PASSWORD npm test
   artifacts:
     when: always
     paths:
