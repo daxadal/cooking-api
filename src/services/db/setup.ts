@@ -14,10 +14,12 @@ type Rows =
   | OkPacket
   | OkPacket[]
   | ResultSetHeader;
-interface QueryResult<T extends Rows> {
+
+export interface QueryResult<T extends Rows> {
   rows: T;
   fields: string[];
 }
+
 let connection: mysql.Connection;
 const logger = getLogger();
 
@@ -62,7 +64,7 @@ export async function createConnection({
   }
 }
 
-export function populateTables() {
+export function populateTables(): Promise<QueryResult<mysql.OkPacket>[]> {
   return Promise.all([
     loadTable("ingredient"),
     loadTable("utensil"),
@@ -86,9 +88,13 @@ export async function query<T extends Rows>(
 }
 
 const readSqlScript = (filename: string) =>
-  readFileSync(path.resolve(__dirname, `../../../sql/${filename}.sql`)).toString();
+  readFileSync(
+    path.resolve(__dirname, `../../../sql/${filename}.sql`)
+  ).toString();
 
-export const loadTable = (tableName: string) => {
+export const loadTable = (
+  tableName: string
+): Promise<QueryResult<mysql.OkPacket>> => {
   const location = path.resolve(__dirname, `../../../sql/${tableName}.csv`);
   return query<OkPacket>(
     `LOAD DATA INFILE '${location}' INTO TABLE ${tableName}`

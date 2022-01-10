@@ -23,7 +23,7 @@ async function generateDocsForVersion(
   return openapiSpecification;
 }
 
-export async function generate(): Promise<object> {
+export async function generate(): Promise<unknown> {
   const servers = [{ url: "http://localhost:3000", description: "Local API" }];
 
   const options: OAS3Options = {
