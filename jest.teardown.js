@@ -14,6 +14,10 @@ async function destroyDatabase(dbName) {
     namedPlaceholders: true,
   });
 
+  const [variables] = await connection.query(`SHOW VARIABLES LIKE "secure_file_priv";`);
+
+  console.info("variables", variables);
+
   const [rows] = await connection.query(`drop database if exists ${dbName};`);
 
   connection.destroy();
