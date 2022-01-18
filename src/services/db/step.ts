@@ -4,17 +4,19 @@ import { query } from "@services/db/setup";
 import { Ingredient } from "@services/db/ingredient";
 import { Utensil } from "@services/db/utensil";
 
-export interface Step<
-  Input extends Ingredient | number = number,
-  Ut extends Utensil | number = number,
-  Output extends Ingredient | number = number
-> {
-  input: Input;
-  utensil: Ut;
-  output: Output;
+export interface SimpleStep {
+  input: number;
+  utensil: number;
+  output: number;
 }
 
-export type DetailedStep = Step<Ingredient, Utensil, Ingredient>;
+export interface DetailedStep {
+  input: Ingredient;
+  utensil: Utensil;
+  output: Ingredient;
+}
+
+export type Step = SimpleStep | DetailedStep;
 
 export async function getAll(): Promise<Step[]> {
   const { rows } = await query<RowDataPacket[]>("select * from step;");
