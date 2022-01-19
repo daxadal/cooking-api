@@ -30,6 +30,18 @@ export async function get({
   return rows.length > 0 ? (rows[0] as Step) : undefined;
 }
 
+export async function getDetailed({
+  input,
+  utensil,
+  output,
+}: Step): Promise<Step | undefined> {
+  const { rows } = await query<RowDataPacket[]>(
+    "select * from detailed_step where input = :input and utensil = :utensil and output = :output;",
+    { input, utensil, output }
+  );
+  return rows.length > 0 ? (rows[0] as Step) : undefined;
+}
+
 export async function getAll(): Promise<Step[]> {
   const { rows } = await query<RowDataPacket[]>("select * from step;");
   return rows as Step[];
