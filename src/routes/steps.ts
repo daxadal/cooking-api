@@ -65,7 +65,7 @@ router
   .post(async function (req, res) {
     const { input, utensil, output } = req.body;
     await Step.create({ input, utensil, output });
-    const step = await Step.get({ input, utensil, output });
+    const step = await Step.getDetailed({ input, utensil, output });
     res.status(200).send(step);
   });
 
