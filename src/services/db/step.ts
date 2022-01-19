@@ -22,29 +22,29 @@ export async function get({
   input,
   utensil,
   output,
-}: Step): Promise<Step | undefined> {
+}: SimpleStep): Promise<SimpleStep | undefined> {
   const { rows } = await query<RowDataPacket[]>(
     "select * from step where input = :input and utensil = :utensil and output = :output;",
     { input, utensil, output }
   );
-  return rows.length > 0 ? (rows[0] as Step) : undefined;
+  return rows.length > 0 ? (rows[0] as SimpleStep) : undefined;
 }
 
 export async function getDetailed({
   input,
   utensil,
   output,
-}: Step): Promise<Step | undefined> {
-  const { rows } = await query<RowDataPacket[]>(
+}: SimpleStep): Promise<DetailedStep | undefined> {
+  const { rows, fields } = await query<RowDataPacket[]>(
     "select * from detailed_step where input = :input and utensil = :utensil and output = :output;",
     { input, utensil, output }
   );
-  return rows.length > 0 ? (rows[0] as Step) : undefined;
+  return rows.length > 0 ? (deepen(rows[0], fields) as DetailedStep) : undefined;
 }
 
-export async function getAll(): Promise<Step[]> {
+export async function getAll(): Promise<SimpleStep[]> {
   const { rows } = await query<RowDataPacket[]>("select * from step;");
-  return rows as Step[];
+  return rows as SimpleStep[];
 }
 
 export async function getAllDetailed(): Promise<DetailedStep[]> {
@@ -59,7 +59,7 @@ export async function create({
   input,
   utensil,
   output,
-}: Step): Promise<number> {
+}: SimpleStep): Promise<number> {
   const { rows } = await query<OkPacket>(
     "insert into step (input, utensil, output) values (:input, :utensil, :output);",
     { input, utensil, output }
