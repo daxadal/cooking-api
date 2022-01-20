@@ -167,8 +167,12 @@ router
    */
   .delete(async function (req, res) {
     const ingredient: Ingredient.Ingredient = res.locals.ingredient;
-    await Ingredient.destroy(ingredient.id);
-    res.status(204).send();
+    const deletedRowsCount = await Ingredient.destroy(ingredient.id);
+    if (deletedRowsCount === 1) res.status(204).send();
+    else
+      res.status(500).send({
+        message: `Internal server error. ${deletedRowsCount} rows were deleted instead of one`,
+      });
   });
 
 /**
