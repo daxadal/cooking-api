@@ -317,6 +317,41 @@
             "$ref": "#/components/responses/500"
           }
         }
+      },
+      "post": {
+        "tags": [
+          "steps"
+        ],
+        "description": "Creates an step",
+        "requestBody": {
+          "description": "Step to create",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimpleStep"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created ingredient.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleStep"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
       }
     },
     "/utensils": {

@@ -38,7 +38,7 @@ router
 
   /**
    * @openapi
-   * /ingredients:
+   * /steps:
    *   post:
    *     tags:
    *       - steps
