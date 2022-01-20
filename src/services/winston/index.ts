@@ -89,7 +89,7 @@ export const initLogger =
   (req: any, res, next) => {
     req.logger = getLogger(service);
     req.logger.info(
-      `==== Starting execution of endpoint ${req.originalUrl} ====`
+      `==== Starting execution of endpoint ${req.method} ${req.originalUrl} ====`
     );
     next();
   };

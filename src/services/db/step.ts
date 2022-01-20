@@ -36,7 +36,7 @@ export async function getDetailed({
   output,
 }: SimpleStep): Promise<DetailedStep | undefined> {
   const { rows, fields } = await query<RowDataPacket[]>(
-    "select * from detailed_step where input = :input and utensil = :utensil and output = :output;",
+    "select * from detailed_step where input_id = :input and utensil_id = :utensil and output_id = :output;",
     { input, utensil, output }
   );
   return rows.length > 0 ? (deepen(rows[0], fields) as DetailedStep) : undefined;
