@@ -165,8 +165,13 @@ router
    *         $ref: '#/components/responses/500'
    */
   .delete(async function (req, res) {
-    await Utensil.destroy(res.locals.utensil.id);
-    res.status(204).send();
+    const utensil: Utensil.Utensil = res.locals.utensil;
+    const deletedRowsCount = await Utensil.destroy(utensil.id);
+    if (deletedRowsCount === 1) res.status(204).send();
+    else
+      res.status(500).send({
+        message: `Internal server error. ${deletedRowsCount} rows were deleted instead of one`,
+      });
   });
 
 /**

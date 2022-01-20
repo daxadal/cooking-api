@@ -24,7 +24,7 @@ let connection: mysql.Connection;
 const logger = getLogger();
 
 interface ConnectionOptions {
-  autoPopulate?: boolean;
+  autoPopulate: boolean;
 }
 
 export function connectToMySQL(): Promise<mysql.Connection> {
@@ -38,7 +38,7 @@ export function connectToMySQL(): Promise<mysql.Connection> {
 }
 
 export async function createConnection({
-  autoPopulate = true,
+  autoPopulate,
 }: ConnectionOptions): Promise<void> {
   logger.info("Connecting to MySQL ...");
   connection = await connectToMySQL();

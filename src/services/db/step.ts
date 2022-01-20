@@ -1,24 +1,50 @@
-import { RowDataPacket } from "mysql2/promise";
+import { OkPacket, RowDataPacket } from "mysql2/promise";
 import { deepen } from "@services/manipulation";
 import { query } from "@services/db/setup";
 import { Ingredient } from "@services/db/ingredient";
 import { Utensil } from "@services/db/utensil";
 
-export interface Step<
-  Input extends Ingredient | number = number,
-  Ut extends Utensil | number = number,
-  Output extends Ingredient | number = number
-> {
-  input: Input;
-  utensil: Ut;
-  output: Output;
+export interface SimpleStep {
+  input: number;
+  utensil: number;
+  output: number;
 }
 
-export type DetailedStep = Step<Ingredient, Utensil, Ingredient>;
+export interface DetailedStep {
+  input: Ingredient;
+  utensil: Utensil;
+  output: Ingredient;
+}
 
-export async function getAll(): Promise<Step[]> {
+export type Step = SimpleStep | DetailedStep;
+
+export async function get({
+  input,
+  utensil,
+  output,
+}: SimpleStep): Promise<SimpleStep | undefined> {
+  const { rows } = await query<RowDataPacket[]>(
+    "select * from step where input = :input and utensil = :utensil and output = :output;",
+    { input, utensil, output }
+  );
+  return rows.length > 0 ? (rows[0] as SimpleStep) : undefined;
+}
+
+export async function getDetailed({
+  input,
+  utensil,
+  output,
+}: SimpleStep): Promise<DetailedStep | undefined> {
+  const { rows, fields } = await query<RowDataPacket[]>(
+    "select * from detailed_step where input_id = :input and utensil_id = :utensil and output_id = :output;",
+    { input, utensil, output }
+  );
+  return rows.length > 0 ? (deepen(rows[0], fields) as DetailedStep) : undefined;
+}
+
+export async function getAll(): Promise<SimpleStep[]> {
   const { rows } = await query<RowDataPacket[]>("select * from step;");
-  return rows as Step[];
+  return rows as SimpleStep[];
 }
 
 export async function getAllDetailed(): Promise<DetailedStep[]> {
@@ -27,6 +53,18 @@ export async function getAllDetailed(): Promise<DetailedStep[]> {
   );
   const deepRows = rows.map((row) => deepen(row, fields));
   return deepRows as DetailedStep[];
+}
+
+export async function create({
+  input,
+  utensil,
+  output,
+}: SimpleStep): Promise<number> {
+  const { rows } = await query<OkPacket>(
+    "insert into step (input, utensil, output) values (:input, :utensil, :output);",
+    { input, utensil, output }
+  );
+  return rows.insertId;
 }
 
 export async function queryDetailedFromInput(
@@ -60,4 +98,16 @@ export async function queryDetailedFromUtensil(
   );
   const deepRows = rows.map((row) => deepen(row, fields));
   return deepRows as DetailedStep[];
+}
+
+export async function destroy({
+  input,
+  utensil,
+  output,
+}: SimpleStep): Promise<number> {
+  const { rows } = await query<OkPacket>(
+    "delete from step where input = :input and utensil = :utensil and output = :output;",
+    { input, utensil, output }
+  );
+  return rows.affectedRows;
 }

@@ -43,6 +43,9 @@ export async function update({
   return rows.insertId;
 }
 
-export async function destroy(id: number): Promise<void> {
-  await query<OkPacket>("delete from utensil where id=:id", { id });
+export async function destroy(id: number): Promise<number> {
+  const { rows } = await query<OkPacket>("delete from utensil where id=:id", {
+    id,
+  });
+  return rows.affectedRows;
 }
