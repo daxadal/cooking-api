@@ -6,6 +6,7 @@ import {
   parseEnvLogLevel,
   parseEnvString,
   parseOptEnvString,
+  parseBoolean,
 } from "./types-helpers";
 
 export { LogLevel, Environment };
@@ -35,6 +36,7 @@ export const winston = {
 
 export const database = {
   name: parseEnvString("DB_NAME", parsingErrors),
+  autoPopulate: parseBoolean("DB_AUTO_POPULATE", parsingErrors),
 };
 
 export const configDebug = { dotenv: { error, parsed }, parsingErrors };

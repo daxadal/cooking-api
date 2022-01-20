@@ -2,7 +2,7 @@ import "module-alias/register";
 
 import { getLogger } from "@services/winston";
 import { closeConnection, createConnection } from "@services/db/setup";
-import { configDebug } from "@config/index";
+import { configDebug, database as dbConfig } from "@config/index";
 import app from "./app";
 
 const logger = getLogger();
@@ -28,7 +28,7 @@ if (configDebug.parsingErrors.length > 0) {
   process.exit(1);
 }
 
-createConnection({}).catch((error) => {
+createConnection({ autoPopulate: dbConfig.autoPopulate }).catch((error) => {
   logger.error("Error creating connection to DB:", error);
   process.exit(1);
 });
