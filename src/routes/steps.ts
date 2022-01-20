@@ -67,6 +67,42 @@ router
     await Step.create({ input, utensil, output });
     const step = await Step.getDetailed({ input, utensil, output });
     res.status(200).send(step);
+  })
+
+  /**
+   * @openapi
+   * /steps:
+   *   delete:
+   *     tags:
+   *       - steps
+   *     description: Deletes an step
+   *     requestBody:
+   *       description: Step to delete
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/SimpleStep'
+   *     responses:
+   *       204:
+   *         $ref: '#/components/responses/204'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
+  .delete(async function (req, res) {
+    const { input, utensil, output } = req.body;
+    const deletedRowsCount = await Step.destroy({ input, utensil, output });
+    if (deletedRowsCount === 1) res.status(204).send();
+    else if (deletedRowsCount === 0)
+      res.status(404).send({ message: "Step not found" });
+    else
+      res.status(500).send({
+        message: `Internal server error. ${deletedRowsCount} rows were deleted instead of one`,
+      });
   });
 
 export default router;

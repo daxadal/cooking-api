@@ -99,3 +99,15 @@ export async function queryDetailedFromUtensil(
   const deepRows = rows.map((row) => deepen(row, fields));
   return deepRows as DetailedStep[];
 }
+
+export async function destroy({
+  input,
+  utensil,
+  output,
+}: SimpleStep): Promise<number> {
+  const { rows } = await query<OkPacket>(
+    "delete from step where input = :input and utensil = :utensil and output = :output;",
+    { input, utensil, output }
+  );
+  return rows.affectedRows;
+}
