@@ -74,7 +74,7 @@ export function populateTables(): Promise<QueryResult<mysql.OkPacket>[]> {
 
 export function closeConnection(): void {
   logger.info("Disconnecting from MySQL ...");
-  connection.destroy();
+  connection.end();
 }
 
 export async function query<T extends Rows>(
