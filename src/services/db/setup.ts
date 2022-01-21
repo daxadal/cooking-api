@@ -14,10 +14,12 @@ type Rows =
   | OkPacket
   | OkPacket[]
   | ResultSetHeader;
-interface QueryResult<T extends Rows> {
+
+export interface QueryResult<T extends Rows> {
   rows: T;
   fields: string[];
 }
+
 let connection: mysql.Connection;
 const logger = getLogger();
 
@@ -25,17 +27,21 @@ interface ConnectionOptions {
   autoPopulate: boolean;
 }
 
+export function connectToMySQL(): Promise<mysql.Connection> {
+  return mysql.createConnection({
+    host: dbConfig.host,
+    user: dbConfig.user,
+    password: dbConfig.password,
+    multipleStatements: true,
+    namedPlaceholders: true,
+  });
+}
+
 export async function createConnection({
   autoPopulate,
 }: ConnectionOptions): Promise<void> {
   logger.info("Connecting to MySQL ...");
-  connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    multipleStatements: true,
-    namedPlaceholders: true,
-  });
+  connection = await connectToMySQL();
   logger.info("Connected to MySQL");
 
   const { rows: databases } = await query<RowDataPacket[]>("show databases;");
@@ -58,7 +64,7 @@ export async function createConnection({
   }
 }
 
-export function populateTables() {
+export function populateTables(): Promise<QueryResult<mysql.OkPacket>[]> {
   return Promise.all([
     loadTable("ingredient"),
     loadTable("utensil"),
@@ -68,7 +74,7 @@ export function populateTables() {
 
 export function closeConnection(): void {
   logger.info("Disconnecting from MySQL ...");
-  connection.destroy();
+  connection.end();
 }
 
 export async function query<T extends Rows>(
@@ -82,9 +88,13 @@ export async function query<T extends Rows>(
 }
 
 const readSqlScript = (filename: string) =>
-  readFileSync(path.resolve(__dirname, `../../../sql/${filename}.sql`)).toString();
+  readFileSync(
+    path.resolve(__dirname, `../../../sql/${filename}.sql`)
+  ).toString();
 
-export const loadTable = (tableName: string) => {
+export const loadTable = (
+  tableName: string
+): Promise<QueryResult<mysql.OkPacket>> => {
   const location = path.resolve(__dirname, `../../../sql/${tableName}.csv`);
   return query<OkPacket>(
     `LOAD DATA INFILE '${location}' INTO TABLE ${tableName}`

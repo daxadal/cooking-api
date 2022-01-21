@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "docs": "ts-node ./src/docs/generator.ts",
+    "lint": "eslint ./src ./test",
     "start": "npm run docs && npm run tsc && node ./dist/index.js",
     "tsc": "rm -rf ./dist && tsc -p tsconfig.compile.json",
     "test": "jest --runInBand",

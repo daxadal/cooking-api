@@ -21,8 +21,14 @@ export const winston = {
   slack: {
     level: parseEnvLogLevel("WINSTON_SLACK_LEVEL", parsingErrors),
     webhooks: {
-      priority: parseOptEnvString("WINSTON_SLACK_PRIORITY_WEBHOOK", parsingErrors),
-      all: parseOptEnvString("WINSTON_SLACK_NON_PRIORITY_WEBHOOK", parsingErrors),
+      priority: parseOptEnvString(
+        "WINSTON_SLACK_PRIORITY_WEBHOOK",
+        parsingErrors
+      ),
+      all: parseOptEnvString(
+        "WINSTON_SLACK_NON_PRIORITY_WEBHOOK",
+        parsingErrors
+      ),
     },
   },
   console: {
@@ -35,6 +41,9 @@ export const winston = {
 };
 
 export const database = {
+  host: parseEnvString("DB_HOST", parsingErrors),
+  user: parseEnvString("DB_USER", parsingErrors),
+  password: parseEnvString("DB_PASSWORD", parsingErrors),
   name: parseEnvString("DB_NAME", parsingErrors),
   autoPopulate: parseBoolean("DB_AUTO_POPULATE", parsingErrors),
 };

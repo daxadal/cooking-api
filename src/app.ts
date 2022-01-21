@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { NextFunction, Request, Response } from "express";
 
 import indexRouter from "@routes/index";
 import docsRouter from "@routes/docs";
@@ -22,13 +22,14 @@ app.use("/steps", stepsRouter);
 app.use("/utensils", utensilsRouter);
 
 // catch 404
-app.use((req, res, next) => {
+app.use((req, res) => {
   const logger = res.locals.logger || console;
   logger.error(`404 not found: ${req.originalUrl}`);
   res.status(404).send({ message: "Endpoint not found" });
 });
 
 // error handler
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const logger = res.locals.logger || console;
   logger.error("500 Internal server error:", err);

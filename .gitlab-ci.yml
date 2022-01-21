@@ -1,0 +1,62 @@
+default:
+  image: node:16-bullseye-slim
+  interruptible: true
+
+# This folders are cached between builds
+cache: &cache
+  paths:
+    - node_modules/
+    - dist/
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"' # Run when requested manually
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run on merge request
+      when: always
+    - when: never # Otherwise -> Don't pipeline
+
+stages:
+  - build
+  - test
+  - deploy
+
+compile:
+  stage: build
+  cache:
+    <<: *cache
+    policy: push
+  script:
+    - npm ci
+    - npm run docs
+    - npm run tsc
+
+jest:
+  stage: test
+  cache:
+    <<: *cache
+    policy: pull
+  services:
+    - name: mysql
+      alias: mysql-docker
+  variables:
+    MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+  script:
+    - cp $DOTENV_DEV .env
+    - DB_PASSWORD=$MYSQL_ROOT_PASSWORD npm test
+  artifacts:
+    when: always
+    paths:
+      - logs/
+      - junit.xml
+    reports:
+      junit:
+        - junit.xml
+
+lint:
+  stage: test
+  cache:
+    <<: *cache
+    policy: pull
+  script:
+    - npm run lint
