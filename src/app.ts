@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
+import cors from "cors";
 
 import indexRouter from "@routes/index";
 import docsRouter from "@routes/docs";
@@ -9,6 +10,8 @@ import utensilsRouter from "@routes/utensils";
 import { initLogger } from "@services/winston";
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
