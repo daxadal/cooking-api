@@ -1,13 +1,13 @@
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 
-import indexRouter from "@routes/index";
-import docsRouter from "@routes/docs";
-import ingredientsRouter from "@routes/ingredients";
-import recipesRouter from "@routes/recipes";
-import stepsRouter from "@routes/steps";
-import utensilsRouter from "@routes/utensils";
-import { initLogger } from "@services/winston";
+import indexRouter from "@/routes/index";
+import docsRouter from "@/routes/docs";
+import ingredientsRouter from "@/routes/ingredients";
+import recipesRouter from "@/routes/recipes";
+import stepsRouter from "@/routes/steps";
+import utensilsRouter from "@/routes/utensils";
+import { initLogger } from "@/services/winston";
 
 const app = express();
 

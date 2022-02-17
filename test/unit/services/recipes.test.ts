@@ -1,10 +1,10 @@
 import request from "supertest";
 
-import { closeConnection, createConnection } from "@services/db/setup";
-import { IngredientType } from "@services/db/ingredient";
-import app from "../../../src/app";
+import { closeConnection, createConnection } from "@/services/db/setup";
+import { IngredientType } from "@/services/db/ingredient";
+import app from "@/app";
 
-import { clearDatabase, createMockIngredient, createMockStep, createMockUtensil } from "../../mock/db";
+import { clearDatabase, createMockIngredient, createMockStep, createMockUtensil } from "test/mock/db";
 
 describe("The /recipes route", () => {
   beforeAll(async () => {

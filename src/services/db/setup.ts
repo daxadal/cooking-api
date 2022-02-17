@@ -5,8 +5,8 @@ import mysql, {
   RowDataPacket,
 } from "mysql2/promise";
 import path from "path";
-import { getLogger } from "@services/winston";
-import { database as dbConfig } from "@config/index";
+import { getLogger } from "@/services/winston";
+import { database as dbConfig } from "@/config/index";
 
 type Rows =
   | RowDataPacket[]

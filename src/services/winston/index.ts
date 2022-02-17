@@ -2,13 +2,13 @@ import TransportStream from "winston-transport";
 import { createLogger, format, Logger } from "winston";
 import { RequestHandler } from "express";
 
-import { winston as config, LogLevel } from "@config/index";
-import { extractAxios } from "@services/winston/formatters";
+import { winston as config, LogLevel } from "@/config/index";
+import { extractAxios } from "@/services/winston/formatters";
 import {
   getSlackTransport,
   getFileTransport,
   getConsoleTransport,
-} from "@services/winston/transports";
+} from "@/services/winston/transports";
 
 function getWinstonLevel(rawlevel: LogLevel): string {
   switch (rawlevel) {

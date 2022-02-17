@@ -1,8 +1,8 @@
 import "module-alias/register";
 
-import { getLogger } from "@services/winston";
-import { closeConnection, createConnection } from "@services/db/setup";
-import { configDebug, database as dbConfig } from "@config/index";
+import { getLogger } from "@/services/winston";
+import { closeConnection, createConnection } from "@/services/db/setup";
+import { configDebug, database as dbConfig } from "@/config/index";
 import app from "./app";
 
 const logger = getLogger();
@@ -21,7 +21,7 @@ else
   );
 
 if (configDebug.parsingErrors.length > 0) {
-  logger.error(`@config initialization failed`, {
+  logger.error(`@/config initialization failed`, {
     errors: configDebug.parsingErrors,
   });
   logger.info("Exiting on error...\n");

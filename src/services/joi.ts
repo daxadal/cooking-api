@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import Joi from "joi";
 
-import { getLogger } from "@services/winston";
+import { getLogger } from "@/services/winston";
 
 const logger = getLogger();
 

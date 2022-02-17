@@ -1,5 +1,5 @@
 import { OkPacket, RowDataPacket } from "mysql2/promise";
-import { query } from "@services/db/setup";
+import { query } from "@/services/db/setup";
 
 export enum IngredientType {
   START = "start",

@@ -1,7 +1,7 @@
 import express, { RequestHandler } from "express";
 
-import { Ingredient, Step } from "@services/db";
-import { validatePathId } from "@services/joi";
+import { Ingredient, Step } from "@/services/db";
+import { validatePathId } from "@/services/joi";
 
 const router = express.Router();
 router.use(express.json({ limit: "100kb" }));

@@ -1,6 +1,6 @@
 import express from "express";
 
-import { Step } from "@services/db";
+import { Step } from "@/services/db";
 
 const router = express.Router();
 
