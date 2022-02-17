@@ -1,4 +1,4 @@
-import { deepen, filterNullValues } from "@services/manipulation";
+import { deepen, filterNullValues } from "@/services/manipulation";
 
 describe("Object manipulation", () => {
   describe("Deepen object", () => {

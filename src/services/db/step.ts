@@ -1,8 +1,8 @@
 import { OkPacket, RowDataPacket } from "mysql2/promise";
-import { deepen } from "@services/manipulation";
-import { query } from "@services/db/setup";
-import { Ingredient } from "@services/db/ingredient";
-import { Utensil } from "@services/db/utensil";
+import { deepen } from "@/services/manipulation";
+import { query } from "@/services/db/setup";
+import { Ingredient } from "@/services/db/ingredient";
+import { Utensil } from "@/services/db/utensil";
 
 export interface SimpleStep {
   input: number;

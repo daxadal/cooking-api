@@ -1,6 +1,6 @@
 import express from "express";
 
-import { Recipe } from "@services/db";
+import { Recipe } from "@/services/db";
 
 const router = express.Router();
 

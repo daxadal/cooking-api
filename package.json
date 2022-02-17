@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "docs": "ts-node ./src/docs/generator.ts",
-    "lint": "eslint ./src ./test",
+    "lint": "eslint ./src ./test --max-warnings 0",
     "start": "npm run docs && npm run tsc && node ./dist/index.js",
     "tsc": "rm -rf ./dist && tsc -p tsconfig.compile.json",
     "test": "jest --runInBand",
@@ -47,9 +47,6 @@
     "typescript": "^4.3.5"
   },
   "_moduleAliases": {
-    "@config": "dist/config",
-    "@docs": "dist/docs",
-    "@routes": "dist/routes",
-    "@services": "dist/services"
+    "@": "dist"
   }
 }

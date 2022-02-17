@@ -3,7 +3,7 @@ import TransportStream from "winston-transport";
 import SlackHook from "winston-slack-webhook-transport";
 import { transports } from "winston";
 
-import { winston as config } from "@config/index";
+import { winston as config } from "@/config/index";
 import { fileAndConsoleFormatter, slackFormatter } from "./formatters";
 
 export const getSlackTransport = (

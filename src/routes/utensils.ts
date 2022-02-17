@@ -1,7 +1,7 @@
 import express, { RequestHandler } from "express";
 
-import { Step, Utensil } from "@services/db";
-import { validatePathId } from "@services/joi";
+import { Step, Utensil } from "@/services/db";
+import { validatePathId } from "@/services/joi";
 
 const router = express.Router();
 

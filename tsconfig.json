@@ -12,10 +12,7 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
-      "@config/*": ["src/config/*"],
-      "@docs/*": ["src/docs/*"],
-      "@routes/*": ["src/routes/*"],
-      "@services/*": ["src/services/*"]
+      "@/*": ["src/*"]
     },
     "esModuleInterop": true,
 
