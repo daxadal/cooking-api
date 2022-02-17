@@ -13,9 +13,7 @@ export interface Ingredient {
   type: IngredientType;
 }
 
-export async function get(
-  id: number
-): Promise<Ingredient | undefined> {
+export async function get(id: number): Promise<Ingredient | undefined> {
   const { rows } = await query<RowDataPacket[]>(
     "select * from ingredient where id = :id;",
     { id }
@@ -39,11 +37,7 @@ export async function create({
   return rows.insertId;
 }
 
-export async function update({
-  id,
-  name,
-  type,
-}: Ingredient): Promise<number> {
+export async function update({ id, name, type }: Ingredient): Promise<number> {
   const { rows } = await query<OkPacket>(
     "replace into ingredient (id, name, type) values (:id, :name, :type);",
     { id, name, type }
