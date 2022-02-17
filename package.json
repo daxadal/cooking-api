@@ -47,6 +47,7 @@
     "typescript": "^4.3.5"
   },
   "_moduleAliases": {
+    "@": "dist",
     "@config": "dist/config",
     "@docs": "dist/docs",
     "@routes": "dist/routes",
