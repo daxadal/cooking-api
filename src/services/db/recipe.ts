@@ -4,40 +4,52 @@ import { query } from "@services/db/setup";
 import { Ingredient } from "@services/db/ingredient";
 import { Utensil } from "@services/db/utensil";
 
-export interface IncompleteRecipe<
-  I extends Ingredient | number = number,
-  Ut extends Utensil | number = number
-> {
-  input: I;
-  utensil1: Ut;
-  mid1: I;
-  utensil2?: Ut;
-  mid2?: I;
-  utensil3?: Ut;
-  mid3?: I;
-  utetsil4?: Ut;
-  mid4?: I;
-  utensil5?: Ut;
-  mid5?: I;
+interface SimpleIncompleteRecipe {
+  input: number;
+  utensil1: number;
+  mid1: number;
+  utensil2?: number;
+  mid2?: number;
+  utensil3?: number;
+  mid3?: number;
+  utetsil4?: number;
+  mid4?: number;
+  utensil5?: number;
+  mid5?: number;
 }
 
-export interface Recipe<
-  I extends Ingredient | number = number,
-  Ut extends Utensil | number = number
-> extends IncompleteRecipe<I, Ut> {
+interface DetailedIncompleteRecipe {
+  input: Ingredient;
+  utensil1: Utensil;
+  mid1: Ingredient;
+  utensil2?: Utensil;
+  mid2?: Ingredient;
+  utensil3?: Utensil;
+  mid3?: Ingredient;
+  utetsil4?: Utensil;
+  mid4?: Ingredient;
+  utensil5?: Utensil;
+  mid5?: Ingredient;
+}
+
+export interface SimpleRecipe extends SimpleIncompleteRecipe {
   steps: number;
-  output: I;
+  output: number;
 }
 
-export type DetailedRecipe = Recipe<Ingredient, Utensil>;
+export interface DetailedRecipe extends DetailedIncompleteRecipe {
+  steps: number;
+  output: Ingredient;
+}
 
-const completeRecipe = <
-  I extends Ingredient | number,
-  Ut extends Utensil | number
->(
-  recipe: IncompleteRecipe<I, Ut>
-): Recipe<I, Ut> => {
-  let steps: number, output: I;
+export type Recipe = SimpleRecipe | DetailedRecipe;
+
+function completeRecipe(recipe: SimpleIncompleteRecipe): SimpleRecipe;
+function completeRecipe(recipe: DetailedIncompleteRecipe): DetailedRecipe;
+function completeRecipe(
+  recipe: SimpleIncompleteRecipe | DetailedIncompleteRecipe
+): SimpleRecipe | DetailedRecipe {
+  let steps: number, output: any;
   if (recipe.mid5) {
     steps = 5;
     output = recipe.mid5;
@@ -55,17 +67,17 @@ const completeRecipe = <
     output = recipe.mid1;
   }
   return { steps, ...recipe, output };
-};
+}
 
-export async function getAll(): Promise<Recipe[]> {
+export async function getAll(): Promise<SimpleRecipe[]> {
   const { rows, fields } = await query<RowDataPacket[]>(
     "select * from recipe;"
   );
   const cleanRows = rows.map((row) =>
     filterNullValues(row, fields)
-  ) as IncompleteRecipe[];
+  ) as SimpleIncompleteRecipe[];
   const completeRows = cleanRows.map((row) => completeRecipe(row));
-  return completeRows as Recipe[];
+  return completeRows as SimpleRecipe[];
 }
 
 export async function getAllDetailed(): Promise<DetailedRecipe[]> {
@@ -75,7 +87,7 @@ export async function getAllDetailed(): Promise<DetailedRecipe[]> {
   const cleanRows = rows.map((row) => filterNullValues(row, fields));
   const deepRows = cleanRows.map((row) =>
     deepen(row, Object.keys(row))
-  ) as IncompleteRecipe<Ingredient, Utensil>[];
+  ) as DetailedIncompleteRecipe[];
   const completeRows = deepRows.map((row) => completeRecipe(row));
   return completeRows as DetailedRecipe[];
 }
