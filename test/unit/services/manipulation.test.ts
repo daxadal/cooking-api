@@ -223,7 +223,11 @@ describe("Object manipulation", () => {
       };
 
       //when
-      const filteredObject = filterNullValues(object, ["field1", "field3", "field4"]);
+      const filteredObject = filterNullValues(object, [
+        "field1",
+        "field3",
+        "field4",
+      ]);
 
       //then
       const expectedObject = {
