@@ -56,7 +56,7 @@ router
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/SimpleStep'
+   *               $ref: '#/components/schemas/DetailedStep'
    *       400:
    *         $ref: '#/components/responses/400'
    *       500:

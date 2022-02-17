@@ -94,4 +94,28 @@ describe("The /steps route", () => {
       expect(response.body).toHaveLength(3);
     });
   });
+
+  describe("POST /steps", () => {
+    afterEach(() => clearTable("step"));
+
+    it("Creates an step", async () => {
+      // given
+      const body = {
+        input: 101,
+        utensil: 1,
+        output: 102,
+      };
+
+      // when
+      const response = await request(app).post("/steps").send(body);
+
+      // then
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject({
+        input: { id: 101 },
+        utensil: { id: 1 },
+        output: { id: 102 },
+      });
+    });
+  });
 });
