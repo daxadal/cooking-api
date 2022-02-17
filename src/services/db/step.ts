@@ -39,7 +39,9 @@ export async function getDetailed({
     "select * from detailed_step where input_id = :input and utensil_id = :utensil and output_id = :output;",
     { input, utensil, output }
   );
-  return rows.length > 0 ? (deepen(rows[0], fields) as DetailedStep) : undefined;
+  return rows.length > 0
+    ? (deepen(rows[0], fields) as DetailedStep)
+    : undefined;
 }
 
 export async function getAll(): Promise<SimpleStep[]> {
