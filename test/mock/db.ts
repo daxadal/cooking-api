@@ -12,6 +12,11 @@ export function clearDatabase(): Promise<QueryResult<OkPacket>[]> {
     query<OkPacket>("delete from step;"),
   ]);
 }
+export function clearTable(
+  table: "ingredient" | "utensil" | "step"
+): Promise<QueryResult<OkPacket>> {
+  return query<OkPacket>(`delete from ${table};`);
+}
 
 export async function createMockIngredient({
   id,

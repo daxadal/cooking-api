@@ -6,6 +6,7 @@ import app from "@/app";
 
 import {
   clearDatabase,
+  clearTable,
   createMockIngredient,
   createMockStep,
   createMockUtensil,
@@ -51,10 +52,6 @@ describe("The /steps route", () => {
       name: "utensil-3",
       waitTimeInMillis: 300,
     });
-
-    await createMockStep({ input: 101, utensil: 1, output: 102 });
-    await createMockStep({ input: 102, utensil: 2, output: 103 });
-    await createMockStep({ input: 102, utensil: 3, output: 104 });
   });
 
   afterAll(async () => {
@@ -63,6 +60,14 @@ describe("The /steps route", () => {
   });
 
   describe("GET /steps", () => {
+    beforeAll(async () => {
+      await createMockStep({ input: 101, utensil: 1, output: 102 });
+      await createMockStep({ input: 102, utensil: 2, output: 103 });
+      await createMockStep({ input: 102, utensil: 3, output: 104 });
+    });
+
+    afterAll(() => clearTable("step"));
+
     it("Returns an array of steps", async () => {
       // given
 
