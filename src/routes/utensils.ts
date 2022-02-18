@@ -1,6 +1,7 @@
 import express, { RequestHandler } from "express";
 
 import { Step, Utensil } from "@/services/db";
+import type { Utensil as TUtensil } from "@/services/schemas";
 import { validatePathId } from "@/services/joi";
 
 const router = express.Router();
@@ -138,7 +139,7 @@ router
    *         $ref: '#/components/responses/500'
    */
   .put(async function (req, res) {
-    const utensil: Utensil.Utensil = res.locals.utensil;
+    const utensil: TUtensil = res.locals.utensil;
     const { name, waitTimeInMillis } = req.body;
     const id = await Utensil.update({ id: utensil.id, name, waitTimeInMillis });
     const utensilUpdated = await Utensil.get(id);
@@ -165,7 +166,7 @@ router
    *         $ref: '#/components/responses/500'
    */
   .delete(async function (req, res) {
-    const utensil: Utensil.Utensil = res.locals.utensil;
+    const utensil: TUtensil = res.locals.utensil;
     const deletedRowsCount = await Utensil.destroy(utensil.id);
     if (deletedRowsCount === 1) res.status(204).send();
     else

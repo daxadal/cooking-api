@@ -1,6 +1,8 @@
 import express, { RequestHandler } from "express";
 
 import { Ingredient, Step } from "@/services/db";
+import type { Ingredient as TIngredient } from "@/services/schemas";
+import { IngredientType } from "@/services/schemas";
 import { validatePathId } from "@/services/joi";
 
 const router = express.Router();
@@ -139,7 +141,7 @@ router
    *         $ref: '#/components/responses/500'
    */
   .put(async function (req, res) {
-    const ingredient: Ingredient.Ingredient = res.locals.ingredient;
+    const ingredient: TIngredient = res.locals.ingredient;
     const { name, type } = req.body;
     const id = await Ingredient.update({ id: ingredient.id, name, type });
     const ingredientUpdated = await Ingredient.get(id);
@@ -166,7 +168,7 @@ router
    *         $ref: '#/components/responses/500'
    */
   .delete(async function (req, res) {
-    const ingredient: Ingredient.Ingredient = res.locals.ingredient;
+    const ingredient: TIngredient = res.locals.ingredient;
     const deletedRowsCount = await Ingredient.destroy(ingredient.id);
     if (deletedRowsCount === 1) res.status(204).send();
     else
@@ -200,8 +202,8 @@ router
  *         $ref: '#/components/responses/500'
  */
 router.get("/:id(\\d+)/outcomes", async function (req, res) {
-  const ingredient: Ingredient.Ingredient = res.locals.ingredient;
-  if (ingredient.type === Ingredient.IngredientType.END) {
+  const ingredient: TIngredient = res.locals.ingredient;
+  if (ingredient.type === IngredientType.END) {
     res.status(400).send({
       message: "This is an end ingredient. It cannot be cooked further.",
     });
@@ -236,8 +238,8 @@ router.get("/:id(\\d+)/outcomes", async function (req, res) {
  *         $ref: '#/components/responses/500'
  */
 router.get("/:id(\\d+)/sources", async function (req, res) {
-  const ingredient: Ingredient.Ingredient = res.locals.ingredient;
-  if (ingredient.type === Ingredient.IngredientType.START) {
+  const ingredient: TIngredient = res.locals.ingredient;
+  if (ingredient.type === IngredientType.START) {
     res.status(400).send({
       message:
         "This is an start ingredient. It cannot have been cooked before.",
