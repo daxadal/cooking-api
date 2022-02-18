@@ -1,11 +1,7 @@
 import { OkPacket, RowDataPacket } from "mysql2/promise";
-import { query } from "@/services/db/setup";
 
-export interface Utensil {
-  id: number;
-  name: string;
-  waitTimeInMillis: number;
-}
+import { query } from "@/services/db/setup";
+import type { Utensil } from "@/services/schemas";
 
 export async function get(id: number): Promise<Utensil | undefined> {
   const { rows } = await query<RowDataPacket[]>(

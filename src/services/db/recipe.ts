@@ -1,48 +1,13 @@
 import { RowDataPacket } from "mysql2/promise";
+
 import { deepen, filterNullValues } from "@/services/manipulation";
 import { query } from "@/services/db/setup";
-import { Ingredient } from "@/services/db/ingredient";
-import { Utensil } from "@/services/db/utensil";
-
-interface SimpleIncompleteRecipe {
-  input: number;
-  utensil1: number;
-  mid1: number;
-  utensil2?: number;
-  mid2?: number;
-  utensil3?: number;
-  mid3?: number;
-  utetsil4?: number;
-  mid4?: number;
-  utensil5?: number;
-  mid5?: number;
-}
-
-interface DetailedIncompleteRecipe {
-  input: Ingredient;
-  utensil1: Utensil;
-  mid1: Ingredient;
-  utensil2?: Utensil;
-  mid2?: Ingredient;
-  utensil3?: Utensil;
-  mid3?: Ingredient;
-  utetsil4?: Utensil;
-  mid4?: Ingredient;
-  utensil5?: Utensil;
-  mid5?: Ingredient;
-}
-
-export interface SimpleRecipe extends SimpleIncompleteRecipe {
-  steps: number;
-  output: number;
-}
-
-export interface DetailedRecipe extends DetailedIncompleteRecipe {
-  steps: number;
-  output: Ingredient;
-}
-
-export type Recipe = SimpleRecipe | DetailedRecipe;
+import type {
+  DetailedIncompleteRecipe,
+  DetailedRecipe,
+  SimpleIncompleteRecipe,
+  SimpleRecipe,
+} from "@/services/schemas";
 
 function completeRecipe(recipe: SimpleIncompleteRecipe): SimpleRecipe;
 function completeRecipe(recipe: DetailedIncompleteRecipe): DetailedRecipe;
