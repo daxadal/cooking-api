@@ -62,7 +62,7 @@ describe("The /recipes route", () => {
     closeConnection();
   });
 
-  describe("GET /recipes", () => {
+  xdescribe("GET /recipes", () => {
     it("Returns an array of recipes", async () => {
       // given
 

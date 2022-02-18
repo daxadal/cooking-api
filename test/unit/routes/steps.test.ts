@@ -1,7 +1,7 @@
 import request from "supertest";
 
 import { closeConnection, createConnection } from "@/services/db/setup";
-import { IngredientType } from "@/services/schemas";
+import { IngredientType, Step } from "@/services/schemas";
 import app from "@/app";
 
 import {
@@ -68,20 +68,53 @@ describe("The /steps route", () => {
 
     afterAll(() => clearTable("step"));
 
-    it("Returns an array of steps", async () => {
+    it.each`
+      query                          | condition
+      ${"?detailed=whatIsThisValue"} | ${"the detail parameter has an invalid value"}
+      ${"?detailed"}                 | ${"the detail parameter has no value"}
+    `("Returns 400 if $condition", async ({ query }) => {
       // given
 
       // when
-      const response = await request(app).get("/steps");
+      const response = await request(app).get("/steps" + query);
 
       // then
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(400);
       expect(response.body).toBeDefined();
-      expect(response.body).toBeInstanceOf(Array);
-      expect(response.body).toHaveLength(3);
+      expect(response.body.message).toEqual('"detailed" must be a boolean');
     });
 
-    it("Returns an array of detailed steps", async () => {
+    it.each`
+      query                | condition
+      ${""}                | ${"the datailed parameter is not present"}
+      ${"?detailed=false"} | ${"'detailed=false'"}
+    `(
+      "Returns 200 and an array of simple steps if $condition",
+      async ({ query }) => {
+        // given
+
+        // when
+        const response = await request(app).get("/steps" + query);
+
+        // then
+        expect(response.status).toBe(200);
+        expect(response.body).toBeDefined();
+        expect(response.body).toBeInstanceOf(Array);
+        expect(response.body).toHaveLength(3);
+
+        response.body.forEach((step: Step) => {
+          expect(step).toHaveProperty("input");
+          expect(step).toHaveProperty("utensil");
+          expect(step).toHaveProperty("output");
+
+          expect(typeof step.input).toBe("number");
+          expect(typeof step.utensil).toBe("number");
+          expect(typeof step.output).toBe("number");
+        });
+      }
+    );
+
+    it("Returns 200 and an array of detailed steps if 'detailed=true'", async () => {
       // given
 
       // when
@@ -92,10 +125,20 @@ describe("The /steps route", () => {
       expect(response.body).toBeDefined();
       expect(response.body).toBeInstanceOf(Array);
       expect(response.body).toHaveLength(3);
+
+      response.body.forEach((step: Step) => {
+        expect(step).toHaveProperty("input");
+        expect(step).toHaveProperty("utensil");
+        expect(step).toHaveProperty("output");
+
+        expect(typeof step.input).toBe("object");
+        expect(typeof step.utensil).toBe("object");
+        expect(typeof step.output).toBe("object");
+      });
     });
   });
 
-  describe("POST /steps", () => {
+  xdescribe("POST /steps", () => {
     afterEach(() => clearTable("step"));
 
     it.each`
