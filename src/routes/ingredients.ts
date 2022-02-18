@@ -1,7 +1,12 @@
 import express, { RequestHandler } from "express";
 
 import { Ingredient, Step } from "@/services/db";
-import { validatePathId } from "@/services/joi";
+import {
+  Ingredient as TIngredient,
+  IngredientType,
+  IngredientData,
+} from "@/services/schemas";
+import { validateBody, validatePathId } from "@/services/joi";
 
 const router = express.Router();
 router.use(express.json({ limit: "100kb" }));
@@ -32,8 +37,6 @@ const loadIngredient: RequestHandler = async (req, res, next) => {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Ingredient'
- *       400:
- *         $ref: '#/components/responses/400'
  *       500:
  *         $ref: '#/components/responses/500'
  */
@@ -70,8 +73,8 @@ router
    *       500:
    *         $ref: '#/components/responses/500'
    */
-  .post(async function (req, res) {
-    const { name, type } = req.body;
+  .post(validateBody(IngredientData), async function (req, res) {
+    const { name, type } = req.body as IngredientData;
     const newId = await Ingredient.create({ name, type });
     const ingredient = await Ingredient.get(newId);
     res.status(200).send(ingredient);
@@ -138,9 +141,9 @@ router
    *       500:
    *         $ref: '#/components/responses/500'
    */
-  .put(async function (req, res) {
-    const ingredient: Ingredient.Ingredient = res.locals.ingredient;
-    const { name, type } = req.body;
+  .put(validateBody(IngredientData), async function (req, res) {
+    const ingredient = res.locals.ingredient as TIngredient;
+    const { name, type } = req.body as IngredientData;
     const id = await Ingredient.update({ id: ingredient.id, name, type });
     const ingredientUpdated = await Ingredient.get(id);
     res.status(200).send(ingredientUpdated);
@@ -166,7 +169,7 @@ router
    *         $ref: '#/components/responses/500'
    */
   .delete(async function (req, res) {
-    const ingredient: Ingredient.Ingredient = res.locals.ingredient;
+    const ingredient = res.locals.ingredient as TIngredient;
     const deletedRowsCount = await Ingredient.destroy(ingredient.id);
     if (deletedRowsCount === 1) res.status(204).send();
     else
@@ -200,8 +203,8 @@ router
  *         $ref: '#/components/responses/500'
  */
 router.get("/:id(\\d+)/outcomes", async function (req, res) {
-  const ingredient: Ingredient.Ingredient = res.locals.ingredient;
-  if (ingredient.type === Ingredient.IngredientType.END) {
+  const ingredient = res.locals.ingredient as TIngredient;
+  if (ingredient.type === IngredientType.END) {
     res.status(400).send({
       message: "This is an end ingredient. It cannot be cooked further.",
     });
@@ -236,8 +239,8 @@ router.get("/:id(\\d+)/outcomes", async function (req, res) {
  *         $ref: '#/components/responses/500'
  */
 router.get("/:id(\\d+)/sources", async function (req, res) {
-  const ingredient: Ingredient.Ingredient = res.locals.ingredient;
-  if (ingredient.type === Ingredient.IngredientType.START) {
+  const ingredient = res.locals.ingredient as TIngredient;
+  if (ingredient.type === IngredientType.START) {
     res.status(400).send({
       message:
         "This is an start ingredient. It cannot have been cooked before.",

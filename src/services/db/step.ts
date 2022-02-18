@@ -1,22 +1,8 @@
 import { OkPacket, RowDataPacket } from "mysql2/promise";
+
 import { deepen } from "@/services/manipulation";
 import { query } from "@/services/db/setup";
-import { Ingredient } from "@/services/db/ingredient";
-import { Utensil } from "@/services/db/utensil";
-
-export interface SimpleStep {
-  input: number;
-  utensil: number;
-  output: number;
-}
-
-export interface DetailedStep {
-  input: Ingredient;
-  utensil: Utensil;
-  output: Ingredient;
-}
-
-export type Step = SimpleStep | DetailedStep;
+import type { DetailedStep, SimpleStep } from "@/services/schemas";
 
 export async function get({
   input,

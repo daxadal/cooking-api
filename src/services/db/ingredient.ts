@@ -1,17 +1,7 @@
 import { OkPacket, RowDataPacket } from "mysql2/promise";
+
 import { query } from "@/services/db/setup";
-
-export enum IngredientType {
-  START = "start",
-  MID = "mid",
-  END = "end",
-}
-
-export interface Ingredient {
-  id: number;
-  name: string;
-  type: IngredientType;
-}
+import type { Ingredient } from "@/services/schemas";
 
 export async function get(id: number): Promise<Ingredient | undefined> {
   const { rows } = await query<RowDataPacket[]>(

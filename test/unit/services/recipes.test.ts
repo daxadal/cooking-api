@@ -1,7 +1,7 @@
 import request from "supertest";
 
 import { closeConnection, createConnection } from "@/services/db/setup";
-import { IngredientType } from "@/services/db/ingredient";
+import { IngredientType } from "@/services/schemas";
 import app from "@/app";
 
 import {
