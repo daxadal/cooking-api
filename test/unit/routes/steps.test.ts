@@ -1,7 +1,7 @@
 import request from "supertest";
 
 import { closeConnection, createConnection } from "@/services/db/setup";
-import { IngredientType, Step } from "@/services/schemas";
+import { IngredientType, Step as StepType } from "@/services/schemas";
 import app from "@/app";
 
 import {
@@ -11,6 +11,7 @@ import {
   createMockStep,
   createMockUtensil,
 } from "test/mock/db";
+import { Step } from "@/services/db";
 
 describe("The /steps route", () => {
   beforeAll(async () => {
@@ -102,7 +103,7 @@ describe("The /steps route", () => {
         expect(response.body).toBeInstanceOf(Array);
         expect(response.body).toHaveLength(3);
 
-        response.body.forEach((step: Step) => {
+        response.body.forEach((step: StepType) => {
           expect(step).toHaveProperty("input");
           expect(step).toHaveProperty("utensil");
           expect(step).toHaveProperty("output");
@@ -126,7 +127,7 @@ describe("The /steps route", () => {
       expect(response.body).toBeInstanceOf(Array);
       expect(response.body).toHaveLength(3);
 
-      response.body.forEach((step: Step) => {
+      response.body.forEach((step: StepType) => {
         expect(step).toHaveProperty("input");
         expect(step).toHaveProperty("utensil");
         expect(step).toHaveProperty("output");
@@ -178,6 +179,48 @@ describe("The /steps route", () => {
         utensil: { id: 1 },
         output: { id: 102 },
       });
+    });
+  });
+
+  describe("DELETE /steps", () => {
+    afterEach(() => clearTable("step"));
+
+    it.each`
+      body                           | message                    | reason
+      ${undefined}                   | ${/is required/}           | ${"is undefined"}
+      ${{}}                          | ${/is required/}           | ${"is empty"}
+      ${{ utensil: 1, output: 102 }} | ${/"input" is required/}   | ${"has no input field"}
+      ${{ input: 101, output: 102 }} | ${/"utensil" is required/} | ${"has no utensil field"}
+      ${{ input: 101, utensil: 1 }}  | ${/"output" is required/}  | ${"has no output field"}
+    `("Returns 400 if the body $reason", async ({ body, message }) => {
+      // given
+
+      // when
+      const response = await request(app).delete("/steps").send(body);
+
+      // then
+      expect(response.status).toEqual(400);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toMatch(message);
+    });
+
+    it("Returns 204 after deleting the step", async () => {
+      // given
+      const body = {
+        input: 101,
+        utensil: 1,
+        output: 102,
+      };
+      await Step.create(body);
+
+      // when
+      const response = await request(app).delete("/steps").send(body);
+
+      // then
+      expect(response.status).toBe(204);
+      expect(response.body).toStrictEqual({});
+
+      expect(await Step.get(body)).toBeUndefined();
     });
   });
 });
