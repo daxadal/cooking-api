@@ -30,8 +30,9 @@ const router = express.Router();
 router
   .route("/")
   .get(validateQuery(DetailedQuery), async function (req, res) {
-    const detailed = req.query.detailed === "true";
-    const steps = detailed ? await Step.getAllDetailed() : await Step.getAll();
+    const steps = req.query.detailed
+      ? await Step.getAllDetailed()
+      : await Step.getAll();
     res.status(200).send(steps);
   })
 

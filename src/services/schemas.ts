@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const DetailedQuery = Joi.object({
-  detailed: Joi.valid("true", "false"),
+  detailed: Joi.bool(),
 });
 
 // #region --- Ingredient
