@@ -138,7 +138,7 @@ describe("The /steps route", () => {
     });
   });
 
-  xdescribe("POST /steps", () => {
+  describe("POST /steps", () => {
     afterEach(() => clearTable("step"));
 
     it.each`
