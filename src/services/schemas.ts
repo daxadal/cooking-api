@@ -1,5 +1,9 @@
 import Joi from "joi";
 
+export const DetailedQuery = Joi.object({
+  detailed: Joi.valid("true", "false"),
+});
+
 // #region --- Ingredient
 
 export enum IngredientType {
@@ -24,12 +28,6 @@ export interface Ingredient {
   type: IngredientType;
 }
 
-export const Ingredient = Joi.object<Ingredient>({
-  id: Joi.number().integer(),
-  name: Joi.string(),
-  type: Joi.valid(...Object.values(IngredientType)),
-});
-
 // #endregion --- Ingredient
 
 // #region --- Utensil
@@ -50,19 +48,9 @@ export interface Utensil {
   waitTimeInMillis: number;
 }
 
-export const Utensil = Joi.object({
-  id: Joi.number().integer(),
-  name: Joi.string(),
-  waitTimeInMillis: Joi.number().integer(),
-});
-
 // #endregion --- Utensil
 
 // #region --- Step
-
-export const DetailedQuery = Joi.object({
-  detailed: Joi.valid("true", "false"),
-});
 
 export interface SimpleStep {
   input: number;
@@ -81,12 +69,6 @@ export interface DetailedStep {
   utensil: Utensil;
   output: Ingredient;
 }
-
-export const DetailedStep = Joi.object({
-  input: Ingredient,
-  utensil: Utensil,
-  output: Ingredient,
-});
 
 export type Step = SimpleStep | DetailedStep;
 
