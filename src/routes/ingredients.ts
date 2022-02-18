@@ -142,7 +142,7 @@ router
    *         $ref: '#/components/responses/500'
    */
   .put(validateBody(IngredientData), async function (req, res) {
-    const ingredient: TIngredient = res.locals.ingredient;
+    const ingredient = res.locals.ingredient as TIngredient;
     const { name, type } = req.body as IngredientData;
     const id = await Ingredient.update({ id: ingredient.id, name, type });
     const ingredientUpdated = await Ingredient.get(id);
@@ -169,7 +169,7 @@ router
    *         $ref: '#/components/responses/500'
    */
   .delete(async function (req, res) {
-    const ingredient: TIngredient = res.locals.ingredient;
+    const ingredient = res.locals.ingredient as TIngredient;
     const deletedRowsCount = await Ingredient.destroy(ingredient.id);
     if (deletedRowsCount === 1) res.status(204).send();
     else
@@ -203,7 +203,7 @@ router
  *         $ref: '#/components/responses/500'
  */
 router.get("/:id(\\d+)/outcomes", async function (req, res) {
-  const ingredient: TIngredient = res.locals.ingredient;
+  const ingredient = res.locals.ingredient as TIngredient;
   if (ingredient.type === IngredientType.END) {
     res.status(400).send({
       message: "This is an end ingredient. It cannot be cooked further.",
@@ -239,7 +239,7 @@ router.get("/:id(\\d+)/outcomes", async function (req, res) {
  *         $ref: '#/components/responses/500'
  */
 router.get("/:id(\\d+)/sources", async function (req, res) {
-  const ingredient: TIngredient = res.locals.ingredient;
+  const ingredient = res.locals.ingredient as TIngredient;
   if (ingredient.type === IngredientType.START) {
     res.status(400).send({
       message:

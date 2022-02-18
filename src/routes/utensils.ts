@@ -137,7 +137,7 @@ router
    *         $ref: '#/components/responses/500'
    */
   .put(validateBody(UtensilData), async function (req, res) {
-    const utensil: TUtensil = res.locals.utensil;
+    const utensil = res.locals.utensil as TUtensil;
     const { name, waitTimeInMillis } = req.body as UtensilData;
     const id = await Utensil.update({ id: utensil.id, name, waitTimeInMillis });
     const utensilUpdated = await Utensil.get(id);
@@ -164,7 +164,7 @@ router
    *         $ref: '#/components/responses/500'
    */
   .delete(async function (req, res) {
-    const utensil: TUtensil = res.locals.utensil;
+    const utensil = res.locals.utensil as TUtensil;
     const deletedRowsCount = await Utensil.destroy(utensil.id);
     if (deletedRowsCount === 1) res.status(204).send();
     else
