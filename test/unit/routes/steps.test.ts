@@ -1,7 +1,7 @@
 import request from "supertest";
 
 import { closeConnection, createConnection } from "@/services/db/setup";
-import { IngredientType } from "@/services/db/ingredient";
+import { IngredientType } from "@/services/schemas";
 import app from "@/app";
 
 import {
@@ -98,7 +98,7 @@ describe("The /steps route", () => {
   describe("POST /steps", () => {
     afterEach(() => clearTable("step"));
 
-    xit.each`
+    it.each`
       body                           | message                    | reason
       ${undefined}                   | ${/is required/}           | ${"is undefined"}
       ${{}}                          | ${/is required/}           | ${"is empty"}
