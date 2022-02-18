@@ -22,8 +22,6 @@ const router = express.Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Step'
- *       400:
- *         $ref: '#/components/responses/400'
  *       500:
  *         $ref: '#/components/responses/500'
  */

@@ -310,9 +310,6 @@
               }
             }
           },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
           "500": {
             "$ref": "#/components/responses/500"
           }
@@ -340,7 +337,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SimpleStep"
+                  "$ref": "#/components/schemas/DetailedStep"
                 }
               }
             }
