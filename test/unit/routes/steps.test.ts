@@ -98,7 +98,26 @@ describe("The /steps route", () => {
   describe("POST /steps", () => {
     afterEach(() => clearTable("step"));
 
-    it("Creates an step", async () => {
+    xit.each`
+      body                           | message                    | reason
+      ${undefined}                   | ${/is required/}           | ${"is undefined"}
+      ${{}}                          | ${/is required/}           | ${"is empty"}
+      ${{ utensil: 1, output: 102 }} | ${/"input" is required/}   | ${"has no input field"}
+      ${{ input: 101, output: 102 }} | ${/"utensil" is required/} | ${"has no utensil field"}
+      ${{ input: 101, utensil: 1 }}  | ${/"output" is required/}  | ${"has no output field"}
+    `("Returns 400 if the body $reason", async ({ body, message }) => {
+      // given
+
+      // when
+      const response = await request(app).post("/steps").send(body);
+
+      // then
+      expect(response.status).toEqual(400);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toMatch(message);
+    });
+
+    it("Returns 200 and the creted step", async () => {
       // given
       const body = {
         input: 101,
