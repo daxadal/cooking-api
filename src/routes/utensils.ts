@@ -1,8 +1,8 @@
 import express, { RequestHandler } from "express";
 
 import { Step, Utensil } from "@/services/db";
-import type { Utensil as TUtensil } from "@/services/schemas";
-import { validatePathId } from "@/services/joi";
+import { Utensil as TUtensil, UtensilData } from "@/services/schemas";
+import { validateBody, validatePathId } from "@/services/joi";
 
 const router = express.Router();
 
@@ -32,8 +32,6 @@ const loadUtensil: RequestHandler = async function (req, res, next) {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Utensil'
- *       400:
- *         $ref: '#/components/responses/400'
  *       500:
  *         $ref: '#/components/responses/500'
  */
@@ -70,8 +68,8 @@ router
    *       500:
    *         $ref: '#/components/responses/500'
    */
-  .post(async function (req, res) {
-    const { name, waitTimeInMillis } = req.body;
+  .post(validateBody(UtensilData), async function (req, res) {
+    const { name, waitTimeInMillis } = req.body as UtensilData;
     const id = await Utensil.create({ name, waitTimeInMillis });
     const utensil = await Utensil.get(id);
     res.status(200).send(utensil);
@@ -138,9 +136,9 @@ router
    *       500:
    *         $ref: '#/components/responses/500'
    */
-  .put(async function (req, res) {
+  .put(validateBody(UtensilData), async function (req, res) {
     const utensil: TUtensil = res.locals.utensil;
-    const { name, waitTimeInMillis } = req.body;
+    const { name, waitTimeInMillis } = req.body as UtensilData;
     const id = await Utensil.update({ id: utensil.id, name, waitTimeInMillis });
     const utensilUpdated = await Utensil.get(id);
     res.status(200).send(utensilUpdated);

@@ -1,9 +1,12 @@
 import express, { RequestHandler } from "express";
 
 import { Ingredient, Step } from "@/services/db";
-import type { Ingredient as TIngredient } from "@/services/schemas";
-import { IngredientType } from "@/services/schemas";
-import { validatePathId } from "@/services/joi";
+import {
+  Ingredient as TIngredient,
+  IngredientType,
+  IngredientData,
+} from "@/services/schemas";
+import { validateBody, validatePathId } from "@/services/joi";
 
 const router = express.Router();
 router.use(express.json({ limit: "100kb" }));
@@ -34,8 +37,6 @@ const loadIngredient: RequestHandler = async (req, res, next) => {
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Ingredient'
- *       400:
- *         $ref: '#/components/responses/400'
  *       500:
  *         $ref: '#/components/responses/500'
  */
@@ -72,8 +73,8 @@ router
    *       500:
    *         $ref: '#/components/responses/500'
    */
-  .post(async function (req, res) {
-    const { name, type } = req.body;
+  .post(validateBody(IngredientData), async function (req, res) {
+    const { name, type } = req.body as IngredientData;
     const newId = await Ingredient.create({ name, type });
     const ingredient = await Ingredient.get(newId);
     res.status(200).send(ingredient);
@@ -140,9 +141,9 @@ router
    *       500:
    *         $ref: '#/components/responses/500'
    */
-  .put(async function (req, res) {
+  .put(validateBody(IngredientData), async function (req, res) {
     const ingredient: TIngredient = res.locals.ingredient;
-    const { name, type } = req.body;
+    const { name, type } = req.body as IngredientData;
     const id = await Ingredient.update({ id: ingredient.id, name, type });
     const ingredientUpdated = await Ingredient.get(id);
     res.status(200).send(ingredientUpdated);

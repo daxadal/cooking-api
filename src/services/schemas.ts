@@ -60,6 +60,10 @@ export const Utensil = Joi.object({
 
 // #region --- Step
 
+export const DetailedQuery = Joi.object({
+  detailed: Joi.valid("true", "false"),
+});
+
 export interface SimpleStep {
   input: number;
   utensil: number;

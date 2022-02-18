@@ -1,6 +1,8 @@
 import express from "express";
 
 import { Step } from "@/services/db";
+import { validateBody, validateQuery } from "@/services/joi";
+import { DetailedQuery, SimpleStep } from "@/services/schemas";
 
 const router = express.Router();
 
@@ -29,10 +31,9 @@ const router = express.Router();
  */
 router
   .route("/")
-  .get(async function (req, res) {
-    const steps = req.query.detailed
-      ? await Step.getAllDetailed()
-      : await Step.getAll();
+  .get(validateQuery(DetailedQuery), async function (req, res) {
+    const detailed = req.query.detailed === "true";
+    const steps = detailed ? await Step.getAllDetailed() : await Step.getAll();
     res.status(200).send(steps);
   })
 
@@ -62,8 +63,8 @@ router
    *       500:
    *         $ref: '#/components/responses/500'
    */
-  .post(async function (req, res) {
-    const { input, utensil, output } = req.body;
+  .post(validateBody(SimpleStep), async function (req, res) {
+    const { input, utensil, output } = req.body as SimpleStep;
     await Step.create({ input, utensil, output });
     const step = await Step.getDetailed({ input, utensil, output });
     res.status(200).send(step);
@@ -93,8 +94,8 @@ router
    *       500:
    *         $ref: '#/components/responses/500'
    */
-  .delete(async function (req, res) {
-    const { input, utensil, output } = req.body;
+  .delete(validateBody(SimpleStep), async function (req, res) {
+    const { input, utensil, output } = req.body as SimpleStep;
     const deletedRowsCount = await Step.destroy({ input, utensil, output });
     if (deletedRowsCount === 1) res.status(204).send();
     else if (deletedRowsCount === 0)
