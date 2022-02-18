@@ -1,9 +1,7 @@
 import { OkPacket } from "mysql2/promise";
 
 import { query, QueryResult } from "@/services/db/setup";
-import { Ingredient } from "@/services/db/ingredient";
-import { Utensil } from "@/services/db/utensil";
-import { SimpleStep } from "@/services/db/step";
+import type { Ingredient, SimpleStep, Utensil } from "@/services/schemas";
 
 export function clearDatabase(): Promise<QueryResult<OkPacket>[]> {
   return Promise.all([

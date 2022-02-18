@@ -1,6 +1,8 @@
 import express from "express";
 
 import { Recipe } from "@/services/db";
+import { DetailedQuery } from "@/services/schemas";
+import { validateQuery } from "@/services/joi";
 
 const router = express.Router();
 
@@ -27,8 +29,9 @@ const router = express.Router();
  *       500:
  *         $ref: '#/components/responses/500'
  */
-router.get("/", async function (req, res) {
-  const recipes = req.query.detailed
+router.get("/", validateQuery(DetailedQuery), async function (req, res) {
+  const detailed = req.query.detailed === "true";
+  const recipes = detailed
     ? await Recipe.getAllDetailed()
     : await Recipe.getAll();
   res.status(200).send(recipes);
