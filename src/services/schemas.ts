@@ -18,8 +18,8 @@ export interface IngredientData {
 }
 
 export const IngredientData = Joi.object({
-  name: Joi.string(),
-  type: Joi.valid(...Object.values(IngredientType)),
+  name: Joi.string().required(),
+  type: Joi.valid(...Object.values(IngredientType)).required(),
 });
 
 export interface Ingredient {
@@ -38,8 +38,8 @@ export interface UtensilData {
 }
 
 export const UtensilData = Joi.object({
-  name: Joi.string(),
-  waitTimeInMillis: Joi.number().integer(),
+  name: Joi.string().required(),
+  waitTimeInMillis: Joi.number().integer().required(),
 });
 
 export interface Utensil {
@@ -59,9 +59,9 @@ export interface SimpleStep {
 }
 
 export const SimpleStep = Joi.object({
-  input: Joi.number().integer(),
-  utensil: Joi.number().integer(),
-  output: Joi.number().integer(),
+  input: Joi.number().integer().required(),
+  utensil: Joi.number().integer().required(),
+  output: Joi.number().integer().required(),
 });
 
 export interface DetailedStep {
