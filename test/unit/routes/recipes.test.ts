@@ -1,7 +1,7 @@
 import request from "supertest";
 
 import { closeConnection, createConnection } from "@/services/db/setup";
-import { IngredientType } from "@/services/schemas";
+import { IngredientType, Recipe } from "@/services/schemas";
 import app from "@/app";
 
 import {
@@ -63,20 +63,55 @@ describe("The /recipes route", () => {
   });
 
   describe("GET /recipes", () => {
-    it("Returns an array of recipes", async () => {
+    it.each`
+      query                          | condition
+      ${"?detailed=whatIsThisValue"} | ${"the detail parameter has an invalid value"}
+      ${"?detailed"}                 | ${"the detail parameter has no value"}
+    `("Returns 400 if $condition", async ({ query }) => {
       // given
 
       // when
-      const response = await request(app).get("/recipes");
+      const response = await request(app).get("/recipes" + query);
 
       // then
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(400);
       expect(response.body).toBeDefined();
-      expect(response.body).toBeInstanceOf(Array);
-      expect(response.body).toHaveLength(2);
+      expect(response.body.message).toEqual('"detailed" must be a boolean');
     });
 
-    it("Returns an array of detailed recipes", async () => {
+    it.each`
+      query                | condition
+      ${""}                | ${"the datailed parameter is not present"}
+      ${"?detailed=false"} | ${"'detailed=false'"}
+    `(
+      "Returns 200 and an array of simple steps if $condition",
+      async ({ query }) => {
+        // given
+
+        // when
+        const response = await request(app).get("/recipes" + query);
+
+        // then
+        expect(response.status).toBe(200);
+        expect(response.body).toBeDefined();
+        expect(response.body).toBeInstanceOf(Array);
+        expect(response.body).toHaveLength(2);
+
+        response.body.forEach((recipe: Recipe) => {
+          expect(recipe).toHaveProperty("input");
+          expect(recipe).toHaveProperty("utensil1");
+          expect(recipe).toHaveProperty("mid1");
+          expect(recipe).toHaveProperty("output");
+
+          expect(typeof recipe.input).toBe("number");
+          expect(typeof recipe.utensil1).toBe("number");
+          expect(typeof recipe.mid1).toBe("number");
+          expect(typeof recipe.output).toBe("number");
+        });
+      }
+    );
+
+    it("Returns 200 and an array of detailed steps if 'detailed=true'", async () => {
       // given
 
       // when
@@ -87,6 +122,18 @@ describe("The /recipes route", () => {
       expect(response.body).toBeDefined();
       expect(response.body).toBeInstanceOf(Array);
       expect(response.body).toHaveLength(2);
+
+      response.body.forEach((recipe: Recipe) => {
+        expect(recipe).toHaveProperty("input");
+        expect(recipe).toHaveProperty("utensil1");
+        expect(recipe).toHaveProperty("mid1");
+        expect(recipe).toHaveProperty("output");
+
+        expect(typeof recipe.input).toBe("object");
+        expect(typeof recipe.utensil1).toBe("object");
+        expect(typeof recipe.mid1).toBe("object");
+        expect(typeof recipe.output).toBe("object");
+      });
     });
   });
 });

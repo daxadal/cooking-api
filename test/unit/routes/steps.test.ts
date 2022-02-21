@@ -161,7 +161,7 @@ describe("The /steps route", () => {
       expect(response.body.message).toMatch(message);
     });
 
-    it("Returns 200 and the creted step", async () => {
+    it("Returns 200 and the created step", async () => {
       // given
       const body = {
         input: 101,
