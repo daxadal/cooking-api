@@ -1,16 +1,10 @@
 import request from "supertest";
 
 import { closeConnection, createConnection } from "@/services/db/setup";
-import {
-  IngredientType,
-} from "@/services/schemas";
+import { IngredientType } from "@/services/schemas";
 import app from "@/app";
 
-import {
-  clearDatabase,
-  clearTable,
-  createMockIngredient,
-} from "test/mock/db";
+import { clearDatabase, clearTable, createMockIngredient } from "test/mock/db";
 import { Ingredient } from "@/services/db";
 
 describe("The /ingredients route", () => {

@@ -81,7 +81,7 @@ describe("The /recipes route", () => {
 
     it.each`
       query                | condition
-      ${""}                | ${"the datailed parameter is not present"}
+      ${""}                | ${"the detailed parameter is not present"}
       ${"?detailed=false"} | ${"'detailed=false'"}
     `(
       "Returns 200 and an array of simple steps if $condition",
