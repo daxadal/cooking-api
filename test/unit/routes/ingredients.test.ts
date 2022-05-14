@@ -17,8 +17,6 @@ describe("The /ingredients route", () => {
 
   describe("GET /ingredients", () => {
     beforeAll(async () => {
-      await createConnection({ autoPopulate: false });
-
       await createMockIngredient({
         id: 101,
         name: "start",
@@ -40,13 +38,14 @@ describe("The /ingredients route", () => {
         type: IngredientType.END,
       });
     });
+
     afterAll(clearDatabase);
 
-    it("Returns 200 and an array of detailed ingredients if 'detailed=true'", async () => {
+    it("Returns 200 and an array of ingredients", async () => {
       // given
 
       // when
-      const response = await request(app).get("/ingredients?detailed=true");
+      const response = await request(app).get("/ingredients");
 
       // then
       expect(response.status).toBe(200);
