@@ -1,5 +1,5 @@
 module.exports = async () => {
-  process.env.DB_NAME = "jest_" + new Date().toISOString().replace(/\W/g, "_");
+  process.env.DB_NAME = "kitchen_jest";
 
   process.env.WINSTON_CONSOLE_LEVEL = "none";
 
