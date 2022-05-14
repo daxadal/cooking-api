@@ -45,6 +45,7 @@ export const database = {
   user: parseEnvString("DB_USER", parsingErrors),
   password: parseEnvString("DB_PASSWORD", parsingErrors),
   name: parseEnvString("DB_NAME", parsingErrors),
+  autoCreate: parseBoolean("DB_AUTO_CREATE", parsingErrors),
   autoPopulate: parseBoolean("DB_AUTO_POPULATE", parsingErrors),
 };
 

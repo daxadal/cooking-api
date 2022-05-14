@@ -28,7 +28,10 @@ if (configDebug.parsingErrors.length > 0) {
   process.exit(1);
 }
 
-createConnection({ autoPopulate: dbConfig.autoPopulate }).catch((error) => {
+createConnection({
+  autoCreate: dbConfig.autoCreate,
+  autoPopulate: dbConfig.autoPopulate,
+}).catch((error) => {
   logger.error("Error creating connection to DB:", error);
   process.exit(1);
 });
