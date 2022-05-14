@@ -22,9 +22,25 @@ This project also uses the following dev dependencies:
 
 # Previous steps
 
-Create a .env file based on sample.env file. Uncomment and fill all required environment variables. All variables are required except otherwise specified.
+Create a .env file based on sample.env file. Uncomment and fill all required environment variables. All variables are required, except otherwise specified.
 
-Install and start an MySQL service on the chosen host, and make sure that login is posible with the specified credentials.
+Install and start an MySQL service on the chosen host, and make sure that login is possible with the specified credentials.
+
+On Ubuntu, that would mean installing `mysql-server` and executing it in `sudo` mode (no password required with `sudo`):
+```sh
+apt install -y mysql-server
+sudo mysql
+```
+
+Now in the MySQL console, create a user, a database, and grant permission to the user:
+```sql
+CREATE USER '<username>'@'localhost' IDENTIFIED BY '<password_of_choice>';
+CREATE DATABASE <db_name>;
+GRANT ALL PRIVILEGES ON <db_name>. * TO '<username>'@'localhost';
+```
+
+_(**NOTE**: If the variable `DB_AUTO_CREATE` is set to true, there's no need to create the database beforehand.
+But, in this case, the configured user must have permission to create databases)_
 
 # Installation and execution
 
