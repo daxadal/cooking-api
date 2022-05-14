@@ -20,6 +20,12 @@ This project also uses the following dev dependencies:
 - `jest-unit`: Generating testing reports (compatible with Gitlab CI/CD)
 - `supertest`: Making request to the express app
 
+# Previous steps
+
+Create a .env file based on sample.env file. Uncomment and fill all required environment variables. All variables are required except otherwise specified.
+
+Install and start an MySQL service on the chosen host, and make sure that login is posible with the specified credentials.
+
 # Installation and execution
 
 To run the server, first you have to install the dependencies:
