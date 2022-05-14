@@ -94,11 +94,11 @@ export function populateTables(): Promise<number[][]> {
     ),
     loadTable(
       "utensil",
-      "insert into utensil (name, waitTimeInMillis) values (:name, :waitTimeInMillis);"
+      "insert into utensil (id, name, waitTimeInMillis) values (:id, :name, :waitTimeInMillis);"
     ),
     loadTable(
       "step",
-      "insert into utensil (name, waitTimeInMillis) values (:name, :waitTimeInMillis);"
+      "insert into step (input, utensil, output) values (:input, :utensil, :output);"
     ),
   ]);
 }
