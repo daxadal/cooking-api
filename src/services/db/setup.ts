@@ -61,7 +61,6 @@ export async function createConnection({
       );
       await query<OkPacket>(`create database ${dbConfig.name};`);
       await query<OkPacket>(`use ${dbConfig.name};`);
-      await query<OkPacket[]>(readSqlScript("create-tables"));
       logger.info("Database created.");
     }
   } else {
@@ -76,19 +75,31 @@ export async function createConnection({
       `Database contains ${tables.length} tables already. No population needed`
     );
   } else if (autoPopulate) {
-    logger.info("Populating database...");
+    logger.info("Creating and populating tables...");
+    await query<OkPacket[]>(readSqlScript("create-tables"));
     await populateTables();
-    logger.info("Tables populated");
+    logger.info("Tables created and populated.");
   } else {
-    logger.info("Database population was skipped.");
+    logger.info("Creating tables...");
+    await query<OkPacket[]>(readSqlScript("create-tables"));
+    logger.info("Tables created. Population was skipped.");
   }
 }
 
-export function populateTables(): Promise<QueryResult<mysql.OkPacket>[]> {
+export function populateTables(): Promise<number[][]> {
   return Promise.all([
-    loadTable("ingredient"),
-    loadTable("utensil"),
-    loadTable("step"),
+    loadTable(
+      "ingredient",
+      "insert into ingredient (id, name, type) values (:id, :name, :type);"
+    ),
+    loadTable(
+      "utensil",
+      "insert into utensil (name, waitTimeInMillis) values (:name, :waitTimeInMillis);"
+    ),
+    loadTable(
+      "step",
+      "insert into utensil (name, waitTimeInMillis) values (:name, :waitTimeInMillis);"
+    ),
   ]);
 }
 
@@ -107,16 +118,28 @@ export async function query<T extends Rows>(
   return { rows, fields: fieldNames || [] };
 }
 
+async function asyncBulkInsert(
+  query: string,
+  paramsArray: Array<Record<string, unknown>>
+) {
+  const promises = paramsArray.map((params) =>
+    connection.query<OkPacket>(query, params)
+  );
+  const results = await Promise.all(promises);
+  return results.map(([rows, fields]) => {
+    const fieldNames = fields && fields.filter((f) => f).map((f) => f.name);
+    logger.debug("MySQL: > " + query, { rows, fields: fieldNames });
+    return rows.insertId;
+  });
+}
+
 const readSqlScript = (filename: string) =>
   readFileSync(
     path.resolve(__dirname, `../../../sql/${filename}.sql`)
   ).toString();
 
-export const loadTable = (
-  tableName: string
-): Promise<QueryResult<mysql.OkPacket>> => {
-  const location = path.resolve(__dirname, `../../../sql/${tableName}.csv`);
-  return query<OkPacket>(
-    `LOAD DATA INFILE '${location}' INTO TABLE ${tableName}`
-  );
-};
+function loadTable(tableName: string, insertionQuery: string) {
+  const location = path.resolve(__dirname, `../../../sql/${tableName}.json`);
+  const rows: any[] = JSON.parse(readFileSync(location).toString());
+  return asyncBulkInsert(insertionQuery, rows);
+}

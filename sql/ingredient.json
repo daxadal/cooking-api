@@ -1,0 +1,12 @@
+[
+  { "id": 101, "name": "Liquid dough", "type": "start" },
+  { "id": 102, "name": "Dense dough", "type": "start" },
+  { "id": 103, "name": "Raw muffin", "type": "mid" },
+  { "id": 104, "name": "Raw croissant", "type": "mid" },
+  { "id": 105, "name": "Raw chocolate muffin", "type": "mid" },
+  { "id": 106, "name": "Muffin", "type": "end" },
+  { "id": 107, "name": "Croissant", "type": "end" },
+  { "id": 108, "name": "Raw chocolate croissant", "type": "mid" },
+  { "id": 109, "name": "Chocolate croissant", "type": "end" },
+  { "id": 110, "name": "Chocolate muffin", "type": "end" }
+]
