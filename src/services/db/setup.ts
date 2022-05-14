@@ -24,43 +24,63 @@ let connection: mysql.Connection;
 const logger = getLogger();
 
 interface ConnectionOptions {
+  autoCreate: boolean;
   autoPopulate: boolean;
 }
 
-export function connectToMySQL(): Promise<mysql.Connection> {
+export function connectToMySQL(
+  config: mysql.ConnectionOptions = {}
+): Promise<mysql.Connection> {
   return mysql.createConnection({
     host: dbConfig.host,
     user: dbConfig.user,
     password: dbConfig.password,
     multipleStatements: true,
     namedPlaceholders: true,
+    ...config,
   });
 }
 
 export async function createConnection({
+  autoCreate,
   autoPopulate,
 }: ConnectionOptions): Promise<void> {
-  logger.info("Connecting to MySQL ...");
-  connection = await connectToMySQL();
-  logger.info("Connected to MySQL");
+  if (autoCreate) {
+    logger.info("Connecting to MySQL ...");
+    connection = await connectToMySQL();
+    logger.info("Connected to MySQL");
 
-  const { rows: databases } = await query<RowDataPacket[]>("show databases;");
-  const database = databases.find((row) => row.Database === dbConfig.name);
-  if (database) {
-    logger.info(`Database "${dbConfig.name}" found. Using existing database`);
-    await query<OkPacket>(`use ${dbConfig.name};`);
-  } else {
-    logger.info(`Database "${dbConfig.name}" not found. Creating database...`);
-    await query<OkPacket>(`create database ${dbConfig.name};`);
-    await query<OkPacket>(`use ${dbConfig.name};`);
-    await query<OkPacket[]>(readSqlScript("create-tables"));
-    if (autoPopulate) {
-      logger.info("Database created. Populating ...");
-      await populateTables();
-      logger.info("Tables populated");
+    const { rows: databases } = await query<RowDataPacket[]>("show databases;");
+    const database = databases.find((row) => row.Database === dbConfig.name);
+    if (database) {
+      logger.info(`Database "${dbConfig.name}" found. Using existing database`);
+      await query<OkPacket>(`use ${dbConfig.name};`);
     } else {
-      logger.info("Database created. Population was skipped.");
+      logger.info(
+        `Database "${dbConfig.name}" not found. Creating database...`
+      );
+      await query<OkPacket>(`create database ${dbConfig.name};`);
+      await query<OkPacket>(`use ${dbConfig.name};`);
+      await query<OkPacket[]>(readSqlScript("create-tables"));
+      logger.info("Database created.");
     }
+  } else {
+    logger.info(`Connecting to MySQL, database "${dbConfig.name}"...`);
+    connection = await connectToMySQL({ database: dbConfig.name });
+    logger.info(`Connected to MySQL, database "${dbConfig.name}"...`);
+  }
+
+  const { rows: tables } = await query<RowDataPacket[]>("show tables;");
+  if (tables.length > 0) {
+    logger.info(
+      `Database contains ${tables.length} tables already. No population needed`
+    );
+  } else if (autoPopulate) {
+    logger.info("Populating database...");
+    await populateTables();
+    logger.info("Tables populated");
+  } else {
+    logger.info("Database population was skipped.");
   }
 }
 
