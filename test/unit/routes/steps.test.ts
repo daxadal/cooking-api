@@ -15,7 +15,7 @@ import { Step } from "@/services/db";
 
 describe("The /steps route", () => {
   beforeAll(async () => {
-    await createConnection({ autoPopulate: false });
+    await createConnection({ autoCreate: false, autoPopulate: false });
 
     await createMockIngredient({
       id: 101,

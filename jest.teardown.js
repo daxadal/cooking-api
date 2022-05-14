@@ -22,7 +22,7 @@ async function destroyDatabase(dbName) {
 }
 
 module.exports = async () => {
-  if (process.env.DB_NAME) {
+  if (process.env.DB_NAME && process.env.DB_AUTO_CREATE === "true") {
     await destroyDatabase(process.env.DB_NAME);
   }
 };

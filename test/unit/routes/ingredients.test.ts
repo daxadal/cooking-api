@@ -8,7 +8,7 @@ import { clearDatabase, clearTable, createMockIngredient } from "test/mock/db";
 import { Ingredient } from "@/services/db";
 
 describe("The /ingredients route", () => {
-  beforeAll(() => createConnection({ autoPopulate: false }));
+  beforeAll(() => createConnection({ autoCreate: false, autoPopulate: false }));
 
   afterAll(async () => {
     await clearDatabase();
