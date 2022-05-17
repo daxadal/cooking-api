@@ -19,6 +19,7 @@ module.exports = async () => {
 
     process.env.DB_HOST = "localhost";
     process.env.DB_NAME = "jest_kitchen_js";
+    process.env.DB_AUTO_CREATE = "true";
 
     process.env.WINSTON_FILE_LEVEL = "none";
     process.env.WINSTON_FILE_PREFIX = "__jest__";
