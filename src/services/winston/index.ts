@@ -91,9 +91,9 @@ export function getLogger(service = "api"): Logger {
 
 export const initLogger =
   (service = "api"): RequestHandler =>
-  (req: any, res, next) => {
-    req.logger = getLogger(service);
-    req.logger.info(
+  (req, res, next) => {
+    res.locals.logger = getLogger(service);
+    res.locals.logger.info(
       `==== Starting execution of endpoint ${req.method} ${req.originalUrl} ====`
     );
     next();
