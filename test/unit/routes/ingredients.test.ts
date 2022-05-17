@@ -57,13 +57,13 @@ describe("The /ingredients route", () => {
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
       expect(response.body).toBeInstanceOf(Array);
-      expect(response.body).toHaveLength(3);
+      expect(response.body).toHaveLength(4);
 
       response.body.forEach((ingredient: IngredientType) => {
         expect(ingredient).toMatchObject({
           id: expect.any(Number),
           name: expect.any(String),
-          type: expect.any(IngredientType),
+          type: expect.any(String),
         });
       });
     });
@@ -73,12 +73,11 @@ describe("The /ingredients route", () => {
     afterEach(() => clearTable("ingredient"));
 
     it.each`
-      body                                             | message                 | reason
-      ${undefined}                                     | ${/is required/}        | ${"is undefined"}
-      ${{}}                                            | ${/is required/}        | ${"is empty"}
-      ${{ name: "ing-1", type: IngredientType.START }} | ${/"id" is required/}   | ${"has no id field"}
-      ${{ id: 101, type: IngredientType.START }}       | ${/"name" is required/} | ${"has no name field"}
-      ${{ id: 101, name: "ing-1" }}                    | ${/"type" is required/} | ${"has no type field"}
+      body                              | message                 | reason
+      ${undefined}                      | ${/is required/}        | ${"is undefined"}
+      ${{}}                             | ${/is required/}        | ${"is empty"}
+      ${{ type: IngredientType.START }} | ${/"name" is required/} | ${"has no name field"}
+      ${{ name: "ing-1" }}              | ${/"type" is required/} | ${"has no type field"}
     `("Returns 400 if the body $reason", async ({ body, message }) => {
       // given
 
@@ -94,7 +93,6 @@ describe("The /ingredients route", () => {
     it("Returns 200 and the created ingredient", async () => {
       // given
       const body = {
-        id: 101,
         name: "ingredient-1",
         type: IngredientType.START,
       };
@@ -108,45 +106,48 @@ describe("The /ingredients route", () => {
     });
   });
 
-  describe("DELETE /ingredients", () => {
+  describe("DELETE /ingredients/{id}", () => {
     afterEach(() => clearTable("ingredient"));
 
-    it.each`
-      body                      | message                 | reason
-      ${undefined}              | ${/is required/}        | ${"is undefined"}
-      ${{}}                     | ${/is required/}        | ${"is empty"}
-      ${{ name: 1, type: 102 }} | ${/"id" is required/}   | ${"has no id field"}
-      ${{ id: 101, type: 102 }} | ${/"name" is required/} | ${"has no name field"}
-      ${{ id: 101, name: 1 }}   | ${/"type" is required/} | ${"has no type field"}
-    `("Returns 400 if the body $reason", async ({ body, message }) => {
+    it("Returns 400 if the id is invalid", async () => {
       // given
+      const ID = "INVALID";
 
       // when
-      const response = await request(app).delete("/ingredients").send(body);
-
+      const response = await request(app).delete(`/ingredients/${ID}`);
       // then
-      expect(response.status).toEqual(400);
+      expect(response.status).toEqual(404);
       expect(response.body).toBeDefined();
-      expect(response.body.message).toMatch(message);
+      expect(response.body.message).toBe("Endpoint not found");
+    });
+
+    it("Returns 400 if the ingredient doesn't exist", async () => {
+      // given
+      const ID = 101;
+
+      // when
+      const response = await request(app).delete(`/ingredients/${ID}`);
+      // then
+      expect(response.status).toEqual(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toBe("Ingredient not found");
     });
 
     it("Returns 204 after deleting the ingredient", async () => {
       // given
-      const body = {
-        id: 101,
+      const id = await Ingredient.create({
         name: "ingredient-1",
         type: IngredientType.START,
-      };
-      await Ingredient.create(body);
+      });
 
       // when
-      const response = await request(app).delete("/ingredients").send(body);
+      const response = await request(app).delete(`/ingredients/${id}`);
 
       // then
       expect(response.status).toBe(204);
       expect(response.body).toStrictEqual({});
 
-      expect(await Ingredient.get(body.id)).toBeUndefined();
+      expect(await Ingredient.get(id)).toBeUndefined();
     });
   });
 });
