@@ -1,5 +1,6 @@
 import request from "supertest";
 
+import { database as dbConfig } from "@/config/index";
 import { closeConnection, createConnection } from "@/services/db/setup";
 import { IngredientType } from "@/services/schemas";
 import app from "@/app";
@@ -13,7 +14,10 @@ import {
 
 describe("The /recipes route", () => {
   beforeAll(async () => {
-    await createConnection({ autoPopulate: false });
+    await createConnection({
+      autoCreate: dbConfig.autoCreate,
+      autoPopulate: false,
+    });
 
     await createMockIngredient({
       id: 101,

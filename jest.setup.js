@@ -1,6 +1,4 @@
 module.exports = async () => {
-  process.env.DB_NAME = "jest_" + new Date().toISOString().replace(/\W/g, "_");
-
   process.env.WINSTON_CONSOLE_LEVEL = "none";
 
   process.env.WINSTON_SLACK_LEVEL = "none";
@@ -11,6 +9,9 @@ module.exports = async () => {
     process.env.ENV = "CI_JEST";
 
     process.env.DB_HOST = "mysql-docker";
+    process.env.DB_NAME =
+      "jest_" + new Date().toISOString().replace(/\W/g, "_");
+    process.env.DB_AUTO_CREATE = "true";
 
     process.env.WINSTON_FILE_LEVEL = "info";
     process.env.WINSTON_FILE_PREFIX = "__jest__";
@@ -18,6 +19,7 @@ module.exports = async () => {
     process.env.ENV = "JEST";
 
     process.env.DB_HOST = "localhost";
+    process.env.DB_NAME = "jest_kitchen_js";
 
     process.env.WINSTON_FILE_LEVEL = "none";
     process.env.WINSTON_FILE_PREFIX = "__jest__";

@@ -1,0 +1,10 @@
+[
+  { "input": 101, "utensil": 1, "output": 103 },
+  { "input": 102, "utensil": 3, "output": 104 },
+  { "input": 104, "utensil": 4, "output": 108 },
+  { "input": 103, "utensil": 4, "output": 105 },
+  { "input": 103, "utensil": 2, "output": 106 },
+  { "input": 104, "utensil": 2, "output": 107 },
+  { "input": 105, "utensil": 2, "output": 110 },
+  { "input": 108, "utensil": 2, "output": 109 }
+]
