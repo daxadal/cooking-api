@@ -27,12 +27,14 @@ Create a .env file based on sample.env file. Uncomment and fill all required env
 Install and start an MySQL service on the chosen host, and make sure that login is possible with the specified credentials.
 
 On Ubuntu, that would mean installing `mysql-server` and executing it in `sudo` mode (no password required with `sudo`):
+
 ```sh
 apt install -y mysql-server
 sudo mysql
 ```
 
 Now in the MySQL console, create a user, a database, and grant permission to the user:
+
 ```sql
 CREATE USER '<username>'@'localhost' IDENTIFIED BY '<password_of_choice>';
 CREATE DATABASE <db_name>;
@@ -88,3 +90,8 @@ A test database must exist, and the configured user must have all permissions in
 
 _(**NOTE**: If the variable `DB_AUTO_CREATE` is set to true, there's no need to create the database beforehand.
 But, in this case, the configured user must have permission to create databases)_
+
+## CI Testing
+
+Tests can be performed on Gitlab CD/CI using the `mysql` docker, which is configured to use the `root` user.
+In this scenario, a disposable database will be created on the fly.
