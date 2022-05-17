@@ -45,7 +45,7 @@ describe("The /ingredients route", () => {
       });
     });
 
-    afterAll(clearDatabase);
+    afterAll(() => clearTable("ingredient"));
 
     it("Returns 200 and an array of ingredients", async () => {
       // given
@@ -103,6 +103,137 @@ describe("The /ingredients route", () => {
       // then
       expect(response.status).toBe(200);
       expect(response.body).toMatchObject(body);
+    });
+  });
+
+  describe("GET /ingredients/{id}", () => {
+    const EXISTING_ID = 101;
+
+    beforeAll(() =>
+      createMockIngredient({
+        id: EXISTING_ID,
+        name: "ingredient-name",
+        type: IngredientType.START,
+      })
+    );
+
+    afterAll(() => clearTable("ingredient"));
+
+    it("Returns 400 if the id is invalid", async () => {
+      // given
+      const ID = "INVALID";
+
+      // when
+      const response = await request(app).get(`/ingredients/${ID}`);
+      // then
+      expect(response.status).toEqual(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toBe("Endpoint not found");
+    });
+
+    it("Returns 400 if the ingredient doesn't exist", async () => {
+      // given
+      const ID = 9999;
+
+      // when
+      const response = await request(app).get(`/ingredients/${ID}`);
+      // then
+      expect(response.status).toEqual(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toBe("Ingredient not found");
+    });
+
+    it("Returns 200 and the ingredient if the id is valid and exists", async () => {
+      // given
+      const ID = EXISTING_ID;
+
+      // when
+      const response = await request(app).get(`/ingredients/${ID}`);
+
+      // then
+      const ingredient = await Ingredient.get(ID);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body).toEqual(ingredient);
+    });
+  });
+
+  describe("PUT /ingredients/{id}", () => {
+    const EXISTING_ID = 101;
+
+    beforeEach(() =>
+      createMockIngredient({
+        id: EXISTING_ID,
+        name: "ingredient-name",
+        type: IngredientType.START,
+      })
+    );
+
+    afterEach(() => clearTable("ingredient"));
+
+    it("Returns 400 if the id is invalid", async () => {
+      // given
+      const ID = "INVALID";
+      const body = {};
+
+      // when
+      const response = await request(app).put(`/ingredients/${ID}`).send(body);
+
+      // then
+      expect(response.status).toEqual(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toBe("Endpoint not found");
+    });
+
+    it("Returns 400 if the ingredient doesn't exist", async () => {
+      // given
+      const ID = 9999;
+      const body = {};
+
+      // when
+      const response = await request(app).put(`/ingredients/${ID}`).send(body);
+
+      // then
+      expect(response.status).toEqual(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toBe("Ingredient not found");
+    });
+
+    it.each`
+      body                            | message                 | reason
+      ${undefined}                    | ${/is required/}        | ${"is undefined"}
+      ${{}}                           | ${/is required/}        | ${"is empty"}
+      ${{ type: IngredientType.END }} | ${/"name" is required/} | ${"has no name field"}
+      ${{ name: "name-updated" }}     | ${/"type" is required/} | ${"has no type field"}
+    `("Returns 400 if the body $reason", async ({ body, message }) => {
+      // given
+      const ID = EXISTING_ID;
+
+      // when
+      const response = await request(app).put(`/ingredients/${ID}`).send(body);
+
+      // then
+      expect(response.status).toEqual(400);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toMatch(message);
+    });
+
+    it("Returns 200 and the updated ingredient if the id is valid and exists, and the body is valid", async () => {
+      // given
+      const ID = EXISTING_ID;
+      const body = { name: "name-updated", type: IngredientType.END };
+
+      // when
+      const response = await request(app).put(`/ingredients/${ID}`).send(body);
+
+      // then
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+      expect(response.body).toStrictEqual({
+        id: EXISTING_ID,
+        ...body,
+      });
     });
   });
 
