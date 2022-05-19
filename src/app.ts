@@ -27,7 +27,9 @@ app.use("/utensils", utensilsRouter);
 // catch 404
 app.use((req, res) => {
   const logger = res.locals.logger || console;
-  logger.error(`404 not found: ${req.originalUrl}`);
+  logger.error(
+    `Error at ${req.method} ${req.originalUrl} - Endpoint not found`
+  );
   res.status(404).send({ message: "Endpoint not found" });
 });
 
@@ -35,7 +37,10 @@ app.use((req, res) => {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const logger = res.locals.logger || console;
-  logger.error("500 Internal server error:", err);
+  logger.error(
+    `Internal server error at ${req.method} ${req.originalUrl} captured at final handler`,
+    err
+  );
   res.status(500).send({ message: "Internal server error" });
 });
 
