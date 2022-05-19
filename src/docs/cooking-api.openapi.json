@@ -307,9 +307,6 @@
               }
             }
           },
-          "400": {
-            "$ref": "#/components/responses/400"
-          },
           "500": {
             "$ref": "#/components/responses/500"
           }
@@ -337,7 +334,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SimpleStep"
+                  "$ref": "#/components/schemas/DetailedStep"
                 }
               }
             }
@@ -387,7 +384,7 @@
         "tags": [
           "utensils"
         ],
-        "description": "Get all avaliable utensils.",
+        "description": "Get all available utensils.",
         "responses": {
           "200": {
             "description": "A list of all utensils.",

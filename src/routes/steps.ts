@@ -24,16 +24,15 @@ const router = express.Router();
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/Step'
- *       400:
- *         $ref: '#/components/responses/400'
  *       500:
  *         $ref: '#/components/responses/500'
  */
 router
   .route("/")
   .get(validateQuery(DetailedQuery), async function (req, res) {
-    const detailed = req.query.detailed === "true";
-    const steps = detailed ? await Step.getAllDetailed() : await Step.getAll();
+    const steps = req.query.detailed
+      ? await Step.getAllDetailed()
+      : await Step.getAll();
     res.status(200).send(steps);
   })
 
@@ -57,7 +56,7 @@ router
    *         content:
    *           application/json:
    *             schema:
-   *               $ref: '#/components/schemas/SimpleStep'
+   *               $ref: '#/components/schemas/DetailedStep'
    *       400:
    *         $ref: '#/components/responses/400'
    *       500:

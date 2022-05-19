@@ -30,8 +30,7 @@ const router = express.Router();
  *         $ref: '#/components/responses/500'
  */
 router.get("/", validateQuery(DetailedQuery), async function (req, res) {
-  const detailed = req.query.detailed === "true";
-  const recipes = detailed
+  const recipes = req.query.detailed
     ? await Recipe.getAllDetailed()
     : await Recipe.getAll();
   res.status(200).send(recipes);

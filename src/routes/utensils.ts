@@ -22,7 +22,7 @@ const loadUtensil: RequestHandler = async function (req, res, next) {
  *   get:
  *     tags:
  *       - utensils
- *     description: Get all avaliable utensils.
+ *     description: Get all available utensils.
  *     responses:
  *       200:
  *         description: A list of all utensils.
