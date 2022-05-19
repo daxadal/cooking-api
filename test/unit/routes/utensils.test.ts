@@ -69,7 +69,6 @@ describe("The /utensils route", () => {
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
       expect(response.body).toBeInstanceOf(Array);
-      expect(response.body).toHaveLength(4);
 
       response.body.forEach((utensil: UtensilType) => {
         expect(utensil).toMatchObject({

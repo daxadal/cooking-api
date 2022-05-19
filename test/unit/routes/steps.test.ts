@@ -107,7 +107,6 @@ describe("The /steps route", () => {
         expect(response.status).toBe(200);
         expect(response.body).toBeDefined();
         expect(response.body).toBeInstanceOf(Array);
-        expect(response.body).toHaveLength(3);
 
         response.body.forEach((step: StepType) => {
           expect(step).toMatchObject({
@@ -129,7 +128,6 @@ describe("The /steps route", () => {
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
       expect(response.body).toBeInstanceOf(Array);
-      expect(response.body).toHaveLength(3);
 
       response.body.forEach((step: StepType) => {
         expect(step).toMatchObject({

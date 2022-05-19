@@ -99,7 +99,6 @@ describe("The /recipes route", () => {
         expect(response.status).toBe(200);
         expect(response.body).toBeDefined();
         expect(response.body).toBeInstanceOf(Array);
-        expect(response.body).toHaveLength(2);
 
         response.body.forEach((recipe: Recipe) => {
           expect(recipe).toMatchObject({
@@ -124,7 +123,6 @@ describe("The /recipes route", () => {
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
       expect(response.body).toBeInstanceOf(Array);
-      expect(response.body).toHaveLength(2);
 
       response.body.forEach((recipe: Recipe) => {
         expect(recipe).toMatchObject({

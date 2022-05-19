@@ -65,7 +65,6 @@ describe("The /ingredients route", () => {
       expect(response.status).toBe(200);
       expect(response.body).toBeDefined();
       expect(response.body).toBeInstanceOf(Array);
-      expect(response.body).toHaveLength(4);
 
       response.body.forEach((ingredient: IngredientType) => {
         expect(ingredient).toMatchObject({
