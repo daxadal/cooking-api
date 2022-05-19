@@ -7,12 +7,21 @@ import { validateBody, validatePathId } from "@/services/joi";
 const router = express.Router();
 
 const loadUtensil: RequestHandler = async function (req, res, next) {
-  const utensil = await Utensil.get(parseInt(req.params.id));
-  if (utensil) {
-    res.locals.utensil = utensil;
-    next();
-  } else {
-    res.status(404).send({ message: "Utensil not found" });
+  const logger = res.locals.logger || console;
+  try {
+    const utensil = await Utensil.get(parseInt(req.params.id));
+    if (utensil) {
+      res.locals.utensil = utensil;
+      next();
+    } else {
+      res.status(404).send({ message: "Utensil not found" });
+    }
+  } catch (error) {
+    logger.error(
+      `Internal server error at ${req.method} ${req.originalUrl}`,
+      error
+    );
+    res.status(500).send({ message: "Internal server error" });
   }
 };
 
@@ -38,8 +47,17 @@ const loadUtensil: RequestHandler = async function (req, res, next) {
 router
   .route("/")
   .get(async function (req, res) {
-    const utensils = await Utensil.getAll();
-    res.status(200).send(utensils);
+    const logger = res.locals.logger || console;
+    try {
+      const utensils = await Utensil.getAll();
+      res.status(200).send(utensils);
+    } catch (error) {
+      logger.error(
+        `Internal server error at ${req.method} ${req.originalUrl}`,
+        error
+      );
+      res.status(500).send({ message: "Internal server error" });
+    }
   })
 
   /**
@@ -69,10 +87,19 @@ router
    *         $ref: '#/components/responses/500'
    */
   .post(validateBody(UtensilData), async function (req, res) {
-    const { name, waitTimeInMillis } = req.body as UtensilData;
-    const id = await Utensil.create({ name, waitTimeInMillis });
-    const utensil = await Utensil.get(id);
-    res.status(200).send(utensil);
+    const logger = res.locals.logger || console;
+    try {
+      const { name, waitTimeInMillis } = req.body as UtensilData;
+      const id = await Utensil.create({ name, waitTimeInMillis });
+      const utensil = await Utensil.get(id);
+      res.status(200).send(utensil);
+    } catch (error) {
+      logger.error(
+        `Internal server error at ${req.method} ${req.originalUrl}`,
+        error
+      );
+      res.status(500).send({ message: "Internal server error" });
+    }
   });
 
 router.use("/:id(\\d+)", validatePathId, loadUtensil);
@@ -103,7 +130,16 @@ router.use("/:id(\\d+)", validatePathId, loadUtensil);
 router
   .route("/:id(\\d+)")
   .get(async function (req, res) {
-    res.status(200).send(res.locals.utensil);
+    const logger = res.locals.logger || console;
+    try {
+      res.status(200).send(res.locals.utensil);
+    } catch (error) {
+      logger.error(
+        `Internal server error at ${req.method} ${req.originalUrl}`,
+        error
+      );
+      res.status(500).send({ message: "Internal server error" });
+    }
   })
 
   /**
@@ -137,11 +173,24 @@ router
    *         $ref: '#/components/responses/500'
    */
   .put(validateBody(UtensilData), async function (req, res) {
-    const utensil = res.locals.utensil as TUtensil;
-    const { name, waitTimeInMillis } = req.body as UtensilData;
-    const id = await Utensil.update({ id: utensil.id, name, waitTimeInMillis });
-    const utensilUpdated = await Utensil.get(id);
-    res.status(200).send(utensilUpdated);
+    const logger = res.locals.logger || console;
+    try {
+      const utensil = res.locals.utensil as TUtensil;
+      const { name, waitTimeInMillis } = req.body as UtensilData;
+      const id = await Utensil.update({
+        id: utensil.id,
+        name,
+        waitTimeInMillis,
+      });
+      const utensilUpdated = await Utensil.get(id);
+      res.status(200).send(utensilUpdated);
+    } catch (error) {
+      logger.error(
+        `Internal server error at ${req.method} ${req.originalUrl}`,
+        error
+      );
+      res.status(500).send({ message: "Internal server error" });
+    }
   })
 
   /**
@@ -164,13 +213,22 @@ router
    *         $ref: '#/components/responses/500'
    */
   .delete(async function (req, res) {
-    const utensil = res.locals.utensil as TUtensil;
-    const deletedRowsCount = await Utensil.destroy(utensil.id);
-    if (deletedRowsCount === 1) res.status(204).send();
-    else
-      res.status(500).send({
-        message: `Internal server error. ${deletedRowsCount} rows were deleted instead of one`,
-      });
+    const logger = res.locals.logger || console;
+    try {
+      const utensil = res.locals.utensil as TUtensil;
+      const deletedRowsCount = await Utensil.destroy(utensil.id);
+      if (deletedRowsCount === 1) res.status(204).send();
+      else
+        res.status(500).send({
+          message: `Internal server error. ${deletedRowsCount} rows were deleted instead of one`,
+        });
+    } catch (error) {
+      logger.error(
+        `Internal server error at ${req.method} ${req.originalUrl}`,
+        error
+      );
+      res.status(500).send({ message: "Internal server error" });
+    }
   });
 
 /**
@@ -198,8 +256,17 @@ router
  *         $ref: '#/components/responses/500'
  */
 router.get("/:id(\\d+)/uses", async function (req, res) {
-  const steps = await Step.queryDetailedFromUtensil(res.locals.utensil.id);
-  res.status(200).send(steps);
+  const logger = res.locals.logger || console;
+  try {
+    const steps = await Step.queryDetailedFromUtensil(res.locals.utensil.id);
+    res.status(200).send(steps);
+  } catch (error) {
+    logger.error(
+      `Internal server error at ${req.method} ${req.originalUrl}`,
+      error
+    );
+    res.status(500).send({ message: "Internal server error" });
+  }
 });
 
 export default router;

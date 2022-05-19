@@ -30,10 +30,19 @@ const router = express.Router();
  *         $ref: '#/components/responses/500'
  */
 router.get("/", validateQuery(DetailedQuery), async function (req, res) {
-  const recipes = req.query.detailed
-    ? await Recipe.getAllDetailed()
-    : await Recipe.getAll();
-  res.status(200).send(recipes);
+  const logger = res.locals.logger || console;
+  try {
+    const recipes = req.query.detailed
+      ? await Recipe.getAllDetailed()
+      : await Recipe.getAll();
+    res.status(200).send(recipes);
+  } catch (error) {
+    logger.error(
+      `Internal server error at ${req.method} ${req.originalUrl}`,
+      error
+    );
+    res.status(500).send({ message: "Internal server error" });
+  }
 });
 
 export default router;
