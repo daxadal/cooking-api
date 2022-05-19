@@ -16,6 +16,13 @@ export async function getAll(): Promise<Utensil[]> {
   return rows as Utensil[];
 }
 
+export async function count(): Promise<any> {
+  const { rows } = await query<RowDataPacket[]>(
+    "select count(*) from utensil;"
+  );
+  return rows?.[0]?.["count(*)"];
+}
+
 export async function create({
   name,
   waitTimeInMillis,
