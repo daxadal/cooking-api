@@ -242,8 +242,7 @@ router.get("/:id(\\d+)/sources", async function (req, res) {
   const ingredient = res.locals.ingredient as TIngredient;
   if (ingredient.type === IngredientType.START) {
     res.status(400).send({
-      message:
-        "This is an start ingredient. It cannot have been cooked before.",
+      message: "This is a start ingredient. It cannot have been cooked before.",
     });
   } else {
     const steps = await Step.queryDetailedFromOutput(ingredient.id);

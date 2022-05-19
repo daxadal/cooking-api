@@ -1,8 +1,11 @@
 import request from "supertest";
 
 import { database as dbConfig } from "@/config/index";
+
+import { Step } from "@/services/db";
 import { closeConnection, createConnection } from "@/services/db/setup";
 import { IngredientType, Step as StepType } from "@/services/schemas";
+
 import app from "@/app";
 
 import {
@@ -12,7 +15,6 @@ import {
   createMockStep,
   createMockUtensil,
 } from "test/mock/db";
-import { Step } from "@/services/db";
 
 describe("The /steps route", () => {
   beforeAll(async () => {
@@ -91,7 +93,7 @@ describe("The /steps route", () => {
 
     it.each`
       query                | condition
-      ${""}                | ${"the datailed parameter is not present"}
+      ${""}                | ${"the detailed parameter is not present"}
       ${"?detailed=false"} | ${"'detailed=false'"}
     `(
       "Returns 200 and an array of simple steps if $condition",
@@ -108,13 +110,11 @@ describe("The /steps route", () => {
         expect(response.body).toHaveLength(3);
 
         response.body.forEach((step: StepType) => {
-          expect(step).toHaveProperty("input");
-          expect(step).toHaveProperty("utensil");
-          expect(step).toHaveProperty("output");
-
-          expect(typeof step.input).toBe("number");
-          expect(typeof step.utensil).toBe("number");
-          expect(typeof step.output).toBe("number");
+          expect(step).toMatchObject({
+            input: expect.any(Number),
+            utensil: expect.any(Number),
+            output: expect.any(Number),
+          });
         });
       }
     );
@@ -132,13 +132,11 @@ describe("The /steps route", () => {
       expect(response.body).toHaveLength(3);
 
       response.body.forEach((step: StepType) => {
-        expect(step).toHaveProperty("input");
-        expect(step).toHaveProperty("utensil");
-        expect(step).toHaveProperty("output");
-
-        expect(typeof step.input).toBe("object");
-        expect(typeof step.utensil).toBe("object");
-        expect(typeof step.output).toBe("object");
+        expect(step).toMatchObject({
+          input: expect.any(Object),
+          utensil: expect.any(Object),
+          output: expect.any(Object),
+        });
       });
     });
   });
