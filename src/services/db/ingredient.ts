@@ -16,7 +16,7 @@ export async function getAll(): Promise<Ingredient[]> {
   return rows as Ingredient[];
 }
 
-export async function count(): Promise<any> {
+export async function count(): Promise<number> {
   const { rows } = await query<RowDataPacket[]>(
     "select count(*) from ingredient;"
   );
