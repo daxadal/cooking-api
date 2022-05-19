@@ -30,10 +30,19 @@ const router = express.Router();
 router
   .route("/")
   .get(validateQuery(DetailedQuery), async function (req, res) {
-    const steps = req.query.detailed
-      ? await Step.getAllDetailed()
-      : await Step.getAll();
-    res.status(200).send(steps);
+    const logger = res.locals.logger || console;
+    try {
+      const steps = req.query.detailed
+        ? await Step.getAllDetailed()
+        : await Step.getAll();
+      res.status(200).send(steps);
+    } catch (error) {
+      logger.error(
+        `Internal server error at ${req.method} ${req.originalUrl}`,
+        error
+      );
+      res.status(500).send({ message: "Internal server error" });
+    }
   })
 
   /**
@@ -63,10 +72,19 @@ router
    *         $ref: '#/components/responses/500'
    */
   .post(validateBody(SimpleStep), async function (req, res) {
-    const { input, utensil, output } = req.body as SimpleStep;
-    await Step.create({ input, utensil, output });
-    const step = await Step.getDetailed({ input, utensil, output });
-    res.status(200).send(step);
+    const logger = res.locals.logger || console;
+    try {
+      const { input, utensil, output } = req.body as SimpleStep;
+      await Step.create({ input, utensil, output });
+      const step = await Step.getDetailed({ input, utensil, output });
+      res.status(200).send(step);
+    } catch (error) {
+      logger.error(
+        `Internal server error at ${req.method} ${req.originalUrl}`,
+        error
+      );
+      res.status(500).send({ message: "Internal server error" });
+    }
   })
 
   /**
@@ -94,15 +112,24 @@ router
    *         $ref: '#/components/responses/500'
    */
   .delete(validateBody(SimpleStep), async function (req, res) {
-    const { input, utensil, output } = req.body as SimpleStep;
-    const deletedRowsCount = await Step.destroy({ input, utensil, output });
-    if (deletedRowsCount === 1) res.status(204).send();
-    else if (deletedRowsCount === 0)
-      res.status(404).send({ message: "Step not found" });
-    else
-      res.status(500).send({
-        message: `Internal server error. ${deletedRowsCount} rows were deleted instead of one`,
-      });
+    const logger = res.locals.logger || console;
+    try {
+      const { input, utensil, output } = req.body as SimpleStep;
+      const deletedRowsCount = await Step.destroy({ input, utensil, output });
+      if (deletedRowsCount === 1) res.status(204).send();
+      else if (deletedRowsCount === 0)
+        res.status(404).send({ message: "Step not found" });
+      else
+        res.status(500).send({
+          message: `Internal server error. ${deletedRowsCount} rows were deleted instead of one`,
+        });
+    } catch (error) {
+      logger.error(
+        `Internal server error at ${req.method} ${req.originalUrl}`,
+        error
+      );
+      res.status(500).send({ message: "Internal server error" });
+    }
   });
 
 export default router;
