@@ -1,9 +1,20 @@
 import express from "express";
+
+import { environment } from "@/config";
+import { Ingredient, Recipe, Step, Utensil } from "@/services/db";
+
 const router = express.Router();
 
-/* GET home page. */
-router.get("/", function (req, res) {
-  res.send("Welcome to Express");
+router.get("/", async function (req, res) {
+  res.status(200).send({
+    environment,
+    stats: {
+      ingredients: await Ingredient.count(),
+      utensils: await Utensil.count(),
+      steps: await Step.count(),
+      recipes: await Recipe.count(),
+    },
+  });
 });
 
 export default router;

@@ -10,14 +10,17 @@ components:
         type:
           type: string
           enum: [start, mid, end]
+
     Recipe:
       oneOf:
         - $ref: "#/components/schemas/SimpleRecipe"
         - $ref: "#/components/schemas/DetailedRecipe"
+
     Step:
       oneOf:
         - $ref: "#/components/schemas/SimpleStep"
         - $ref: "#/components/schemas/DetailedStep"
+
     Utensil:
       type: object
       properties:
@@ -59,6 +62,7 @@ components:
           $ref: "#/components/schemas/Ingredient"
         output:
           $ref: "#/components/schemas/Ingredient"
+
     SimpleRecipe:
       type: object
       properties:
@@ -119,6 +123,7 @@ components:
         type:
           type: string
           enum: [start, mid, end]
+
     UtensilData:
       type: object
       properties:
