@@ -1,12 +1,12 @@
 import request from "supertest";
 
 import { database as dbConfig } from "@/config/index";
+import { Ingredient } from "@/services/db";
 import { closeConnection, createConnection } from "@/services/db/setup";
 import { IngredientType } from "@/services/schemas";
 import app from "@/app";
 
 import { clearDatabase, clearTable, createMockIngredient } from "test/mock/db";
-import { Ingredient } from "@/services/db";
 
 describe("The /ingredients route", () => {
   beforeAll(() =>
@@ -102,6 +102,7 @@ describe("The /ingredients route", () => {
 
       // then
       expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("id");
       expect(response.body).toMatchObject(body);
     });
   });
