@@ -1,12 +1,20 @@
 import request from "supertest";
 
 import { database as dbConfig } from "@/config/index";
+
 import { Ingredient } from "@/services/db";
 import { closeConnection, createConnection } from "@/services/db/setup";
-import { IngredientType } from "@/services/schemas";
+import { IngredientType, Step as StepType } from "@/services/schemas";
+
 import app from "@/app";
 
-import { clearDatabase, clearTable, createMockIngredient } from "test/mock/db";
+import {
+  clearDatabase,
+  clearTable,
+  createMockIngredient,
+  createMockStep,
+  createMockUtensil,
+} from "test/mock/db";
 
 describe("The /ingredients route", () => {
   beforeAll(() =>
@@ -280,6 +288,185 @@ describe("The /ingredients route", () => {
       expect(response.body).toStrictEqual({});
 
       expect(await Ingredient.get(id)).toBeUndefined();
+    });
+  });
+
+  describe("Queries on steps", () => {
+    const START_ID = 101;
+    const TARGET_ID = 102;
+    const END_ID = 103;
+
+    beforeAll(async () => {
+      await createMockIngredient({
+        id: START_ID,
+        name: "start",
+        type: IngredientType.START,
+      });
+      await createMockIngredient({
+        id: TARGET_ID,
+        name: "mid",
+        type: IngredientType.MID,
+      });
+      await createMockIngredient({
+        id: END_ID,
+        name: "end-1",
+        type: IngredientType.END,
+      });
+      await createMockIngredient({
+        id: 104,
+        name: "end-2",
+        type: IngredientType.END,
+      });
+
+      await createMockUtensil({
+        id: 1,
+        name: "utensil-1",
+        waitTimeInMillis: 100,
+      });
+      await createMockUtensil({
+        id: 2,
+        name: "utensil-2",
+        waitTimeInMillis: 200,
+      });
+      await createMockUtensil({
+        id: 3,
+        name: "utensil-3",
+        waitTimeInMillis: 300,
+      });
+
+      await createMockStep({ input: START_ID, utensil: 1, output: TARGET_ID });
+      await createMockStep({ input: TARGET_ID, utensil: 2, output: END_ID });
+      await createMockStep({ input: TARGET_ID, utensil: 3, output: 104 });
+    });
+
+    afterAll(clearDatabase);
+
+    describe("GET /ingredients/{id}/outcomes", () => {
+      it("Returns 400 if the id is invalid", async () => {
+        // given
+        const ID = "INVALID";
+
+        // when
+        const response = await request(app).get(`/ingredients/${ID}/outcomes`);
+        // then
+        expect(response.status).toEqual(404);
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toBe("Endpoint not found");
+      });
+
+      it("Returns 400 if the ingredient doesn't exist", async () => {
+        // given
+        const ID = 9999;
+
+        // when
+        const response = await request(app).get(`/ingredients/${ID}/outcomes`);
+
+        // then
+        expect(response.status).toEqual(404);
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toBe("Ingredient not found");
+      });
+
+      it("Returns 400 if the ingredient type is 'end'", async () => {
+        // given
+        const ID = END_ID;
+
+        // when
+        const response = await request(app).get(`/ingredients/${ID}/outcomes`);
+
+        // then
+        expect(response.status).toEqual(400);
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toStrictEqual(
+          expect.stringContaining("This is an end ingredient")
+        );
+      });
+
+      it("Returns 200 and the list of detailed steps with the specified ingredient as input", async () => {
+        // given
+        const ID = TARGET_ID;
+
+        // when
+        const response = await request(app).get(`/ingredients/${ID}/outcomes`);
+
+        // then
+        expect(response.status).toBe(200);
+        expect(response.body).toBeDefined();
+        expect(response.body).toBeInstanceOf(Array);
+
+        response.body.forEach((step: StepType) => {
+          expect(step).toMatchObject({
+            input: expect.any(Object),
+            utensil: expect.any(Object),
+            output: expect.any(Object),
+          });
+          expect(step.input).toMatchObject({ id: TARGET_ID });
+        });
+      });
+    });
+
+    describe("GET /ingredients/{id}/sources", () => {
+      it("Returns 400 if the id is invalid", async () => {
+        // given
+        const ID = "INVALID";
+
+        // when
+        const response = await request(app).get(`/ingredients/${ID}/sources`);
+        // then
+        expect(response.status).toEqual(404);
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toBe("Endpoint not found");
+      });
+
+      it("Returns 400 if the ingredient doesn't exist", async () => {
+        // given
+        const ID = 9999;
+
+        // when
+        const response = await request(app).get(`/ingredients/${ID}/sources`);
+
+        // then
+        expect(response.status).toEqual(404);
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toBe("Ingredient not found");
+      });
+
+      it("Returns 400 if the ingredient type is 'start'", async () => {
+        // given
+        const ID = START_ID;
+
+        // when
+        const response = await request(app).get(`/ingredients/${ID}/sources`);
+
+        // then
+        expect(response.status).toEqual(400);
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toStrictEqual(
+          expect.stringContaining("This is a start ingredient")
+        );
+      });
+
+      it("Returns 200 and the list of detailed steps with the specified ingredient as output", async () => {
+        // given
+        const ID = TARGET_ID;
+
+        // when
+        const response = await request(app).get(`/ingredients/${ID}/sources`);
+
+        // then
+        expect(response.status).toBe(200);
+        expect(response.body).toBeDefined();
+        expect(response.body).toBeInstanceOf(Array);
+
+        response.body.forEach((step: StepType) => {
+          expect(step).toMatchObject({
+            input: expect.any(Object),
+            utensil: expect.any(Object),
+            output: expect.any(Object),
+          });
+          expect(step.output).toMatchObject({ id: TARGET_ID });
+        });
+      });
     });
   });
 });

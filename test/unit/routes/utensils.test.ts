@@ -1,12 +1,24 @@
 import request from "supertest";
 
 import { database as dbConfig } from "@/config/index";
+
 import { Utensil } from "@/services/db";
 import { closeConnection, createConnection } from "@/services/db/setup";
-import { Utensil as UtensilType } from "@/services/schemas";
+import {
+  IngredientType,
+  Utensil as UtensilType,
+  Step as StepType,
+} from "@/services/schemas";
+
 import app from "@/app";
 
-import { clearDatabase, clearTable, createMockUtensil } from "test/mock/db";
+import {
+  clearDatabase,
+  clearTable,
+  createMockIngredient,
+  createMockStep,
+  createMockUtensil,
+} from "test/mock/db";
 
 describe("The /utensils route", () => {
   beforeAll(() =>
@@ -280,6 +292,88 @@ describe("The /utensils route", () => {
       expect(response.body).toStrictEqual({});
 
       expect(await Utensil.get(id)).toBeUndefined();
+    });
+  });
+
+  describe("Queries on steps", () => {
+    const UTENSIL_ID = 1;
+
+    beforeAll(async () => {
+      await createMockIngredient({
+        id: 101,
+        name: "start",
+        type: IngredientType.START,
+      });
+      await createMockIngredient({
+        id: 102,
+        name: "mid",
+        type: IngredientType.MID,
+      });
+      await createMockIngredient({
+        id: 103,
+        name: "end-1",
+        type: IngredientType.END,
+      });
+
+      await createMockUtensil({
+        id: UTENSIL_ID,
+        name: "utensil-1",
+        waitTimeInMillis: 100,
+      });
+
+      await createMockStep({ input: 101, utensil: UTENSIL_ID, output: 102 });
+      await createMockStep({ input: 102, utensil: UTENSIL_ID, output: 103 });
+    });
+
+    afterAll(clearDatabase);
+
+    describe("GET /utensils/{id}/uses", () => {
+      it("Returns 400 if the id is invalid", async () => {
+        // given
+        const ID = "INVALID";
+
+        // when
+        const response = await request(app).get(`/utensils/${ID}/uses`);
+        // then
+        expect(response.status).toEqual(404);
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toBe("Endpoint not found");
+      });
+
+      it("Returns 400 if the ingredient doesn't exist", async () => {
+        // given
+        const ID = 9999;
+
+        // when
+        const response = await request(app).get(`/utensils/${ID}/uses`);
+
+        // then
+        expect(response.status).toEqual(404);
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toBe("Utensil not found");
+      });
+
+      it("Returns 200 and the list of detailed steps that use the utensil", async () => {
+        // given
+        const ID = UTENSIL_ID;
+
+        // when
+        const response = await request(app).get(`/utensils/${ID}/uses`);
+
+        // then
+        expect(response.status).toBe(200);
+        expect(response.body).toBeDefined();
+        expect(response.body).toBeInstanceOf(Array);
+
+        response.body.forEach((step: StepType) => {
+          expect(step).toMatchObject({
+            input: expect.any(Object),
+            utensil: expect.any(Object),
+            output: expect.any(Object),
+          });
+          expect(step.utensil).toMatchObject({ id: UTENSIL_ID });
+        });
+      });
     });
   });
 });
