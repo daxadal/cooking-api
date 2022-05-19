@@ -34,7 +34,7 @@ export async function createMockUtensil({
   waitTimeInMillis,
 }: Utensil): Promise<number> {
   const { rows } = await query<OkPacket>(
-    "insert into utensil (id, name, waitTimeInMillis) values (id, :name, :waitTimeInMillis);",
+    "insert into utensil (id, name, waitTimeInMillis) values (:id, :name, :waitTimeInMillis);",
     { id, name, waitTimeInMillis }
   );
   return rows.insertId;
