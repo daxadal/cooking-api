@@ -84,7 +84,7 @@ export interface SimpleIncompleteRecipe {
   mid2?: number;
   utensil3?: number;
   mid3?: number;
-  utetsil4?: number;
+  utensil4?: number;
   mid4?: number;
   utensil5?: number;
   mid5?: number;
@@ -98,7 +98,7 @@ export interface DetailedIncompleteRecipe {
   mid2?: Ingredient;
   utensil3?: Utensil;
   mid3?: Ingredient;
-  utetsil4?: Utensil;
+  utensil4?: Utensil;
   mid4?: Ingredient;
   utensil5?: Utensil;
   mid5?: Ingredient;

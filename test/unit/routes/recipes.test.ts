@@ -102,15 +102,14 @@ describe("The /recipes route", () => {
         expect(response.body).toHaveLength(2);
 
         response.body.forEach((recipe: Recipe) => {
-          expect(recipe).toHaveProperty("input");
-          expect(recipe).toHaveProperty("utensil1");
-          expect(recipe).toHaveProperty("mid1");
-          expect(recipe).toHaveProperty("output");
+          expect(recipe).toMatchObject({
+            input: expect.any(Number),
+            utensil1: expect.any(Number),
+            mid1: expect.any(Number),
 
-          expect(typeof recipe.input).toBe("number");
-          expect(typeof recipe.utensil1).toBe("number");
-          expect(typeof recipe.mid1).toBe("number");
-          expect(typeof recipe.output).toBe("number");
+            output: expect.any(Number),
+            steps: expect.any(Number),
+          });
         });
       }
     );
@@ -128,15 +127,14 @@ describe("The /recipes route", () => {
       expect(response.body).toHaveLength(2);
 
       response.body.forEach((recipe: Recipe) => {
-        expect(recipe).toHaveProperty("input");
-        expect(recipe).toHaveProperty("utensil1");
-        expect(recipe).toHaveProperty("mid1");
-        expect(recipe).toHaveProperty("output");
+        expect(recipe).toMatchObject({
+          input: expect.any(Object),
+          utensil1: expect.any(Object),
+          mid1: expect.any(Object),
 
-        expect(typeof recipe.input).toBe("object");
-        expect(typeof recipe.utensil1).toBe("object");
-        expect(typeof recipe.mid1).toBe("object");
-        expect(typeof recipe.output).toBe("object");
+          output: expect.any(Object),
+          steps: expect.any(Number),
+        });
       });
     });
   });
