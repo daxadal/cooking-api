@@ -1,5 +1,23 @@
 components:
   schemas:
+    ApiInfo:
+      type: object
+      properties:
+        environment:
+          type: string
+          enum: [PROD, DEV]
+        status:
+          type: object
+          properties:
+            ingredients:
+              type: integer
+            utensils:
+              type: integer
+            steps:
+              type: integer
+            recipes:
+              type: integer
+
     Ingredient:
       type: object
       properties:

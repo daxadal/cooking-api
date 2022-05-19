@@ -5,6 +5,19 @@ import { Ingredient, Recipe, Step, Utensil } from "@/services/db";
 
 const router = express.Router();
 
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     description: Gets general info from the API.
+ *     responses:
+ *       200:
+ *         description: API info.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiInfo'
+ */
 router.get("/", async function (req, res) {
   const logger = res.locals.logger || console;
   try {
