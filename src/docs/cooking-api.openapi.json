@@ -15,6 +15,23 @@
     }
   ],
   "paths": {
+    "/": {
+      "get": {
+        "description": "Gets general info from the API.",
+        "responses": {
+          "200": {
+            "description": "API info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/ingredients": {
       "get": {
         "tags": [
@@ -654,6 +671,35 @@
       }
     },
     "schemas": {
+      "ApiInfo": {
+        "type": "object",
+        "properties": {
+          "environment": {
+            "type": "string",
+            "enum": [
+              "PROD",
+              "DEV"
+            ]
+          },
+          "status": {
+            "type": "object",
+            "properties": {
+              "ingredients": {
+                "type": "integer"
+              },
+              "utensils": {
+                "type": "integer"
+              },
+              "steps": {
+                "type": "integer"
+              },
+              "recipes": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
       "Ingredient": {
         "type": "object",
         "properties": {

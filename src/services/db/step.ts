@@ -43,6 +43,11 @@ export async function getAllDetailed(): Promise<DetailedStep[]> {
   return deepRows as DetailedStep[];
 }
 
+export async function count(): Promise<number> {
+  const { rows } = await query<RowDataPacket[]>("select count(*) from step;");
+  return rows?.[0]?.["count(*)"];
+}
+
 export async function create({
   input,
   utensil,
