@@ -24,9 +24,9 @@ create view detailed_step as select
     utensil.id as utensil_id, utensil.name as utensil_name, utensil.waitTimeInMillis as utensil_waitTimeInMillis,
     output.id as output_id, output.name as output_name, output.type as output_type
 from step
-left join ingredient as input on step.input = input.id
-left join utensil on step.utensil = utensil.id
-left join ingredient as output on step.output = output.id;
+    left join ingredient as input on step.input = input.id
+    left join utensil on step.utensil = utensil.id
+    left join ingredient as output on step.output = output.id;
 
 create view recipe as select
     step1.input as input, step1.utensil as utensil1, step1.output as mid1,
@@ -35,13 +35,13 @@ create view recipe as select
     step4.utensil as utensil4, step4.output as mid4,
     step5.utensil as utensil5, step5.output as mid5
 from ingredient
-left join step as step1 on step1.input = ingredient.id
-left join step as step2 on step2.input = step1.output
-left join step as step3 on step3.input = step2.output
-left join step as step4 on step4.input = step3.output
-left join step as step5 on step5.input = step4.output
+    left join step as step1 on step1.input = ingredient.id
+    left join step as step2 on step2.input = step1.output
+    left join step as step3 on step3.input = step2.output
+    left join step as step4 on step4.input = step3.output
+    left join step as step5 on step5.input = step4.output
 where ingredient.type = 'start'
-and step1.output is not null;
+    and step1.output is not null;
 
 create view detailed_recipe as select
     input.id as input_id, input.name as input_name, input.type as input_type,
@@ -56,14 +56,14 @@ create view detailed_recipe as select
     utensil5.id as utensil5_id, utensil5.name as utensil5_name, utensil5.waitTimeInMillis as utensil5_waitTimeInMillis,
     mid5.id as mid5_id, mid5.name as mid5_name, mid5.type as mid5_type
 from recipe
-left join ingredient as input on input.id = recipe.input
-left join utensil as utensil1 on utensil1.id = recipe.utensil1
-left join ingredient as mid1 on mid1.id = recipe.mid1
-left join utensil as utensil2 on utensil2.id = recipe.utensil2
-left join ingredient as mid2 on mid2.id = recipe.mid2
-left join utensil as utensil3 on utensil3.id = recipe.utensil3
-left join ingredient as mid3 on mid3.id = recipe.mid3
-left join utensil as utensil4 on utensil4.id = recipe.utensil4
-left join ingredient as mid4 on mid4.id = recipe.mid4
-left join utensil as utensil5 on utensil5.id = recipe.utensil5
-left join ingredient as mid5 on mid5.id = recipe.mid5;
+    left join ingredient as input on input.id = recipe.input
+    left join utensil as utensil1 on utensil1.id = recipe.utensil1
+    left join ingredient as mid1 on mid1.id = recipe.mid1
+    left join utensil as utensil2 on utensil2.id = recipe.utensil2
+    left join ingredient as mid2 on mid2.id = recipe.mid2
+    left join utensil as utensil3 on utensil3.id = recipe.utensil3
+    left join ingredient as mid3 on mid3.id = recipe.mid3
+    left join utensil as utensil4 on utensil4.id = recipe.utensil4
+    left join ingredient as mid4 on mid4.id = recipe.mid4
+    left join utensil as utensil5 on utensil5.id = recipe.utensil5
+    left join ingredient as mid5 on mid5.id = recipe.mid5;
