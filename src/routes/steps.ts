@@ -82,26 +82,23 @@ router
         Ingredient.get(output),
       ]);
 
-      if (!fullInput) {
+      if (!fullInput)
         res.status(400).send({
           message: "The specified input ingredient does not exist",
         });
-        return;
-      } else if (!fullUtensil) {
+      else if (!fullUtensil)
         res.status(400).send({
           message: "The specified utensil does not exist",
         });
-        return;
-      } else if (!fullOutput) {
+      else if (!fullOutput)
         res.status(400).send({
           message: "The specified output ingredient does not exist",
         });
-        return;
+      else {
+        await Step.create({ input, utensil, output });
+        const step = await Step.getDetailed({ input, utensil, output });
+        res.status(200).send(step);
       }
-
-      await Step.create({ input, utensil, output });
-      const step = await Step.getDetailed({ input, utensil, output });
-      res.status(200).send(step);
     } catch (error) {
       logger.error(
         `Internal server error at ${req.method} ${req.originalUrl}`,
