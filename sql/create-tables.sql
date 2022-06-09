@@ -86,5 +86,5 @@ from recipe
     left join utensil as utensil4 on utensil4.id = recipe.utensil4
     left join ingredient as mid4 on mid4.id = recipe.mid4
     left join utensil as utensil5 on utensil5.id = recipe.utensil5
-    left join ingredient as mid5 on mid5.id = recipe.mid5,
+    left join ingredient as mid5 on mid5.id = recipe.mid5
     left join ingredient as output on output.id = recipe.output;
