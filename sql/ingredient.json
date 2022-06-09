@@ -8,5 +8,17 @@
   { "id": 107, "name": "Croissant", "type": "end" },
   { "id": 108, "name": "Raw chocolate croissant", "type": "mid" },
   { "id": 109, "name": "Chocolate croissant", "type": "end" },
-  { "id": 110, "name": "Chocolate muffin", "type": "end" }
+  { "id": 110, "name": "Chocolate muffin", "type": "end" },
+  { "id": 111, "name": "Egg", "type": "start" },
+  { "id": 112, "name": "Fried egg", "type": "end" },
+  { "id": 113, "name": "Raw pancake", "type": "mid" },
+  { "id": 114, "name": "Pancake", "type": "end" },
+  { "id": 115, "name": "Raw banana pancake", "type": "mid" },
+  { "id": 116, "name": "Banana pancake", "type": "end" },
+  { "id": 117, "name": "Raw chocolate pancake", "type": "mid" },
+  { "id": 118, "name": "Chocolate pancake", "type": "end" },
+  { "id": 119, "name": "Raw banana muffin", "type": "mid" },
+  { "id": 120, "name": "Raw banana croissant", "type": "mid" },
+  { "id": 121, "name": "Banana croissant", "type": "end" },
+  { "id": 122, "name": "Banana muffin", "type": "end" }
 ]

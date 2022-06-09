@@ -3,8 +3,19 @@
   { "input": 102, "utensil": 3, "output": 104 },
   { "input": 104, "utensil": 4, "output": 108 },
   { "input": 103, "utensil": 4, "output": 105 },
+  { "input": 104, "utensil": 5, "output": 120 },
+  { "input": 103, "utensil": 5, "output": 119 },
   { "input": 103, "utensil": 2, "output": 106 },
   { "input": 104, "utensil": 2, "output": 107 },
   { "input": 105, "utensil": 2, "output": 110 },
-  { "input": 108, "utensil": 2, "output": 109 }
+  { "input": 108, "utensil": 2, "output": 109 },
+  { "input": 119, "utensil": 2, "output": 122 },
+  { "input": 120, "utensil": 2, "output": 121 },
+  { "input": 111, "utensil": 6, "output": 112 },
+  { "input": 111, "utensil": 1, "output": 113 },
+  { "input": 113, "utensil": 6, "output": 114 },
+  { "input": 113, "utensil": 5, "output": 115 },
+  { "input": 115, "utensil": 6, "output": 116 },
+  { "input": 113, "utensil": 4, "output": 117 },
+  { "input": 117, "utensil": 6, "output": 118 }
 ]
