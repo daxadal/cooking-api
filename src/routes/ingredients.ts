@@ -222,10 +222,10 @@ router
         Step.search({ input: ingredient.id }),
         Step.search({ output: ingredient.id }),
       ]);
-      if (inputSteps.length > 0) {
+      if (inputSteps.length > 0 || outputSteps.length > 0) {
         res.status(400).send({
           message:
-            "The utensil utensil is being used on steps. It can't be deleted.",
+            "The ingredient is being used on steps. It can't be deleted.",
           steps: [...inputSteps, ...outputSteps],
         });
         return;

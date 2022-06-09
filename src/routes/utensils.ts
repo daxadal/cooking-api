@@ -220,8 +220,7 @@ router
       const steps = await Step.search({ utensil: utensil.id });
       if (steps.length > 0) {
         res.status(400).send({
-          message:
-            "The utensil utensil is being used on steps. It can't be deleted.",
+          message: "The utensil is being used on steps. It can't be deleted.",
           steps,
         });
         return;
