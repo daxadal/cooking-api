@@ -31,11 +31,27 @@ from step
     left join ingredient as output on step.output = output.id;
 
 create view recipe as select
+    case
+        when step5.output is not null then 5
+        when step4.output is not null then 4
+        when step3.output is not null then 3
+        when step2.output is not null then 2
+        when step1.output is not null then 1
+        else 0
+    end as steps,
     step1.input as input, step1.utensil as utensil1, step1.output as mid1,
     step2.utensil as utensil2, step2.output as mid2,
     step3.utensil as utensil3, step3.output as mid3,
     step4.utensil as utensil4, step4.output as mid4,
-    step5.utensil as utensil5, step5.output as mid5
+    step5.utensil as utensil5, step5.output as mid5,
+    case
+        when step5.output is not null then step5.output
+        when step4.output is not null then step4.output
+        when step3.output is not null then step3.output
+        when step2.output is not null then step2.output
+        when step1.output is not null then step1.output
+        else step1.input
+    end as output,
 from ingredient
     left join step as step1 on step1.input = ingredient.id
     left join step as step2 on step2.input = step1.output
