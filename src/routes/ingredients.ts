@@ -219,8 +219,8 @@ router
       const ingredient = res.locals.ingredient as TIngredient;
 
       const [inputSteps, outputSteps] = await Promise.all([
-        Step.queryDetailedFromInput(ingredient.id),
-        Step.queryDetailedFromOutput(ingredient.id),
+        Step.search({ input: ingredient.id }),
+        Step.search({ output: ingredient.id }),
       ]);
       if (inputSteps.length > 0) {
         res.status(400).send({
@@ -279,7 +279,7 @@ router.get("/:id(\\d+)/outcomes", async function (req, res) {
         message: "This is an end ingredient. It cannot be cooked further.",
       });
     } else {
-      const steps = await Step.queryDetailedFromInput(ingredient.id);
+      const steps = await Step.search({ input: ingredient.id });
       res.status(200).send(steps);
     }
   } catch (error) {
@@ -325,7 +325,7 @@ router.get("/:id(\\d+)/sources", async function (req, res) {
           "This is a start ingredient. It cannot have been cooked before.",
       });
     } else {
-      const steps = await Step.queryDetailedFromOutput(ingredient.id);
+      const steps = await Step.searchDetailed({ output: ingredient.id });
       res.status(200).send(steps);
     }
   } catch (error) {

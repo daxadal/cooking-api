@@ -217,7 +217,7 @@ router
     try {
       const utensil = res.locals.utensil as TUtensil;
 
-      const steps = await Step.queryDetailedFromUtensil(utensil.id);
+      const steps = await Step.search({ utensil: utensil.id });
       if (steps.length > 0) {
         res.status(400).send({
           message:
@@ -269,7 +269,8 @@ router
 router.get("/:id(\\d+)/uses", async function (req, res) {
   const logger = res.locals.logger || console;
   try {
-    const steps = await Step.queryDetailedFromUtensil(res.locals.utensil.id);
+    const utensil = res.locals.utensil as TUtensil;
+    const steps = await Step.searchDetailed({ utensil: utensil.id });
     res.status(200).send(steps);
   } catch (error) {
     logger.error(
