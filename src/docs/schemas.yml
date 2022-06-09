@@ -6,7 +6,7 @@ components:
         environment:
           type: string
           enum: [PROD, DEV]
-        status:
+        stats:
           type: object
           properties:
             ingredients:
