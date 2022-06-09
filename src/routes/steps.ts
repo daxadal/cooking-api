@@ -1,8 +1,8 @@
 import express from "express";
 
-import { Step } from "@/services/db";
+import { Ingredient, Step, Utensil } from "@/services/db";
 import { validateBody, validateQuery } from "@/services/joi";
-import { DetailedQuery, SimpleStep } from "@/services/schemas";
+import { DetailedQuery, IngredientType, SimpleStep } from "@/services/schemas";
 
 const router = express.Router();
 
@@ -75,9 +75,74 @@ router
     const logger = res.locals.logger || console;
     try {
       const { input, utensil, output } = req.body as SimpleStep;
-      await Step.create({ input, utensil, output });
-      const step = await Step.getDetailed({ input, utensil, output });
-      res.status(200).send(step);
+
+      if (input === output)
+        res.status(400).send({
+          message: "Input and output can't be the same ingredient",
+        });
+
+      const [
+        fullInput,
+        fullUtensil,
+        fullOutput,
+
+        currentStep,
+        otherInputSteps,
+        otherUtensilSteps,
+        otherOutputSteps,
+      ] = await Promise.all([
+        Ingredient.get(input),
+        Utensil.get(utensil),
+        Ingredient.get(output),
+
+        Step.get({ input, utensil, output }),
+        Step.search({ utensil, output }),
+        Step.search({ input, output }),
+        Step.search({ input, utensil }),
+      ]);
+
+      if (!fullInput)
+        res.status(400).send({
+          message: "The specified input ingredient doesn't exist",
+        });
+      else if (fullInput.type === IngredientType.END)
+        res.status(400).send({
+          message: "Input ingredient can't be an end ingredient",
+        });
+      else if (!fullUtensil)
+        res.status(400).send({
+          message: "The specified utensil doesn't exist",
+        });
+      else if (!fullOutput)
+        res.status(400).send({
+          message: "The specified output ingredient doesn't exist",
+        });
+      else if (fullOutput.type === IngredientType.START)
+        res.status(400).send({
+          message: "Output ingredient can't be a start ingredient",
+        });
+      else if (currentStep)
+        res.status(400).send({
+          message: "This step already exists",
+        });
+      else if (
+        otherInputSteps.length > 0 ||
+        otherUtensilSteps.length > 0 ||
+        otherOutputSteps.length > 0
+      )
+        res.status(400).send({
+          message: "Steps can't share 2 or more components with another step",
+          conflicts: [
+            ...otherInputSteps,
+            ...otherUtensilSteps,
+            ...otherOutputSteps,
+          ],
+        });
+      else {
+        await Step.create({ input, utensil, output });
+        const step = await Step.getDetailed({ input, utensil, output });
+        res.status(200).send(step);
+      }
     } catch (error) {
       logger.error(
         `Internal server error at ${req.method} ${req.originalUrl}`,

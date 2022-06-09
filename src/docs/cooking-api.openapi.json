@@ -681,7 +681,7 @@
               "DEV"
             ]
           },
-          "status": {
+          "stats": {
             "type": "object",
             "properties": {
               "ingredients": {

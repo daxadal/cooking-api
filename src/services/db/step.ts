@@ -30,6 +30,42 @@ export async function getDetailed({
     : undefined;
 }
 
+function getConstraints({ input, utensil, output }: Partial<SimpleStep>) {
+  const constraints = [];
+  if (input) constraints.push("input = :input");
+  if (utensil) constraints.push("utensil = :utensil");
+  if (output) constraints.push("output = :output");
+  return constraints.join(" and ");
+}
+
+export async function search({
+  input,
+  utensil,
+  output,
+}: Partial<SimpleStep>): Promise<SimpleStep[]> {
+  const { rows } = await query<RowDataPacket[]>(
+    `select * from step where ${getConstraints({ input, utensil, output })};`,
+    { input, utensil, output }
+  );
+  return rows as SimpleStep[];
+}
+
+export async function searchDetailed({
+  input,
+  utensil,
+  output,
+}: Partial<SimpleStep>): Promise<DetailedStep[]> {
+  const { rows } = await query<RowDataPacket[]>(
+    `select * from detailed_step where ${getConstraints({
+      input,
+      utensil,
+      output,
+    })};`,
+    { input, utensil, output }
+  );
+  return rows as DetailedStep[];
+}
+
 export async function getAll(): Promise<SimpleStep[]> {
   const { rows } = await query<RowDataPacket[]>("select * from step;");
   return rows as SimpleStep[];
