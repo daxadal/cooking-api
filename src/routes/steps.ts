@@ -78,7 +78,7 @@ router
 
       if (input === output)
         res.status(400).send({
-          message: "Input and output can not be the same ingredient",
+          message: "Input and output can't be the same ingredient",
         });
 
       const [
@@ -103,23 +103,23 @@ router
 
       if (!fullInput)
         res.status(400).send({
-          message: "The specified input ingredient does not exist",
+          message: "The specified input ingredient doesn't exist",
         });
       else if (fullInput.type === IngredientType.END)
         res.status(400).send({
-          message: "Input ingredient can not be an end ingredient",
+          message: "Input ingredient can't be an end ingredient",
         });
       else if (!fullUtensil)
         res.status(400).send({
-          message: "The specified utensil does not exist",
+          message: "The specified utensil doesn't exist",
         });
       else if (!fullOutput)
         res.status(400).send({
-          message: "The specified output ingredient does not exist",
+          message: "The specified output ingredient doesn't exist",
         });
       else if (fullOutput.type === IngredientType.START)
         res.status(400).send({
-          message: "Output ingredient can not be a start ingredient",
+          message: "Output ingredient can't be a start ingredient",
         });
       else if (currentStep)
         res.status(400).send({
@@ -131,7 +131,7 @@ router
         otherOutputSteps.length > 0
       )
         res.status(400).send({
-          message: "Steps can not share 2 or more components with each other",
+          message: "Steps can't share 2 or more components with another step",
           conflicts: [
             ...otherInputSteps,
             ...otherUtensilSteps,
