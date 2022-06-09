@@ -2,5 +2,7 @@
   { "id": 1, "name": "Stand mixer", "waitTimeInMillis": "2000" },
   { "id": 2, "name": "Oven", "waitTimeInMillis": "5000" },
   { "id": 3, "name": "Rolling pin", "waitTimeInMillis": "1500" },
-  { "id": 4, "name": "Chocolate sprinkler", "waitTimeInMillis": "1000" }
+  { "id": 4, "name": "Chocolate sprinkler", "waitTimeInMillis": "1000" },
+  { "id": 5, "name": "Banana sprinkler", "waitTimeInMillis": "1000" },
+  { "id": 6, "name": "Pan", "waitTimeInMillis": "1250" }
 ]
