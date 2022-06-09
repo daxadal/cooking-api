@@ -1,6 +1,6 @@
 import express from "express";
 
-import { Step } from "@/services/db";
+import { Ingredient, Step, Utensil } from "@/services/db";
 import { validateBody, validateQuery } from "@/services/joi";
 import { DetailedQuery, SimpleStep } from "@/services/schemas";
 
@@ -75,6 +75,30 @@ router
     const logger = res.locals.logger || console;
     try {
       const { input, utensil, output } = req.body as SimpleStep;
+
+      const [fullInput, fullUtensil, fullOutput] = await Promise.all([
+        Ingredient.get(input),
+        Utensil.get(utensil),
+        Ingredient.get(output),
+      ]);
+
+      if (!fullInput) {
+        res.status(400).send({
+          message: "The specified input ingredient does not exist",
+        });
+        return;
+      } else if (!fullUtensil) {
+        res.status(400).send({
+          message: "The specified utensil does not exist",
+        });
+        return;
+      } else if (!fullOutput) {
+        res.status(400).send({
+          message: "The specified output ingredient does not exist",
+        });
+        return;
+      }
+
       await Step.create({ input, utensil, output });
       const step = await Step.getDetailed({ input, utensil, output });
       res.status(200).send(step);
