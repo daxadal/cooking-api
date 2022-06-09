@@ -62,6 +62,7 @@ where ingredient.type = 'start'
     and step1.output is not null;
 
 create view detailed_recipe as select
+    steps,
     input.id as input_id, input.name as input_name, input.type as input_type,
     utensil1.id as utensil1_id, utensil1.name as utensil1_name, utensil1.waitTimeInMillis as utensil1_waitTimeInMillis,
     mid1.id as mid1_id, mid1.name as mid1_name, mid1.type as mid1_type,
@@ -72,7 +73,8 @@ create view detailed_recipe as select
     utensil4.id as utensil4_id, utensil4.name as utensil4_name, utensil4.waitTimeInMillis as utensil4_waitTimeInMillis,
     mid4.id as mid4_id, mid4.name as mid4_name, mid4.type as mid4_type,
     utensil5.id as utensil5_id, utensil5.name as utensil5_name, utensil5.waitTimeInMillis as utensil5_waitTimeInMillis,
-    mid5.id as mid5_id, mid5.name as mid5_name, mid5.type as mid5_type
+    mid5.id as mid5_id, mid5.name as mid5_name, mid5.type as mid5_type,
+    output.id as output_id, output.name as output_name, output.type as output_type
 from recipe
     left join ingredient as input on input.id = recipe.input
     left join utensil as utensil1 on utensil1.id = recipe.utensil1
@@ -84,4 +86,5 @@ from recipe
     left join utensil as utensil4 on utensil4.id = recipe.utensil4
     left join ingredient as mid4 on mid4.id = recipe.mid4
     left join utensil as utensil5 on utensil5.id = recipe.utensil5
-    left join ingredient as mid5 on mid5.id = recipe.mid5;
+    left join ingredient as mid5 on mid5.id = recipe.mid5,
+    left join ingredient as output on output.id = recipe.output;
