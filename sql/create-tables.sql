@@ -51,7 +51,7 @@ create view recipe as select
         when step2.output is not null then step2.output
         when step1.output is not null then step1.output
         else step1.input
-    end as output,
+    end as output
 from ingredient
     left join step as step1 on step1.input = ingredient.id
     left join step as step2 on step2.input = step1.output
