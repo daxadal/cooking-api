@@ -61,10 +61,10 @@ from step as step1
 create view recipe as select
     steps, input, utensil1, mid1, utensil2, mid2, utensil3, mid3, utensil4, mid4, utensil5, mid5, output
 from step_concat
-    left join ingredient as full_input on input = full_input.id
-    left join ingredient as full_output on output = full_output.id
-where full_input.type = 'start'
-    and full_output.type = 'end';
+    left join ingredient as input on input = input.id
+    left join ingredient as output on output = output.id
+where input.type = 'start'
+    and output.type = 'end';
 
 create view detailed_recipe as select
     steps,
