@@ -2,6 +2,7 @@ create table ingredient (
     id smallint unsigned not null auto_increment,
     name varchar(30),
     type char(5),
+
     primary key (id)
 );
 alter table ingredient auto_increment=101;
@@ -10,6 +11,7 @@ create table utensil (
     id smallint unsigned not null auto_increment,
     name varchar(30),
     waitTimeInMillis integer,
+
     primary key (id)
 );
 
