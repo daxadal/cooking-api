@@ -216,6 +216,17 @@ router
     const logger = res.locals.logger || console;
     try {
       const utensil = res.locals.utensil as TUtensil;
+
+      const steps = await Step.queryDetailedFromUtensil(utensil.id);
+      if (steps.length > 0) {
+        res.status(400).send({
+          message:
+            "The utensil utensil is being used on steps. It can't be deleted.",
+          steps,
+        });
+        return;
+      }
+
       const deletedRowsCount = await Utensil.destroy(utensil.id);
       if (deletedRowsCount === 1) res.status(204).send();
       else
