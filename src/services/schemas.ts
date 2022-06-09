@@ -76,7 +76,9 @@ export type Step = SimpleStep | DetailedStep;
 
 // #region --- Recipe
 
-export interface SimpleIncompleteRecipe {
+export interface SimpleRecipe {
+  steps: number;
+
   input: number;
   utensil1: number;
   mid1: number;
@@ -88,9 +90,13 @@ export interface SimpleIncompleteRecipe {
   mid4?: number;
   utensil5?: number;
   mid5?: number;
+
+  output: number;
 }
 
-export interface DetailedIncompleteRecipe {
+export interface DetailedRecipe {
+  steps: number;
+
   input: Ingredient;
   utensil1: Utensil;
   mid1: Ingredient;
@@ -102,15 +108,7 @@ export interface DetailedIncompleteRecipe {
   mid4?: Ingredient;
   utensil5?: Utensil;
   mid5?: Ingredient;
-}
 
-export interface SimpleRecipe extends SimpleIncompleteRecipe {
-  steps: number;
-  output: number;
-}
-
-export interface DetailedRecipe extends DetailedIncompleteRecipe {
-  steps: number;
   output: Ingredient;
 }
 
