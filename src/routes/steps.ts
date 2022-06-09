@@ -2,7 +2,7 @@ import express from "express";
 
 import { Ingredient, Step, Utensil } from "@/services/db";
 import { validateBody, validateQuery } from "@/services/joi";
-import { DetailedQuery, SimpleStep } from "@/services/schemas";
+import { DetailedQuery, IngredientType, SimpleStep } from "@/services/schemas";
 
 const router = express.Router();
 
@@ -76,6 +76,11 @@ router
     try {
       const { input, utensil, output } = req.body as SimpleStep;
 
+      if (input === output)
+        res.status(400).send({
+          message: "Input and output can not be the same ingredient",
+        });
+
       const [fullInput, fullUtensil, fullOutput] = await Promise.all([
         Ingredient.get(input),
         Utensil.get(utensil),
@@ -86,6 +91,10 @@ router
         res.status(400).send({
           message: "The specified input ingredient does not exist",
         });
+      else if (fullInput.type === IngredientType.END)
+        res.status(400).send({
+          message: "Input ingredient can not be an end ingredient",
+        });
       else if (!fullUtensil)
         res.status(400).send({
           message: "The specified utensil does not exist",
@@ -93,6 +102,10 @@ router
       else if (!fullOutput)
         res.status(400).send({
           message: "The specified output ingredient does not exist",
+        });
+      else if (fullOutput.type === IngredientType.START)
+        res.status(400).send({
+          message: "Output ingredient can not be a start ingredient",
         });
       else {
         await Step.create({ input, utensil, output });
