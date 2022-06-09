@@ -80,16 +80,18 @@ create view detailed_recipe as select
     utensil5.id as utensil5_id, utensil5.name as utensil5_name, utensil5.waitTimeInMillis as utensil5_waitTimeInMillis,
     mid5.id as mid5_id, mid5.name as mid5_name, mid5.type as mid5_type,
     output.id as output_id, output.name as output_name, output.type as output_type
-from recipe
-    left join ingredient as input on input.id = recipe.input
-    left join utensil as utensil1 on utensil1.id = recipe.utensil1
-    left join ingredient as mid1 on mid1.id = recipe.mid1
-    left join utensil as utensil2 on utensil2.id = recipe.utensil2
-    left join ingredient as mid2 on mid2.id = recipe.mid2
-    left join utensil as utensil3 on utensil3.id = recipe.utensil3
-    left join ingredient as mid3 on mid3.id = recipe.mid3
-    left join utensil as utensil4 on utensil4.id = recipe.utensil4
-    left join ingredient as mid4 on mid4.id = recipe.mid4
-    left join utensil as utensil5 on utensil5.id = recipe.utensil5
-    left join ingredient as mid5 on mid5.id = recipe.mid5
-    left join ingredient as output on output.id = recipe.output;
+from step_concat
+    left join ingredient as input on input.id = step_concat.input
+    left join utensil as utensil1 on utensil1.id = step_concat.utensil1
+    left join ingredient as mid1 on mid1.id = step_concat.mid1
+    left join utensil as utensil2 on utensil2.id = step_concat.utensil2
+    left join ingredient as mid2 on mid2.id = step_concat.mid2
+    left join utensil as utensil3 on utensil3.id = step_concat.utensil3
+    left join ingredient as mid3 on mid3.id = step_concat.mid3
+    left join utensil as utensil4 on utensil4.id = step_concat.utensil4
+    left join ingredient as mid4 on mid4.id = step_concat.mid4
+    left join utensil as utensil5 on utensil5.id = step_concat.utensil5
+    left join ingredient as mid5 on mid5.id = step_concat.mid5
+    left join ingredient as output on output.id = step_concat.output
+where input.type = 'start'
+    and output.type = 'end';
