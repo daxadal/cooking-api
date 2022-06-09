@@ -40,7 +40,8 @@ left join step as step2 on step2.input = step1.output
 left join step as step3 on step3.input = step2.output
 left join step as step4 on step4.input = step3.output
 left join step as step5 on step5.input = step4.output
-where ingredient.type = 'start';
+where ingredient.type = 'start'
+and mid1 is not null;
 
 create view detailed_recipe as select
     input.id as input_id, input.name as input_name, input.type as input_type,
