@@ -112,7 +112,7 @@ export async function query<T extends Rows>(
   query: string,
   params?: Record<string, unknown>
 ): Promise<QueryResult<T>> {
-  const [rows, fields] = await connection.execute<T>(query, params);
+  const [rows, fields] = await connection.query<T>(query, params);
   const fieldNames = fields && fields.filter((f) => f).map((f) => f.name);
   logger.debug("MySQL: > " + query, { rows, fields: fieldNames });
   return { rows, fields: fieldNames || [] };
@@ -123,7 +123,7 @@ async function asyncBulkInsert(
   paramsArray: Array<Record<string, unknown>>
 ) {
   const promises = paramsArray.map((params) =>
-    connection.execute<OkPacket>(query, params)
+    connection.query<OkPacket>(query, params)
   );
   const results = await Promise.all(promises);
   return results.map(([rows, fields]) => {
