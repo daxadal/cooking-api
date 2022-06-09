@@ -30,7 +30,7 @@ from step
     left join utensil on step.utensil = utensil.id
     left join ingredient as output on step.output = output.id;
 
-create view recipe as select
+create view step_concat as select
     case
         when step5.output is not null then 5
         when step4.output is not null then 4
@@ -52,14 +52,19 @@ create view recipe as select
         when step1.output is not null then step1.output
         else step1.input
     end as output
-from ingredient
-    left join step as step1 on step1.input = ingredient.id
+from step as step1
     left join step as step2 on step2.input = step1.output
     left join step as step3 on step3.input = step2.output
     left join step as step4 on step4.input = step3.output
-    left join step as step5 on step5.input = step4.output
-where ingredient.type = 'start'
-    and step1.output is not null;
+    left join step as step5 on step5.input = step4.output;
+
+create view recipe as select
+    steps, input, utensil1, mid1, utensil2, mid2, utensil3, mid3, utensil4, mid4, utensil5, mid5, output
+from step_concat
+    left join ingredient as full_input on input = full_input.id
+    left join ingredient as full_output on output = full_output.id
+where full_input.type = 'start'
+    and full_output.type = 'end';
 
 create view detailed_recipe as select
     steps,
