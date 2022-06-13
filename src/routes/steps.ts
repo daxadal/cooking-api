@@ -67,7 +67,20 @@ router
    *             schema:
    *               $ref: '#/components/schemas/DetailedStep'
    *       400:
-   *         $ref: '#/components/responses/400'
+   *         description: Bad request
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   description: More info about the error
+   *                 conflicts:
+   *                   type: array
+   *                   description: If present, the steps that are preventing creation
+   *                   items:
+   *                     $ref: "#/components/schemas/SimpleStep"
    *       500:
    *         $ref: '#/components/responses/500'
    */
