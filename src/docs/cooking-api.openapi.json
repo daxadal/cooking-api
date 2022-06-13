@@ -184,7 +184,27 @@
             "$ref": "#/components/responses/204"
           },
           "400": {
-            "$ref": "#/components/responses/400"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "More info about the error"
+                    },
+                    "steps": {
+                      "type": "array",
+                      "description": "If present, the steps that are preventing deletion",
+                      "items": {
+                        "$ref": "#/components/schemas/Step"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
             "$ref": "#/components/responses/404"
