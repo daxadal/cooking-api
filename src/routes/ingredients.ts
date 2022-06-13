@@ -279,7 +279,7 @@ router.get("/:id(\\d+)/outcomes", async function (req, res) {
         message: "This is an end ingredient. It cannot be cooked further.",
       });
     } else {
-      const steps = await Step.search({ input: ingredient.id });
+      const steps = await Step.searchDetailed({ input: ingredient.id });
       res.status(200).send(steps);
     }
   } catch (error) {
