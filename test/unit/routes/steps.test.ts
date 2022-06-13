@@ -161,6 +161,67 @@ describe("The /steps route", () => {
       expect(response.body.message).toMatch(message);
     });
 
+    it.each`
+      body                                          | message                                            | reason
+      ${{ input: 101, utensil: 1, output: 101 }}    | ${"Input and output can't be the same ingredient"} | ${"input equals output"}
+      ${{ input: 9999, utensil: 1, output: 102 }}   | ${"The specified input ingredient doesn't exist"}  | ${"input doesn't exist"}
+      ${{ input: 104, utensil: 1, output: 102 }}    | ${"Input ingredient can't be an end ingredient"}   | ${"input type is 'end'"}
+      ${{ input: 101, utensil: 9999, output: 102 }} | ${"The specified utensil doesn't exist"}           | ${"utensil doesn't exist"}
+      ${{ input: 102, utensil: 1, output: 9999 }}   | ${"The specified output ingredient doesn't exist"} | ${"output doesn't exist"}
+      ${{ input: 102, utensil: 1, output: 101 }}    | ${"Output ingredient can't be a start ingredient"} | ${"output type is 'start'"}
+    `("Returns 400 if $reason", async ({ body, message }) => {
+      // given
+
+      // when
+      const response = await request(app).post("/steps").send(body);
+
+      // then
+      expect(response.status).toEqual(400);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toEqual(message);
+    });
+
+    it("Returns 400 if the step already exists", async () => {
+      // given
+      const body = { input: 101, utensil: 1, output: 103 };
+
+      await createMockStep(body);
+
+      // when
+      const response = await request(app).post("/steps").send(body);
+
+      // then
+      expect(response.status).toEqual(400);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toEqual("This step already exists");
+    });
+
+    it.each`
+      conflict                                   | fields
+      ${{ input: 101, utensil: 1, output: 102 }} | ${"input and utensil"}
+      ${{ input: 101, utensil: 2, output: 103 }} | ${"input and output"}
+      ${{ input: 102, utensil: 1, output: 103 }} | ${"utensil and output"}
+    `(
+      "Returns 400 if the step shares $fields with another step",
+      async ({ conflict }) => {
+        // given
+        const body = { input: 101, utensil: 1, output: 103 };
+
+        await createMockStep(conflict);
+
+        // when
+        const response = await request(app).post("/steps").send(body);
+
+        // then
+        expect(response.status).toEqual(400);
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toEqual(
+          "Steps can't share 2 or more components with another step"
+        );
+        expect(response.body.conflicts).toMatchObject([conflict]);
+      }
+    );
+
     it("Returns 200 and the created step", async () => {
       // given
       const body = {
