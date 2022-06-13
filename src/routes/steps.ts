@@ -76,10 +76,12 @@ router
     try {
       const { input, utensil, output } = req.body as SimpleStep;
 
-      if (input === output)
+      if (input === output) {
         res.status(400).send({
           message: "Input and output can't be the same ingredient",
         });
+        return;
+      }
 
       const [
         fullInput,
