@@ -30,21 +30,18 @@ export async function getDetailed({
     : undefined;
 }
 
-function getConstraints({ input, utensil, output }: Partial<SimpleStep>) {
-  const constraints = [];
-  if (input) constraints.push("input = :input");
-  if (utensil) constraints.push("utensil = :utensil");
-  if (output) constraints.push("output = :output");
-  return constraints.join(" and ");
-}
-
 export async function search({
   input,
   utensil,
   output,
 }: Partial<SimpleStep>): Promise<SimpleStep[]> {
+  const constraints = [];
+  if (input) constraints.push("input = :input");
+  if (utensil) constraints.push("utensil = :utensil");
+  if (output) constraints.push("output = :output");
+
   const { rows } = await query<RowDataPacket[]>(
-    `select * from step where ${getConstraints({ input, utensil, output })};`,
+    `select * from step where ${constraints.join(" and ")};`,
     { input, utensil, output }
   );
   return rows as SimpleStep[];
@@ -55,15 +52,17 @@ export async function searchDetailed({
   utensil,
   output,
 }: Partial<SimpleStep>): Promise<DetailedStep[]> {
-  const { rows } = await query<RowDataPacket[]>(
-    `select * from detailed_step where ${getConstraints({
-      input,
-      utensil,
-      output,
-    })};`,
+  const constraints = [];
+  if (input) constraints.push("input_id = :input");
+  if (utensil) constraints.push("utensil_id = :utensil");
+  if (output) constraints.push("output_id = :output");
+
+  const { rows, fields } = await query<RowDataPacket[]>(
+    `select * from detailed_step where ${constraints.join(" and ")};`,
     { input, utensil, output }
   );
-  return rows as DetailedStep[];
+  const deepRows = rows.map((row) => deepen(row, fields));
+  return deepRows as DetailedStep[];
 }
 
 export async function getAll(): Promise<SimpleStep[]> {
