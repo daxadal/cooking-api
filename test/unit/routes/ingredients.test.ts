@@ -246,7 +246,7 @@ describe("The /ingredients route", () => {
   });
 
   describe("DELETE /ingredients/{id}", () => {
-    afterEach(() => clearTable("ingredient"));
+    afterEach(clearDatabase);
 
     it("Returns 400 if the id is invalid", async () => {
       // given
@@ -274,19 +274,132 @@ describe("The /ingredients route", () => {
 
     it("Returns 204 after deleting the ingredient", async () => {
       // given
-      const id = await Ingredient.create({
+      const ID = 101;
+
+      await createMockIngredient({
+        id: ID,
         name: "ingredient-1",
         type: IngredientType.START,
       });
 
       // when
-      const response = await request(app).delete(`/ingredients/${id}`);
+      const response = await request(app).delete(`/ingredients/${ID}`);
 
       // then
       expect(response.status).toBe(204);
       expect(response.body).toStrictEqual({});
 
-      expect(await Ingredient.get(id)).toBeUndefined();
+      expect(await Ingredient.get(ID)).toBeUndefined();
+    });
+
+    it("Returns 400 if the ingredient is being used as input in a step", async () => {
+      // given
+      const inputId = 101,
+        utensilId = 1,
+        outputId = 102;
+
+      const inputPromise = createMockIngredient({
+        id: inputId,
+        name: "ingredient-1",
+        type: IngredientType.START,
+      });
+      const utensilPromise = createMockUtensil({
+        id: utensilId,
+        name: "Utensil",
+        waitTimeInMillis: 1000,
+      });
+      const outputPromise = createMockIngredient({
+        id: outputId,
+        name: "ingredient-2",
+        type: IngredientType.END,
+      });
+
+      const stepPromise = createMockStep({
+        input: inputId,
+        utensil: utensilId,
+        output: outputId,
+      });
+
+      await Promise.all([
+        inputPromise,
+        utensilPromise,
+        outputPromise,
+        stepPromise,
+      ]);
+
+      const id = inputId;
+
+      // when
+      const response = await request(app).delete(`/ingredients/${id}`);
+
+      // then
+      expect(response.status).toBe(400);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toBe(
+        "The ingredient is being used on steps. It can't be deleted."
+      );
+      expect(response.body.steps).toMatchObject([
+        {
+          input: inputId,
+          utensil: utensilId,
+          output: outputId,
+        },
+      ]);
+    });
+
+    it("Returns 400 if the ingredient is being used as output in a step", async () => {
+      // given
+      const inputId = 101,
+        utensilId = 1,
+        outputId = 102;
+
+      const inputPromise = createMockIngredient({
+        id: inputId,
+        name: "ingredient-1",
+        type: IngredientType.START,
+      });
+      const utensilPromise = createMockUtensil({
+        id: utensilId,
+        name: "Utensil",
+        waitTimeInMillis: 1000,
+      });
+      const outputPromise = createMockIngredient({
+        id: outputId,
+        name: "ingredient-2",
+        type: IngredientType.END,
+      });
+
+      const stepPromise = createMockStep({
+        input: inputId,
+        utensil: utensilId,
+        output: outputId,
+      });
+
+      await Promise.all([
+        inputPromise,
+        utensilPromise,
+        outputPromise,
+        stepPromise,
+      ]);
+
+      const id = outputId;
+
+      // when
+      const response = await request(app).delete(`/ingredients/${id}`);
+
+      // then
+      expect(response.status).toBe(400);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toBe(
+        "The ingredient is being used on steps. It can't be deleted."
+      );
+      expect(response.body.steps).toMatchObject([
+        {
+          input: inputId,
+          utensil: utensilId,
+          output: outputId,
+        },
+      ]);
     });
   });
 

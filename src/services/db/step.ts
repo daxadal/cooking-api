@@ -95,39 +95,6 @@ export async function create({
   return rows.insertId;
 }
 
-export async function queryDetailedFromInput(
-  input: number
-): Promise<DetailedStep[]> {
-  const { rows, fields } = await query<RowDataPacket[]>(
-    "select * from detailed_step where input_id= :input;",
-    { input }
-  );
-  const deepRows = rows.map((row) => deepen(row, fields));
-  return deepRows as DetailedStep[];
-}
-
-export async function queryDetailedFromOutput(
-  output: number
-): Promise<DetailedStep[]> {
-  const { rows, fields } = await query<RowDataPacket[]>(
-    "select * from detailed_step where output_id= :output;",
-    { output }
-  );
-  const deepRows = rows.map((row) => deepen(row, fields));
-  return deepRows as DetailedStep[];
-}
-
-export async function queryDetailedFromUtensil(
-  utensil: number
-): Promise<DetailedStep[]> {
-  const { rows, fields } = await query<RowDataPacket[]>(
-    "select * from detailed_step where utensil_id= :utensil;",
-    { utensil }
-  );
-  const deepRows = rows.map((row) => deepen(row, fields));
-  return deepRows as DetailedStep[];
-}
-
 export async function destroy({
   input,
   utensil,

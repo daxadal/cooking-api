@@ -207,7 +207,20 @@ router
    *       204:
    *         $ref: '#/components/responses/204'
    *       400:
-   *         $ref: '#/components/responses/400'
+   *         description: Bad request
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 message:
+   *                   type: string
+   *                   description: More info about the error
+   *                 steps:
+   *                   type: array
+   *                   description: If present, the steps that are preventing deletion
+   *                   items:
+   *                     $ref: "#/components/schemas/Step"
    *       404:
    *         $ref: '#/components/responses/404'
    *       500:
@@ -217,6 +230,20 @@ router
     const logger = res.locals.logger || console;
     try {
       const ingredient = res.locals.ingredient as TIngredient;
+
+      const [inputSteps, outputSteps] = await Promise.all([
+        Step.search({ input: ingredient.id }),
+        Step.search({ output: ingredient.id }),
+      ]);
+      if (inputSteps.length > 0 || outputSteps.length > 0) {
+        res.status(400).send({
+          message:
+            "The ingredient is being used on steps. It can't be deleted.",
+          steps: [...inputSteps, ...outputSteps],
+        });
+        return;
+      }
+
       const deletedRowsCount = await Ingredient.destroy(ingredient.id);
       if (deletedRowsCount === 1) res.status(204).send();
       else
@@ -265,7 +292,7 @@ router.get("/:id(\\d+)/outcomes", async function (req, res) {
         message: "This is an end ingredient. It cannot be cooked further.",
       });
     } else {
-      const steps = await Step.queryDetailedFromInput(ingredient.id);
+      const steps = await Step.searchDetailed({ input: ingredient.id });
       res.status(200).send(steps);
     }
   } catch (error) {
@@ -311,7 +338,7 @@ router.get("/:id(\\d+)/sources", async function (req, res) {
           "This is a start ingredient. It cannot have been cooked before.",
       });
     } else {
-      const steps = await Step.queryDetailedFromOutput(ingredient.id);
+      const steps = await Step.searchDetailed({ output: ingredient.id });
       res.status(200).send(steps);
     }
   } catch (error) {
