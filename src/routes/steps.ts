@@ -246,51 +246,69 @@ router
       );
       res.status(500).send({ message: "Internal server error" });
     }
-  });
+  })
 
-/**
- * @openapi
- * /steps:
- *   delete:
- *     tags:
- *       - steps
- *     description: Deletes an step
- *     requestBody:
- *       description: Step to delete
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/SimpleStep'
- *     responses:
- *       204:
- *         $ref: '#/components/responses/204'
- *       400:
- *         $ref: '#/components/responses/400'
- *       404:
- *         $ref: '#/components/responses/404'
- *       500:
- *         $ref: '#/components/responses/500'
- */
-router.delete("/", validateBody(SimpleStep), async function (req, res) {
-  const logger = res.locals.logger || console;
-  try {
-    const { input, utensil, output } = req.body as SimpleStep;
-    const deletedRowsCount = await Step.destroy({ input, utensil, output });
-    if (deletedRowsCount === 1) res.status(204).send();
-    else if (deletedRowsCount === 0)
-      res.status(404).send({ message: "Step not found" });
-    else
-      res.status(500).send({
-        message: `Internal server error. ${deletedRowsCount} rows were deleted instead of one`,
-      });
-  } catch (error) {
-    logger.error(
-      `Internal server error at ${req.method} ${req.originalUrl}`,
-      error
-    );
-    res.status(500).send({ message: "Internal server error" });
-  }
-});
+  /**
+   * @openapi
+   * /steps/{input}-{utensil}-{output}:
+   *   delete:
+   *     tags:
+   *       - steps
+   *     description: Deletes an step
+   *     parameters:
+   *       - input:
+   *           name: input
+   *           in: path
+   *           description: Step input
+   *           required: true
+   *           schema:
+   *             type: number
+   *       - utensil:
+   *           name: utensil
+   *           in: path
+   *           description: Step utensil
+   *           required: true
+   *           schema:
+   *             type: number
+   *       - output:
+   *           name: output
+   *           in: path
+   *           description: Step output
+   *           required: true
+   *           schema:
+   *             type: number
+   *     responses:
+   *       204:
+   *         $ref: '#/components/responses/204'
+   *       400:
+   *         $ref: '#/components/responses/400'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
+  .delete(async function (req, res) {
+    const logger = res.locals.logger || console;
+    try {
+      const input = parseInt(req.params.input);
+      const utensil = parseInt(req.params.utensil);
+      const output = parseInt(req.params.output);
+
+      const deletedRowsCount = await Step.destroy({ input, utensil, output });
+      if (deletedRowsCount === 1) res.status(204).send();
+      else if (deletedRowsCount === 0)
+        res.status(404).send({ message: "Step not found" });
+      else
+        res.status(500).send({
+          message: `Internal server error. ${deletedRowsCount} rows were deleted instead of one`,
+        });
+    } catch (error) {
+      logger.error(
+        `Internal server error at ${req.method} ${req.originalUrl}`,
+        error
+      );
+      res.status(500).send({ message: "Internal server error" });
+    }
+  });
 
 export default router;
