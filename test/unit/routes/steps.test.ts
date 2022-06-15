@@ -398,9 +398,9 @@ describe("The /steps route", () => {
 
     it("Returns 404 if the step doesn't exist", async () => {
       // given
-      const input = 101;
-      const utensil = 1;
-      const output = 102;
+      const input = INPUT_ID;
+      const utensil = UTENSIL_ID;
+      const output = OUTPUT_ID;
 
       // when
       const response = await request(app).delete(
@@ -415,9 +415,9 @@ describe("The /steps route", () => {
 
     it("Returns 204 after deleting the step", async () => {
       // given
-      const input = 101;
-      const utensil = 1;
-      const output = 102;
+      const input = INPUT_ID;
+      const utensil = UTENSIL_ID;
+      const output = OUTPUT_ID;
 
       await Step.create({ input, utensil, output });
 
