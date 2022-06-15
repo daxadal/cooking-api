@@ -1,8 +1,9 @@
 import express from "express";
 
 import { Ingredient, Step, Utensil } from "@/services/db";
-import { validateBody, validateQuery } from "@/services/joi";
+import { validateBody, validatePath, validateQuery } from "@/services/joi";
 import { DetailedQuery, IngredientType, SimpleStep } from "@/services/schemas";
+import Joi from "joi";
 
 const router = express.Router();
 
@@ -165,22 +166,109 @@ router
       );
       res.status(500).send({ message: "Internal server error" });
     }
+  });
+
+router
+  .route("/:input(\\d+)-:utensil(\\d+)-:output(\\d+)")
+  .all(
+    validatePath(
+      Joi.object({
+        input: Joi.number().integer().required(),
+        utensil: Joi.number().integer().required(),
+        output: Joi.number().integer().required(),
+      })
+    )
+  )
+
+  /**
+   * @openapi
+   * /steps/{input}-{utensil}-{output}:
+   *   get:
+   *     tags:
+   *       - steps
+   *     description: Get a specific step.
+   *     parameters:
+   *       - name: input
+   *         in: path
+   *         description: Step input
+   *         required: true
+   *         schema:
+   *           type: number
+   *       - name: utensil
+   *         in: path
+   *         description: Step utensil
+   *         required: true
+   *         schema:
+   *           type: number
+   *       - name: output
+   *         in: path
+   *         description: Step output
+   *         required: true
+   *         schema:
+   *           type: number
+   *       - $ref: '#/components/parameters/detailed'
+   *     responses:
+   *       200:
+   *         description: The requested step.
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: array
+   *               items:
+   *                 $ref: '#/components/schemas/Step'
+   *       404:
+   *         $ref: '#/components/responses/404'
+   *       500:
+   *         $ref: '#/components/responses/500'
+   */
+  .get(validateQuery(DetailedQuery), async function (req, res) {
+    const logger = res.locals.logger || console;
+    try {
+      const input = parseInt(req.params.input);
+      const utensil = parseInt(req.params.utensil);
+      const output = parseInt(req.params.output);
+
+      const step = req.query.detailed
+        ? await Step.getDetailed({ input, utensil, output })
+        : await Step.get({ input, utensil, output });
+
+      if (!step) res.status(404).send({ message: "Step not found" });
+      else res.status(200).send(step);
+    } catch (error) {
+      logger.error(
+        `Internal server error at ${req.method} ${req.originalUrl}`,
+        error
+      );
+      res.status(500).send({ message: "Internal server error" });
+    }
   })
 
   /**
    * @openapi
-   * /steps:
+   * /steps/{input}-{utensil}-{output}:
    *   delete:
    *     tags:
    *       - steps
    *     description: Deletes an step
-   *     requestBody:
-   *       description: Step to delete
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             $ref: '#/components/schemas/SimpleStep'
+   *     parameters:
+   *       - name: input
+   *         in: path
+   *         description: Step input
+   *         required: true
+   *         schema:
+   *           type: number
+   *       - name: utensil
+   *         in: path
+   *         description: Step utensil
+   *         required: true
+   *         schema:
+   *           type: number
+   *       - name: output
+   *         in: path
+   *         description: Step output
+   *         required: true
+   *         schema:
+   *           type: number
    *     responses:
    *       204:
    *         $ref: '#/components/responses/204'
@@ -191,10 +279,13 @@ router
    *       500:
    *         $ref: '#/components/responses/500'
    */
-  .delete(validateBody(SimpleStep), async function (req, res) {
+  .delete(async function (req, res) {
     const logger = res.locals.logger || console;
     try {
-      const { input, utensil, output } = req.body as SimpleStep;
+      const input = parseInt(req.params.input);
+      const utensil = parseInt(req.params.utensil);
+      const output = parseInt(req.params.output);
+
       const deletedRowsCount = await Step.destroy({ input, utensil, output });
       if (deletedRowsCount === 1) res.status(204).send();
       else if (deletedRowsCount === 0)

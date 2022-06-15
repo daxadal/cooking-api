@@ -131,7 +131,7 @@ describe("The /utensils route", () => {
 
     afterAll(() => clearTable("utensil"));
 
-    it("Returns 400 if the id is invalid", async () => {
+    it("Returns 400 if the id is not a number", async () => {
       // given
       const ID = "INVALID";
 
@@ -184,7 +184,7 @@ describe("The /utensils route", () => {
 
     afterEach(() => clearTable("utensil"));
 
-    it("Returns 400 if the id is invalid", async () => {
+    it("Returns 400 if the id is not a number", async () => {
       // given
       const ID = "INVALID";
       const body = {};
@@ -252,7 +252,7 @@ describe("The /utensils route", () => {
   describe("DELETE /utensils/{id}", () => {
     afterEach(() => clearTable("utensil"));
 
-    it("Returns 400 if the id is invalid", async () => {
+    it("Returns 400 if the id is not a number", async () => {
       // given
       const ID = "INVALID";
 
@@ -327,7 +327,7 @@ describe("The /utensils route", () => {
     afterAll(clearDatabase);
 
     describe("GET /utensils/{id}/uses", () => {
-      it("Returns 400 if the id is invalid", async () => {
+      it("Returns 400 if the id is not a number", async () => {
         // given
         const ID = "INVALID";
 
