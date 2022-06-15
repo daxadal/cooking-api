@@ -127,7 +127,7 @@ describe("The /ingredients route", () => {
 
     afterAll(() => clearTable("ingredient"));
 
-    it("Returns 400 if the id is invalid", async () => {
+    it("Returns 400 if the id is not a number", async () => {
       // given
       const ID = "INVALID";
 
@@ -180,7 +180,7 @@ describe("The /ingredients route", () => {
 
     afterEach(() => clearTable("ingredient"));
 
-    it("Returns 400 if the id is invalid", async () => {
+    it("Returns 400 if the id is not a number", async () => {
       // given
       const ID = "INVALID";
       const body = {};
@@ -248,7 +248,7 @@ describe("The /ingredients route", () => {
   describe("DELETE /ingredients/{id}", () => {
     afterEach(clearDatabase);
 
-    it("Returns 400 if the id is invalid", async () => {
+    it("Returns 400 if the id is not a number", async () => {
       // given
       const ID = "INVALID";
 
@@ -454,7 +454,7 @@ describe("The /ingredients route", () => {
     afterAll(clearDatabase);
 
     describe("GET /ingredients/{id}/outcomes", () => {
-      it("Returns 400 if the id is invalid", async () => {
+      it("Returns 400 if the id is not a number", async () => {
         // given
         const ID = "INVALID";
 
@@ -518,7 +518,7 @@ describe("The /ingredients route", () => {
     });
 
     describe("GET /ingredients/{id}/sources", () => {
-      it("Returns 400 if the id is invalid", async () => {
+      it("Returns 400 if the id is not a number", async () => {
         // given
         const ID = "INVALID";
 
