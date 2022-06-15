@@ -403,23 +403,102 @@
             "$ref": "#/components/responses/500"
           }
         }
+      }
+    },
+    "/steps/{input}-{utensil}-{output}": {
+      "get": {
+        "tags": [
+          "steps"
+        ],
+        "description": "Get a specific step.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "path",
+            "description": "Step input",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "utensil",
+            "in": "path",
+            "description": "Step utensil",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "output",
+            "in": "path",
+            "description": "Step output",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/detailed"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested step.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Step"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
       },
       "delete": {
         "tags": [
           "steps"
         ],
         "description": "Deletes an step",
-        "requestBody": {
-          "description": "Step to delete",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SimpleStep"
-              }
+        "parameters": [
+          {
+            "name": "input",
+            "in": "path",
+            "description": "Step input",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "utensil",
+            "in": "path",
+            "description": "Step utensil",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "output",
+            "in": "path",
+            "description": "Step output",
+            "required": true,
+            "schema": {
+              "type": "number"
             }
           }
-        },
+        ],
         "responses": {
           "204": {
             "$ref": "#/components/responses/204"

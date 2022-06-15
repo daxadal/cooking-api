@@ -188,27 +188,24 @@ router
    *       - steps
    *     description: Get a specific step.
    *     parameters:
-   *       - input:
-   *           name: input
-   *           in: path
-   *           description: Step input
-   *           required: true
-   *           schema:
-   *             type: number
-   *       - utensil:
-   *           name: utensil
-   *           in: path
-   *           description: Step utensil
-   *           required: true
-   *           schema:
-   *             type: number
-   *       - output:
-   *           name: output
-   *           in: path
-   *           description: Step output
-   *           required: true
-   *           schema:
-   *             type: number
+   *       - name: input
+   *         in: path
+   *         description: Step input
+   *         required: true
+   *         schema:
+   *           type: number
+   *       - name: utensil
+   *         in: path
+   *         description: Step utensil
+   *         required: true
+   *         schema:
+   *           type: number
+   *       - name: output
+   *         in: path
+   *         description: Step output
+   *         required: true
+   *         schema:
+   *           type: number
    *       - $ref: '#/components/parameters/detailed'
    *     responses:
    *       200:
@@ -219,8 +216,6 @@ router
    *               type: array
    *               items:
    *                 $ref: '#/components/schemas/Step'
-   *       404:
-   *         $ref: '#/components/responses/404'
    *       404:
    *         $ref: '#/components/responses/404'
    *       500:
@@ -237,7 +232,7 @@ router
         ? await Step.getDetailed({ input, utensil, output })
         : await Step.get({ input, utensil, output });
 
-      if (!step) res.status(404).send({ message: "Ingredient not found" });
+      if (!step) res.status(404).send({ message: "Step not found" });
       else res.status(200).send(step);
     } catch (error) {
       logger.error(
@@ -256,27 +251,24 @@ router
    *       - steps
    *     description: Deletes an step
    *     parameters:
-   *       - input:
-   *           name: input
-   *           in: path
-   *           description: Step input
-   *           required: true
-   *           schema:
-   *             type: number
-   *       - utensil:
-   *           name: utensil
-   *           in: path
-   *           description: Step utensil
-   *           required: true
-   *           schema:
-   *             type: number
-   *       - output:
-   *           name: output
-   *           in: path
-   *           description: Step output
-   *           required: true
-   *           schema:
-   *             type: number
+   *       - name: input
+   *         in: path
+   *         description: Step input
+   *         required: true
+   *         schema:
+   *           type: number
+   *       - name: utensil
+   *         in: path
+   *         description: Step utensil
+   *         required: true
+   *         schema:
+   *           type: number
+   *       - name: output
+   *         in: path
+   *         description: Step output
+   *         required: true
+   *         schema:
+   *           type: number
    *     responses:
    *       204:
    *         $ref: '#/components/responses/204'
