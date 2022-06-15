@@ -243,6 +243,130 @@ describe("The /steps route", () => {
     });
   });
 
+  describe("GET /steps/{input}-{utensil}-{output}", () => {
+    const INPUT_ID = 101;
+    const UTENSIL_ID = 1;
+    const OUTPUT_ID = 102;
+
+    beforeAll(() =>
+      createMockStep({
+        input: INPUT_ID,
+        utensil: UTENSIL_ID,
+        output: OUTPUT_ID,
+      })
+    );
+
+    afterAll(() => clearTable("step"));
+
+    it.each`
+      input        | utensil       | output       | field
+      ${"INVALID"} | ${UTENSIL_ID} | ${OUTPUT_ID} | ${"input"}
+      ${INPUT_ID}  | ${"INVALID"}  | ${OUTPUT_ID} | ${"utensil"}
+      ${INPUT_ID}  | ${UTENSIL_ID} | ${"INVALID"} | ${"output"}
+    `(
+      "Returns 404 if $field is not a number",
+      async ({ input, utensil, output }) => {
+        // given
+
+        // when
+        const response = await request(app).get(
+          `/steps/${input}-${utensil}-${output}`
+        );
+
+        // then
+        expect(response.status).toEqual(404);
+        expect(response.body).toBeDefined();
+        expect(response.body.message).toMatch("Endpoint not found");
+      }
+    );
+
+    it("Returns 404 if the step doesn't exist", async () => {
+      // given
+      const input = 9999;
+      const utensil = 99;
+      const output = 9999;
+
+      // when
+      const response = await request(app).get(
+        `/steps/${input}-${utensil}-${output}`
+      );
+
+      // then
+      expect(response.status).toEqual(404);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toMatch("Step not found");
+    });
+
+    it.each`
+      query                          | condition
+      ${"?detailed=whatIsThisValue"} | ${"the detail parameter has an invalid value"}
+      ${"?detailed"}                 | ${"the detail parameter has no value"}
+    `("Returns 400 if $condition", async ({ query }) => {
+      // given
+      const input = INPUT_ID;
+      const utensil = UTENSIL_ID;
+      const output = OUTPUT_ID;
+
+      // when
+      const response = await request(app).get(
+        `/steps/${input}-${utensil}-${output}` + query
+      );
+
+      // then
+      expect(response.status).toBe(400);
+      expect(response.body).toBeDefined();
+      expect(response.body.message).toEqual('"detailed" must be a boolean');
+    });
+
+    it.each`
+      query                | condition
+      ${""}                | ${"the detailed parameter is not present"}
+      ${"?detailed=false"} | ${"'detailed=false'"}
+    `("Returns 200 and a simple steps if $condition", async ({ query }) => {
+      // given
+      const input = INPUT_ID;
+      const utensil = UTENSIL_ID;
+      const output = OUTPUT_ID;
+
+      // when
+      const response = await request(app).get(
+        `/steps/${input}-${utensil}-${output}` + query
+      );
+
+      // then
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+
+      expect(response.body).toMatchObject({
+        input: expect.any(Number),
+        utensil: expect.any(Number),
+        output: expect.any(Number),
+      });
+    });
+
+    it("Returns 200 and an array of detailed steps if 'detailed=true'", async () => {
+      // given
+      const input = INPUT_ID;
+      const utensil = UTENSIL_ID;
+      const output = OUTPUT_ID;
+
+      // when
+      const response = await request(app).get(
+        `/steps/${input}-${utensil}-${output}?detailed=true`
+      );
+
+      // then
+      expect(response.status).toBe(200);
+      expect(response.body).toBeDefined();
+
+      expect(response.body).toMatchObject({
+        input: expect.any(Object),
+        utensil: expect.any(Object),
+        output: expect.any(Object),
+      });
+    });
+  });
+
   describe("DELETE /steps/{input}-{utensil}-{output}", () => {
     const INPUT_ID = 101;
     const UTENSIL_ID = 1;
