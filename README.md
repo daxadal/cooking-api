@@ -1,28 +1,24 @@
 # Cooking API
 
 A cooking API based on time-management cooking games.
+Create the **utensils** that are present in your fictional kitchen.
+Create the **ingredients** that will be cooked, as well as the half-cooked and final byproducts.
+Create **recipes** by creating the individual **steps** necessary to transform the raw ingredient into a fully cooked byproduct.
 
-# Stack
+# Repositories
 
-This project uses these libraries for this purposes:
+- Main repo: https://gitlab.com/egarciadececa/cooking-api
+- Backup repo: https://github.com/daxadal/cooking-api
 
-- `express`: API configuration
-- `joi`: Parameter validation
-- `mysql2/promise`: Implementing the database
-- `winston`: Logging
-- `module-alias`: Importing routes as absolutes instead of relatives
-- `swagger-jsdoc`: Generating OpenAPI documentation
-- `swagger-ui-express`: Serving OpenAPI documentation
+# Availability
 
-This project also uses the following dev dependencies:
-
-- `jest`/`ts-jest`: Testing
-- `jest-unit`: Generating testing reports (compatible with Gitlab CI/CD)
-- `supertest`: Making request to the express app
+_(This server is not currently being served on the Internet)_
 
 # Previous steps
 
-Create a .env file based on sample.env file. Uncomment and fill all required environment variables. All variables are required, except otherwise specified.
+Create a `.env` file based on `sample.env` file.
+Uncomment and fill all required environment variables.
+All variables are required, except otherwise specified.
 
 Install and start an MySQL service on the chosen host, and make sure that login is possible with the specified credentials.
 
@@ -41,7 +37,7 @@ CREATE DATABASE <db_name>;
 GRANT ALL PRIVILEGES ON <db_name>. * TO '<username>'@'localhost';
 ```
 
-_(**NOTE**: If the variable `DB_AUTO_CREATE` is set to true, there's no need to create the database beforehand.
+_(**NOTE**: If the `.env` variable `DB_AUTO_CREATE` is set to `true`, there's no need to create the database beforehand.
 But, in this case, the configured user must have permission to create databases)_
 
 # Installation and execution
