@@ -48,7 +48,7 @@ jest:
   variables:
     MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
   script:
-    - cp $DOTENV_DEV .env
+    - cp $DOTENV_JEST .env
     - DB_PASSWORD=$MYSQL_ROOT_PASSWORD npm test
   artifacts:
     when: always
