@@ -76,6 +76,7 @@ deploy-to-server:
   environment:
     name: development
   script:
+    - cp $DOTENV_DEV .env
     - cp $SERVER_KEY server_key
     - ./deploy-pipeline.sh
   rules:
