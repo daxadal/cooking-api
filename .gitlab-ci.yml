@@ -12,7 +12,13 @@ workflow:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "web"' # Run when requested manually
       when: always
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: always
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"' # Run on merge request
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_OPEN_MERGE_REQUESTS' # Avoid duplicated pipelines
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH' # Run on branch push
       when: always
     - when: never # Otherwise -> Don't pipeline
 
@@ -42,7 +48,7 @@ jest:
   variables:
     MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
   script:
-    - cp $DOTENV_DEV .env
+    - cp $DOTENV_JEST .env
     - DB_PASSWORD=$MYSQL_ROOT_PASSWORD npm test
   artifacts:
     when: always
@@ -60,3 +66,23 @@ lint:
     policy: pull
   script:
     - npm run lint
+
+deploy-to-server:
+  stage: deploy
+  image: instrumentisto/rsync-ssh:alpine
+  cache:
+    <<: *cache
+    policy: pull
+  environment:
+    name: development
+  script:
+    - cp $DOTENV_DEV .env
+    - cp $SERVER_KEY server_key
+    - ./deploy-pipeline.sh
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: on_success
+    - if: "$CI_OPEN_MERGE_REQUESTS"
+      when: on_success
+    - when: manual
+      allow_failure: true
