@@ -20,7 +20,7 @@ export async function count(): Promise<number> {
   const { rows } = await query<RowDataPacket[]>(
     "select count(*) from ingredient;"
   );
-  return rows?.[0]?.["count(*)"];
+  return rows && rows[0] && rows[0]["count(*)"];
 }
 
 export async function create({
