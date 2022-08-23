@@ -12,7 +12,8 @@ Create **recipes** by creating the individual **steps** necessary to transform t
 
 # Availability
 
-_(This server is not currently being served on the Internet)_
+- https://cooking-api.daxadal.tk/#/
+- https://cooking-api.egarciadececa.tk/#/
 
 # Previous steps
 
